@@ -1,0 +1,25 @@
+---
+title: "Folio"
+toc: false
+page-layout: full
+---
+
+A personal reading log — papers and articles, one at a time.
+
+## Registry
+
+```{python}
+#| echo: false
+from IPython.display import HTML
+import pandas as pd
+
+df = pd.read_csv("registry.csv")
+df["name"] = '<a href="' + df["file"] + '">' + df["name"] + "</a>"
+df = df[["name", "category", "description"]]
+df.columns = ["Paper", "Type", "Description"]
+HTML(df.to_html(escape=False, index=False))
+```
+
+Each entry is a numbered note: what the paper is about, what stood out, and what it connects to. No summaries for the sake of it — only the parts worth keeping.
+
+Entries are grouped by type: **Article** for original research, **Review** for overviews and meta-analyses.

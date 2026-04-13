@@ -1,0 +1,27 @@
+---
+title: "001"
+date: 2026-04-13
+categories: [editorial]
+tags: [single-cell, systems biology, future directions]
+draft: false
+---
+
+## Intro
+
+**Single-cell biology: what does the future hold?** 是一篇由 Maria Polychronidou 等人在 2023 年发表于 *Molecular Systems Biology* 的 Editorial，探讨了单细胞生物学的未来发展方向。DOI: [10.15252/msb.202311799](https://doi.org/10.15252/msb.202311799)
+
+## Why I Read It
+
+来自 Tommy Tang 的推文推荐。我想先读一篇足够高层的 Editorial，把单细胞生物学当前的主线问题先看清，再决定后面往方法、空间组学还是多模态整合继续深入。
+
+## What It Says
+
+文章从细胞类型、细胞状态、细胞间互作和组织结构四个维度，梳理了单细胞生物学的核心价值，并提出了七个尚待解答的关键问题。多位领域专家也对计算方法、空间组学和 AI 整合作了简短判断。整体读下来，它更像一份面向未来的议题清单，而不是一篇提供具体答案的研究文章。
+
+## What I Take From It
+
+单细胞研究已经很擅长回答"这是什么细胞"，却还不擅长回答"它到底在做什么"。技术能力和功能理解之间有明显错位，这一点值得记住。以后再读方法类文章时，我会更在意：它推进的是分辨率，还是理解力。
+
+## Note
+
+文中反复提到计算整合和 AI 驱动，但几乎都停留在方向判断，没有真正进入方法层。这个落差很明显：大家都知道下一步该往哪里走，但"怎么走"并没有答案。后面想找一篇专门讲多模态整合的文章跟进，看看这块有没有实质性进展。
