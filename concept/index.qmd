@@ -9,6 +9,10 @@ draft: false
 
 Concept notes collect reusable background knowledge for reading papers. They are not full reviews; each page should clarify a concept enough to make future papers easier to read.
 
+## Scope
+
+Concept pages are for recurring terms, mechanisms, models, and methods that are useful across papers.
+
 ## Index
 
 | Index | Title | Category | Added |
