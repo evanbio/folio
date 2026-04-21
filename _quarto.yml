@@ -9,7 +9,7 @@ website:
     style: "docked"
     search: true
     tools:
-      - icon: house
+      - icon: globe
         href: https://evanzhou.org/
         aria-label: Homepage
       - icon: github
@@ -20,6 +20,8 @@ website:
       - section: "Editorial"
         contents:
           - paper/001.qmd
+      - section: "Review"
+        contents:
           - paper/002.qmd
       - section: "Concept"
         href: concept/index.qmd
