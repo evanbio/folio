@@ -63,7 +63,7 @@ TH2 重要，是因为很多常见免疫疾病都可以被理解为 type 2 infla
 
 ## In Papers
 
-- [@fyhrquistEndotypesAtopicDermatitis2025]
+- [Endotypes of Atopic Dermatitis](../../paper/002.qmd)
 
 ## Note
 
