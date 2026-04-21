@@ -9,6 +9,9 @@ website:
     style: "docked"
     search: true
     tools:
+      - icon: house
+        href: https://evanzhou.org/
+        aria-label: Homepage
       - icon: github
         href: https://github.com/evanbio/folio
         aria-label: GitHub
