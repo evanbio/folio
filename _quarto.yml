@@ -17,6 +17,7 @@ website:
       - section: "Editorial"
         contents:
           - paper/001.qmd
+          - paper/002.qmd
 
   page-footer:
     left: "© 2026 Yibin Zhou"

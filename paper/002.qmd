@@ -1,0 +1,33 @@
+---
+title: "002"
+date: 2026-04-21
+categories: [review]
+tags: [atopic dermatitis, endotype, immunology, precision medicine]
+draft: false
+---
+
+## Intro
+
+**Endotypes of Atopic Dermatitis** 是 Nanna Fyhrquist 等人在 2025 年发表于 *The Journal of Allergy and Clinical Immunology* 的综述，讨论特应性皮炎（atopic dermatitis, AD）如何从临床表型走向机制分型。DOI: [10.1016/j.jaci.2025.02.029](https://doi.org/10.1016/j.jaci.2025.02.029)
+
+## Why I Read It
+
+关键词检索看到这篇，算是比较新的 AD endotype 综述。最近想系统理解 AD 领域的免疫机制、分型逻辑和精准治疗思路，所以先读一篇能把 TH2、TH17/TH22、屏障缺陷、微生物组和 biomarker 串起来的文章。
+
+## What It Says
+
+文章的核心判断是：AD 不应该只被看成一个单一疾病，也不能只靠 extrinsic/intrinsic 或轻中重来分类。它更像是一组由免疫通路、皮肤屏障、遗传背景、年龄阶段、族群差异、微生物生态和治疗反应共同塑造的疾病谱。
+
+TH2 仍然是经典主轴，尤其关联 IL-4、IL-13、IgE、嗜酸性粒细胞、瘙痒和皮肤屏障破坏。但文章反复强调，AD 不能被 TH2 完全解释。TH22、TH17、TH1、FLG 突变、S. aureus 定植、皮肤和肠道微生物组、miRNA 和表观遗传因素，都可能参与不同的 endotype。
+
+## What I Take From It
+
+这篇文章最有用的地方，是把“疾病异质性”具体化了。所谓 endotype 不是多贴几个标签，而是问：同一个 AD 诊断背后，到底是哪条免疫通路、哪种屏障缺陷、哪类微生物状态、哪种遗传背景在主导疾病？
+
+这也提醒我，组学分型和机器学习聚类本身不是终点。真正重要的是这些 cluster 能不能解释机制、预测治疗反应，并且在不同年龄、族群和疾病阶段保持稳定。否则分型只是漂亮的图，不一定能变成临床知识。
+
+## Note
+
+这篇综述让我更清楚地看到精准医学的难点：方向很合理，但落地很难。biomarker 还不稳定，endotype 定义还不统一，多组学检测昂贵，疾病本身又会随时间、治疗和环境变化。AD endotyping 的吸引力在于它连接了机制和治疗，但它目前更像研究框架，而不是成熟的临床流程。
+
+后面如果继续读 AD，可以沿几条线展开：TH2/IL-13 biologics、JAK inhibitors、skin microbiome and S. aureus、AD biomarkers、multiomics endotyping，以及不同族群中的 AD 差异。
