@@ -25,3 +25,9 @@ draft: false
 ## Note
 
 文中反复提到计算整合和 AI 驱动，但几乎都停留在方向判断，没有真正进入方法层。这个落差很明显：大家都知道下一步该往哪里走，但"怎么走"并没有答案。后面想找一篇专门讲多模态整合的文章跟进，看看这块有没有实质性进展。
+
+## Source
+
+- DOI: [10.15252/msb.202311799](https://doi.org/10.15252/msb.202311799)
+- PubMed: [37318792](https://pubmed.ncbi.nlm.nih.gov/37318792/)
+- PDF: [Single-cell biology: what does the future hold?](../assets/pdf/001.pdf)

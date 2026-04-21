@@ -31,3 +31,9 @@ TH2 仍然是经典主轴，尤其关联 IL-4、IL-13、IgE、嗜酸性粒细胞
 这篇综述让我更清楚地看到精准医学的难点：方向很合理，但落地很难。biomarker 还不稳定，endotype 定义还不统一，多组学检测昂贵，疾病本身又会随时间、治疗和环境变化。AD endotyping 的吸引力在于它连接了机制和治疗，但它目前更像研究框架，而不是成熟的临床流程。
 
 后面如果继续读 AD，可以沿几条线展开：TH2/IL-13 biologics、JAK inhibitors、skin microbiome and S. aureus、AD biomarkers、multiomics endotyping，以及不同族群中的 AD 差异。
+
+## Source
+
+- DOI: [10.1016/j.jaci.2025.02.029](https://doi.org/10.1016/j.jaci.2025.02.029)
+- PubMed: [40054744](https://pubmed.ncbi.nlm.nih.gov/40054744/)
+- PDF: [Endotypes of Atopic Dermatitis](../assets/pdf/002.pdf)

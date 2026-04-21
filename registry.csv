@@ -1,2 +1,3 @@
-index,title,category,journal,year,received,accepted,doi,source,description,file,added
-001,Single-cell biology: what does the future hold?,editorial,Molecular Systems Biology,2023,2023-06-02,2023-06-02,https://doi.org/10.15252/msb.202311799,X,Editorial on the future of single-cell biology,paper/001.qmd,2026-04-13
+index,title,category,journal,year,received,accepted,doi,source,description,file,pdf,added
+001,Single-cell biology: what does the future hold?,editorial,Molecular Systems Biology,2023,2023-06-02,2023-06-02,https://doi.org/10.15252/msb.202311799,X,Editorial on the future of single-cell biology,paper/001.qmd,assets/pdf/001.pdf,2026-04-13
+002,Endotypes of Atopic Dermatitis,review,The Journal of Allergy and Clinical Immunology,2025,,,https://doi.org/10.1016/j.jaci.2025.02.029,Zotero,Review on atopic dermatitis endotypes and precision medicine,paper/002.qmd,assets/pdf/002.pdf,2026-04-21
