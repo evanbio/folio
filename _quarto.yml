@@ -18,6 +18,12 @@ website:
         contents:
           - paper/001.qmd
           - paper/002.qmd
+      - section: "Concept"
+        href: concept/index.qmd
+        contents:
+          - section: "Immunology"
+            contents:
+              - concept/immunology/th2.qmd
 
   page-footer:
     left: "© 2026 Yibin Zhou"

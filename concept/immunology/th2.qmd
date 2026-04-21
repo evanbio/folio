@@ -1,0 +1,72 @@
+---
+title: "TH2"
+date: 2026-04-21
+categories: [concept, immunology]
+tags: [t-cell, type-2-immunity, cytokine]
+draft: false
+---
+
+## Perspective
+
+TH2 / type 2 immunity 是读免疫、过敏、哮喘、特应性皮炎、寄生虫感染和部分屏障组织炎症时经常遇到的概念。我需要搞清楚它到底指的是一种 T 细胞亚群、一组 cytokine 通路，还是更宽泛的免疫反应模式。
+
+先记住一个实用边界：**TH2 是 CD4+ T helper cell 的一个功能亚群；type 2 immunity 是更大的免疫反应类型，TH2 是其中的重要来源和组织者之一。**
+
+## Definition
+
+TH2 cells are a subset of CD4+ helper T cells that coordinate type 2 immune responses, mainly through cytokines such as IL-4, IL-5, and IL-13. These responses are important for defense against helminths and other barrier-associated threats, but they also drive allergic inflammation, IgE production, eosinophil activation, mucus responses, itch, and tissue remodeling.
+
+中文理解：TH2 是辅助性 T 细胞的一类功能状态，主要通过 IL-4、IL-5、IL-13 等细胞因子组织 2 型免疫反应。它本来有防御寄生虫和保护屏障组织的作用，但在过敏、哮喘、特应性皮炎等疾病中会变成病理性炎症轴。
+
+## Why It Matters 
+
+TH2 重要，是因为很多常见免疫疾病都可以被理解为 type 2 inflammation 的不同表现：
+
+- allergic asthma
+- atopic dermatitis
+- allergic rhinitis
+- food allergy
+- eosinophilic inflammation
+- helminth infection response
+
+在临床和转化研究中，TH2 也直接连接到治疗靶点。比如 IL-4/IL-13 通路对应 dupilumab，IL-13 对应 tralokinumab 和 lebrikizumab，IL-5/IL-5R 对应 eosinophil 相关治疗，IL-31 与瘙痒相关。读 AD、asthma、allergy 或 barrier immunity 文献时，TH2 往往是最基础的机制坐标。
+
+## Key Points 
+
+- TH2 是 CD4+ T helper cell 的一个亚群，不等同于整个 type 2 immunity。
+- Type 2 immunity 包括 TH2 cells、ILC2、mast cells、basophils、eosinophils、B cells、epithelial alarmins 等多个细胞和信号来源。
+- 经典 TH2 cytokines 是 IL-4、IL-5、IL-13。
+- IL-4 促进 TH2 differentiation 和 IgE class switching。
+- IL-5 主要关联 eosinophil differentiation、survival 和 recruitment。
+- IL-13 与 mucus production、epithelial/barrier dysfunction、airway hyperresponsiveness 和 tissue remodeling 相关。
+- IL-31 常和 itch/pruritus 相关，尤其在 atopic dermatitis 中重要。
+- TH2-high 不一定意味着只有 TH2 通路；很多疾病中 TH2 会和 TH22、TH17、TH1、microbiome 或 barrier defect 共同出现。
+- 在 AD 中，TH2-dominant endotype 通常与 IL-4/IL-13、IgE、eosinophilia、skin barrier dysfunction 和 pruritus 相关。
+
+## Related Concepts
+
+- TH1
+- TH17
+- TH22
+- Treg
+- cytokine
+- type 2 immunity
+- IgE
+- eosinophil
+- IL-4
+- IL-5
+- IL-13
+- IL-31
+- atopic dermatitis
+- asthma
+- endotype
+
+## In Papers
+
+- [@fyhrquistEndotypesAtopicDermatitis2025]
+
+## Note
+
+读文献时要注意作者是在说 **TH2 cells**，还是更宽的 **type 2 inflammation / type 2 immunity**。有些文章会把 TH2 当作 shorthand，但实际证据可能来自 cytokine expression、serum biomarkers、bulk transcriptomics、single-cell clusters、IgE/eosinophil phenotype 或治疗反应，并不一定直接证明 TH2 cell 本身增加。
+
+对我来说，TH2 最有用的理解不是“一个细胞类型”，而是一个机制模块：它把 barrier tissue、allergy、IgE、eosinophil、itch、IL-4/IL-13 therapy 和 disease endotyping 连接在一起。

@@ -1,0 +1,20 @@
+---
+title: "Concept"
+date: 2026-04-21
+categories: [concept]
+draft: false
+---
+
+## Concept
+
+Concept notes collect reusable background knowledge for reading papers. They are not full reviews; each page should clarify a concept enough to make future papers easier to read.
+
+## Index
+
+| Index | Title | Category | Added |
+|---|---|---|---|
+| 001 | [TH2](immunology/th2.qmd) | Immunology | 2026-04-21 |
+
+## Use
+
+Create a concept page when a term appears repeatedly, blocks understanding, or connects multiple papers.
