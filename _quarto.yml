@@ -9,7 +9,7 @@ website:
     style: "docked"
     search: true
     tools:
-      - icon: globe
+      - icon: house-check-fill
         href: https://evanzhou.org/
         aria-label: Homepage
       - icon: github
