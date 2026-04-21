@@ -4,4 +4,9 @@ _freeze/
 .DS_Store
 Thumbs.db
 *.bak
-dev
+_dev/
+literature/papers/**/.tmp/
+literature/papers/**/_tmp_docling/
+.codex/
+AGENTS.md
+literature/

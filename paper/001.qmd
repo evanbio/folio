@@ -12,7 +12,7 @@ draft: false
 
 ## Why I Read It
 
-来自 Tommy Tang 的推文推荐。我想先读一篇足够高层的 Editorial，把单细胞生物学当前的主线问题先看清，再决定后面往方法、空间组学还是多模态整合继续深入。
+来自 Ming Tang 的推文推荐。我想先读一篇足够高层的 Editorial，把单细胞生物学当前的主线问题先看清，再决定后面往方法、空间组学还是多模态整合继续深入。
 
 ## What It Says
 
