@@ -23,12 +23,19 @@ website:
       - section: "Review"
         contents:
           - paper/002.qmd
+          - paper/003.qmd
       - section: "Concept"
         href: concept/index.qmd
         contents:
           - section: "Immunology"
             contents:
               - concept/immunology/th2.qmd
+          - section: "Cancer"
+            contents:
+              - concept/cancer/apoptosis.qmd
+              - concept/cancer/necroptosis.qmd
+              - concept/cancer/pyroptosis.qmd
+              - concept/cancer/ferroptosis.qmd
 
   page-footer:
     left: "© 2026 Yibin Zhou"
