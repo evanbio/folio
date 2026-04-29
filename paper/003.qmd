@@ -1,0 +1,36 @@
+---
+title: "003"
+date: 2026-04-29
+categories: [review]
+tags: [cell death, cancer, apoptosis, necroptosis, pyroptosis, ferroptosis]
+draft: false
+---
+
+## Intro
+
+**Cell Death in Cancer** 是 Marcus Conrad 等人在 2026 年发表于 *Cell* 的综述，讨论细胞死亡如何影响肿瘤发生、治疗反应、免疫监视和耐药。DOI: [10.1016/j.cell.2026.03.024](https://doi.org/10.1016/j.cell.2026.03.024)
+
+## Why I Read It
+
+这篇文章适合作为 cancer cell death 的总入口。它不只讲 apoptosis，也把 necroptosis、pyroptosis、ferroptosis 和 tumor microenvironment 放在同一张图景里看，方便后面拆概念页。
+
+## What It Says
+
+文章的核心判断是：癌症中的 evasion of cell death 不能再等同于 evasion of apoptosis。不同 regulated cell death programs 会以不同方式杀伤肿瘤细胞，也会释放不同的 inflammatory、immunogenic 或 tolerogenic signals，从而改变 tumor microenvironment。
+
+Apoptosis 是临床上最成熟的治疗入口，BH3 mimetics 尤其是 venetoclax 已经证明解除死亡抑制可以治疗部分血液肿瘤。但 necroptosis、pyroptosis 和 ferroptosis 更突出地连接炎症、免疫和代谢状态，临床转化仍受选择性、毒性窗口和 biomarker 限制。
+
+## What I Take From It
+
+这篇综述最有用的地方，是把“杀死癌细胞”从单一分子开关变成系统问题：哪种细胞死、在哪类细胞中死、何时发生、释放什么信号、免疫系统如何接收，以及肿瘤怎样适应。
+
+后面拆概念时，可以先抓四条主线：apoptosis 是经典且临床最成熟的死亡程序；necroptosis 和 pyroptosis 是 lytic inflammatory death；ferroptosis 是铁依赖的脂质过氧化型死亡；immunogenic cell death 取决于 antigenicity、adjuvanticity 和 inflammatory context，而不是“细胞死了”本身。
+
+## Note
+
+这篇适合反复回来查框架。具体机制不要一次塞满，拆成 apoptosis、necroptosis、pyroptosis、ferroptosis 等概念页更清楚。
+
+## Source
+
+- DOI: [10.1016/j.cell.2026.03.024](https://doi.org/10.1016/j.cell.2026.03.024)
+- PDF: [Cell Death in Cancer](../assets/pdf/003.pdf)
