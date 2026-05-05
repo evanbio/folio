@@ -22,6 +22,7 @@ Concept pages are for recurring terms, mechanisms, models, and methods that are 
 | 003 | [Necroptosis](cancer/necroptosis.qmd) | Cancer | 2026-04-29 |
 | 004 | [Pyroptosis](cancer/pyroptosis.qmd) | Cancer | 2026-04-29 |
 | 005 | [Ferroptosis](cancer/ferroptosis.qmd) | Cancer | 2026-04-29 |
+| 006 | [Cell Annotation](single-cell/cell-annotation.qmd) | Single-cell | 2026-05-05 |
 
 ## Use
 

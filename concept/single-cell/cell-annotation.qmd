@@ -1,0 +1,101 @@
+---
+title: "Cell Annotation"
+date: 2026-05-05
+categories: [concept, single-cell]
+tags: [single-cell, scrna-seq, cell-type, annotation, reference-mapping]
+draft: false
+---
+
+## Perspective
+
+Cell annotation 是读 single-cell RNA-seq 文献时最容易被一句话带过、但实际决定结论可信度的步骤。很多论文会说某个 cluster 是某种 cell type，或者某个 disease condition 增加了某类细胞；这些判断通常都依赖 annotation。
+
+先记住一个实用边界：**cell annotation 不是直接观察到细胞身份，而是把表达谱、marker、reference dataset、ontology 和人工判断组合起来，给 cell 或 cluster 赋予一个可解释的标签。**
+
+## Definition
+
+Cell annotation is the process of assigning biological identities, such as cell type or cell state labels, to single cells or clusters in single-cell data, usually by comparing gene expression patterns against markers, reference datasets, curated ontologies, or trained classifiers.
+
+中文理解：cell annotation 是“给单细胞数据中的点或簇命名”。这个名字可能是 broad lineage，例如 T cell、myeloid cell；也可能是更细的 subtype 或 state，例如 exhausted CD8 T cell、cycling epithelial cell、inflammatory macrophage。标签越细，越需要更强的证据。
+
+## Why It Matters
+
+Cell annotation 重要，是因为后续几乎所有 biological interpretation 都建立在它之上：
+
+- 哪些细胞类型存在？
+- 哪些细胞比例变化？
+- 哪些状态与疾病、治疗或发育阶段相关？
+- 哪些 marker、pathway、ligand-receptor interaction 应该被解释？
+- 数据能否支持 novel cell type 或 transition state 的说法？
+
+如果 annotation 错了，后面的 differential expression、cell-cell communication、trajectory、proportion analysis 都可能变成在错误标签上的精细计算。
+
+## Core Mechanism
+
+常见 annotation 证据可以分成几层。
+
+**Marker-based annotation**
+
+用已知 marker gene 判断 cluster 身份。例如根据 CD3D/CD3E/TRAC 判断 T cells，根据 MS4A1/CD79A 判断 B cells。优点是直观，容易人工复核；缺点是 marker 可能不够特异，且疾病、组织、物种和状态会改变表达。
+
+**Reference mapping**
+
+把 query cells 或 clusters 映射到已有 reference atlas 或标注数据集。常见方法包括 correlation、nearest neighbor、label transfer、anchor-based integration 等。优点是能利用大型 atlas；风险是 reference 不覆盖 query 中的真实状态，或跨平台/跨物种差异导致错误映射。
+
+**Supervised classification**
+
+用已有标注数据训练模型，再预测 query 数据中的标签。优点是可扩展、可复现，并能处理复杂表达模式；风险是模型会把训练集中不存在的细胞类型强行分到已知类别，除非工具支持 `unknown` 或 `unassigned`。
+
+**Manual curation**
+
+人工根据 marker、cluster localization、known biology、sample context 和工具输出做最终命名。人工注释仍然常见，但需要透明报告证据来源，否则很难复查。
+
+## Key Points
+
+- Cell annotation 可以在 cluster level 或 single-cell level 进行。
+- Cluster-level annotation 容易受 clustering resolution 影响；underclustering 可能合并 rare cell types 或 transition states。
+- Single-cell-level annotation 能减少部分聚类偏差，但更依赖 reference 和噪声控制。
+- Cell type 和 cell state 不是同一层级；把状态当作类型会让解释变得混乱。
+- Marker gene 不是绝对身份证；一个 marker 常常只能在特定组织和语境中使用。
+- Reference atlas 越大不一定越好，关键是是否匹配物种、组织、发育阶段、疾病状态和测序平台。
+- 好的 annotation 应保留 score、uncertainty、candidate labels 和 unassigned cells，而不是只留下一个最终 label。
+- Novel cell type claim 需要特别谨慎，通常应有稳定 marker、独立数据复现、空间或功能证据支持。
+- 多工具一致可以增强信心，但不能替代生物学合理性检查。
+- 自动 annotation 适合提高效率和复现性，不应被当作最终生物学验证。
+
+## Reading Checks
+
+读 single-cell 论文时，我需要检查作者有没有说明：
+
+- annotation 是手工 marker、reference mapping、监督模型，还是多方法组合？
+- 使用了什么 reference、marker database 或工具？
+- 标签是在 cluster level 还是 single-cell level 产生？
+- 是否报告了置信度、相似性分数或 unassigned cells？
+- 是否区分 cell type、cell subtype、cell state 和 activation/cell-cycle/stress state？
+- 对关键细胞群是否展示 marker expression、UMAP feature plots、dot plots 或独立验证？
+- 如果声称 novel population，是否有功能、空间、流式、免疫染色或外部数据支持？
+
+## Related Concepts
+
+- scRNA-seq
+- cell type
+- cell state
+- marker gene
+- reference atlas
+- label transfer
+- clustering
+- dimensionality reduction
+- trajectory inference
+- batch effect
+- ontology
+- Human Cell Atlas
+
+## In Papers
+
+- [004](../../paper/004.qmd)
+
+## Note
+
+对我来说，cell annotation 最有用的理解是一个“证据层级问题”：粗粒度 lineage 标签通常较稳，细粒度 subtype/state 标签需要更多证据；自动工具输出的是候选身份，不是细胞的最终定义。
+
+写作时最好避免只说“cells were annotated using standard markers”。更可复查的写法是说明 marker、reference、工具、resolution、uncertainty handling，以及关键标签是否经过人工或实验验证。

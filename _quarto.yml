@@ -37,6 +37,9 @@ website:
               - concept/cancer/necroptosis.qmd
               - concept/cancer/pyroptosis.qmd
               - concept/cancer/ferroptosis.qmd
+          - section: "Single-cell"
+            contents:
+              - concept/single-cell/cell-annotation.qmd
 
   page-footer:
     left: "© 2026 Yibin Zhou"
