@@ -1,0 +1,40 @@
+---
+title: "004"
+date: 2026-05-05
+categories: [review]
+tags: [single-cell, scrna-seq, cell-annotation, cell-type, computational-biology]
+draft: false
+---
+
+## Intro
+
+**Automated Methods for Cell Type Annotation on scRNA-seq Data** 是 Giovanni Pasquini 等人在 2021 年发表于 *Computational and Structural Biotechnology Journal* 的综述，梳理 scRNA-seq 数据中自动细胞类型注释的方法路线。DOI: [10.1016/j.csbj.2021.01.015](https://doi.org/10.1016/j.csbj.2021.01.015)
+
+## Why I Read It
+
+读 single-cell 文献时，cell annotation 经常是一句“we annotated clusters using markers/reference”就带过，但它实际决定了后续几乎所有生物学解释。刚好需要给 `concept/single-cell/cell-annotation.qmd` 建一个基础概念入口，所以先读这篇相对早期但结构清楚的综述。
+
+## What It Says
+
+文章把自动 cell type annotation 分成三条主线：基于 marker gene database 的方法、基于 reference expression correlation 的方法、以及基于 labeled reference dataset 的 supervised classification。
+
+Marker 方法直观，适合已有可靠 marker 的场景，但受 marker 覆盖和 query 数据质量限制。Correlation 方法可以利用 bulk 或 single-cell reference，把 query cell 或 cluster centroid 映射到最相似的参考细胞类型。Supervised classification 则把 annotation 看成 label transfer 问题，用 Random Forest、kNN、ANN、SVM 等模型从标注数据学习分类器。
+
+文章反复强调，自动注释的关键不只是算法性能，还包括参考集是否匹配、聚类粒度是否合适、feature selection 如何处理、是否支持 hierarchical labels、是否能给出 confidence score，以及 query 中出现 reference 不包含的细胞类型时能否返回 `unknown` 或 `unassigned`。
+
+## What I Take From It
+
+这篇综述最有用的地方，是把 cell annotation 从“工具选择”拉回到“证据层级”。一个 cell type label 不是直接观测结果，而是 marker、reference、模型、ontology 和人工判断共同产生的解释。
+
+以后读 scRNA-seq 文章时，我会更注意作者到底是在做 cluster-level 还是 single-cell-level annotation，是否区分 cell type 和 cell state，是否报告不确定性，以及关键细胞群有没有 marker expression、独立 reference 或功能证据支持。
+
+## Note
+
+这篇文章发表于 2021 年，所以不适合作为当前工具清单的终点。后续大型 atlas、reference mapping workflow、foundation model 和 multiome 方法都需要另外跟进。但作为理解 annotation 基本问题的入口，它很合适。
+
+完整阅读笔记见 [literature workspace](../literature/papers/pasquiniAutomatedMethodsCell2021/index.qmd)，概念整理见 [Cell Annotation](../concept/single-cell/cell-annotation.qmd)。
+
+## Source
+
+- DOI: [10.1016/j.csbj.2021.01.015](https://doi.org/10.1016/j.csbj.2021.01.015)
+- PDF: [Automated Methods for Cell Type Annotation on scRNA-seq Data](../assets/pdf/004.pdf)
