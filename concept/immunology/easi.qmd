@@ -1,0 +1,104 @@
+---
+title: "EASI"
+date: 2026-05-05
+categories: [concept, immunology]
+tags: [atopic-dermatitis, severity-score, dermatology, clinical-measure]
+draft: false
+---
+
+## Perspective
+
+EASI 是读 atopic dermatitis (AD) 临床和转化研究时经常出现的疾病严重度指标。single-cell、bulk transcriptomics、biomarker 和临床试验文章里常用它来定义入组人群、分层患者、衡量治疗反应，或把免疫信号和疾病严重度做相关分析。
+
+先记住一个实用边界：**EASI 是皮损严重度和受累面积的临床评分，不是 AD 的机制分型，也不直接告诉我们患者属于哪个 endotype。**
+
+## Definition
+
+EASI stands for Eczema Area and Severity Index. It is a clinician-assessed score for atopic dermatitis severity, combining lesion severity and affected body surface area across four body regions.
+
+中文理解：EASI 是医生根据 AD 皮损表现和受累面积算出的分数。它把身体分成 head/neck、upper limbs、trunk、lower limbs 四个区域；每个区域评估红斑、浸润/丘疹、水肿/抓痕和苔藓样变等皮损严重度，再结合该区域受累面积和体区权重，得到总分。
+
+EASI 总分范围通常是 **0-72**，分数越高表示临床皮损越严重。
+
+## Why It Matters
+
+EASI 重要，是因为它把 AD 的“严重”变成可比较的数字。很多研究会用 EASI 来：
+
+- 定义 mild、moderate、severe AD 入组标准
+- 区分 severe 和 very severe patient subgroups
+- 评估治疗反应，如 EASI75、EASI90
+- 将 immune signatures、cell proportions、cytokines 或 biomarkers 与 disease severity 相关联
+- 判断一个 single-cell 或 multiomics 信号是否随临床严重度增强
+
+在机制论文里，EASI 常常是连接临床表型和分子数据的桥。比如某个细胞群与 EASI 正相关，意思是它随临床严重度增加而增加；但这不等于它就是疾病原因。
+
+## Core Mechanism
+
+EASI 由两部分组成：皮损严重度和受累面积。
+
+**Body regions**
+
+- Head and neck
+- Upper limbs
+- Trunk
+- Lower limbs
+
+不同体区有不同权重，因为它们占全身皮肤面积比例不同。
+
+**Lesion severity**
+
+每个体区通常评估几个核心皮损特征：
+
+- erythema
+- edema / papulation
+- excoriation
+- lichenification
+
+每项按严重程度打分，再与该体区受累面积和体区权重合并。
+
+**Response metrics**
+
+临床试验中常见的 EASI75、EASI90、EASI50 指的是相对基线 EASI 分数下降的百分比：
+
+- EASI50: EASI score 改善至少 50%
+- EASI75: EASI score 改善至少 75%
+- EASI90: EASI score 改善至少 90%
+
+这些是治疗反应指标，不是绝对严重度分类。
+
+## Key Points
+
+- EASI 是 AD 临床严重度评分，范围通常是 0-72。
+- EASI 结合皮损严重度和受累面积，而不是只看瘙痒或患者主观感受。
+- 常见严重度分类会把较高 EASI 用作 moderate-to-severe 或 severe AD 的入组标准。
+- 文献中 `EASI > 21` 常用于定义 severe AD；`EASI >= 30` 有时会被单独作为 very severe subgroup。
+- EASI75/EASI90 是治疗后相对改善比例，不是 EASI 原始分数。
+- EASI 可以和 cell proportion、gene expression、cytokine、protein biomarker 做相关分析。
+- EASI correlation 只能说明与临床严重度相关，不能单独证明机制因果。
+- EASI 不直接测量 itch、sleep loss、quality of life 或 patient-reported burden；这些需要其他量表。
+- 同样 EASI 的患者可能有不同 molecular endotypes。
+
+## Related Concepts
+
+- atopic dermatitis
+- disease severity
+- endotype
+- type 2 inflammation
+- TH2
+- biomarker
+- clinical trial endpoint
+- EASI75
+- EASI90
+- SCORAD
+- IGA
+- pruritus
+
+## In Papers
+
+- [Endotypes of Atopic Dermatitis](../../paper/002.qmd)
+
+## Note
+
+读 AD 论文时要注意作者怎么使用 EASI：是作为入组阈值、连续变量、治疗反应指标，还是分层变量。尤其在 single-cell 文章中，一个细胞群和 EASI 相关，只能说明它跟临床严重度同向变化；要说它驱动疾病，还需要纵向、干预或功能实验支持。
+
+对我来说，EASI 最有用的理解是一个“临床锚点”：它把免疫信号、细胞比例和分子分型拉回到病人皮损严重度，但它本身不是机制答案。

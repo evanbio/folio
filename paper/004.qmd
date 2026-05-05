@@ -12,7 +12,7 @@ draft: false
 
 ## Why I Read It
 
-读 single-cell 文献时，cell annotation 经常是一句“we annotated clusters using markers/reference”就带过，但它实际决定了后续几乎所有生物学解释。刚好需要给 `concept/single-cell/cell-annotation.qmd` 建一个基础概念入口，所以先读这篇相对早期但结构清楚的综述。
+学习 [mdozmorov/scRNA-seq_notes](https://github.com/mdozmorov/scRNA-seq_notes) 这个项目时看到推荐，所以顺着读了这篇 cell type annotation 综述。
 
 ## What It Says
 
@@ -31,8 +31,6 @@ Marker 方法直观，适合已有可靠 marker 的场景，但受 marker 覆盖
 ## Note
 
 这篇文章发表于 2021 年，所以不适合作为当前工具清单的终点。后续大型 atlas、reference mapping workflow、foundation model 和 multiome 方法都需要另外跟进。但作为理解 annotation 基本问题的入口，它很合适。
-
-完整阅读笔记见 [literature workspace](../literature/papers/pasquiniAutomatedMethodsCell2021/index.qmd)，概念整理见 [Cell Annotation](../concept/single-cell/cell-annotation.qmd)。
 
 ## Source
 
