@@ -1,0 +1,44 @@
+---
+title: "005"
+date: 2026-05-06
+categories: [article]
+tags: [atopic dermatitis, single-cell, scrna-seq, immunology, pbmc]
+draft: false
+---
+
+## Intro
+
+**Mapping the Immune Cell Landscape of Severe Atopic Dermatitis by Single-Cell RNA-seq** 是 Seon-Pil Jin 等人在 2024 年发表于 *Allergy* 的研究文章，用 PBMC single-cell RNA-seq 描绘 severe atopic dermatitis (AD) 的系统性免疫细胞景观。DOI: [10.1111/all.16121](https://doi.org/10.1111/all.16121)
+
+## Why I Read It
+
+前面读 AD endotype 时，TH2、TH17、TH22、屏障缺陷和 biomarker 都还偏综述层面。这篇文章更具体：它直接问 severe AD 患者的外周血免疫细胞是否已经发生系统性改变，以及这些改变能不能和 EASI 这样的疾病严重程度指标连起来。
+
+这也正好连接两个我最近在整理的主题：AD 免疫机制和 single-cell cell annotation。一篇 scRNA-seq 文章有没有价值，不只看它画了多少 cluster，而要看关键细胞群的注释证据、疾病相关性和组织验证是否足够扎实。
+
+## What It Says
+
+作者分析了 12 个 severe AD 患者和 6 个 healthy controls 的 PBMC，总共超过 300,000 个单细胞转录组。结果显示 severe AD 不是单纯的皮肤局部 TH2 炎症，而是在外周血中也能看到系统性免疫重塑。
+
+几个主要变化很清楚：AD 中 CD4 memory T/TH2、Treg、proliferating lymphocytes 增加；NK cell clusters 和部分 DC subsets 减少；ILC2 在 AD 中富集，并且比例与 EASI score 正相关。very severe AD 中还出现了 ISG-high/TLR-high monocyte subsets，提示 innate immune activation 也参与了疾病严重程度。
+
+文章最有意思的部分是 `Th2_DC`。作者识别出一个在 very severe AD 中扩增、与 EASI 相关的 cDC subset，带有 IL13/IL4R/STAT6、Notch2、MRC1/CD206、IRF4、TLR4 和 skin-homing 等特征。随后他们把这个 signature 投射到 AD skin scRNA-seq 和 spatial transcriptomics 数据中，并用 IL-13 stimulation flow cytometry 做了补强。
+
+## What I Take From It
+
+这篇文章让我更具体地看到：AD 的 "type 2 inflammation" 不只是 TH2 cell 增加。ILC2、IL13-responsive DCs、IgE-related B cell features、ISG-high monocytes 和 cytotoxic NK impairment 都可能是 severe AD 系统性免疫状态的一部分。
+
+对 single-cell 文章来说，`Th2_DC` 是一个很好的阅读案例。作者不是只靠 marker gene 给 cluster 命名，而是组合了 marker、regulon/pathway、trajectory、EASI correlation、skin reference matching、spatial score 和 flow cytometry。这个证据链仍然不能证明功能，但比单纯 UMAP 注释要强得多。
+
+## Note
+
+这篇要当作 hypothesis-generating study 来读。主队列只有 12 个 AD 和 6 个 healthy controls，very severe AD 只有 4 人，所以 cell proportion、EASI correlation 和 patient clustering 都需要谨慎解释。
+
+尤其是 `Th2_DC`，它现在更像一个有证据支持的 disease-associated DC state，而不是功能已经完全定义的新细胞类型。它是否真的 prime naive CD4 T cells toward TH2，还需要 co-culture、perturbation 或 antigen-presentation functional assays。
+
+后面如果继续整理 AD single-cell 主题，可以把这篇放在 "severe AD systemic immune landscape" 或 "Th2-priming DC / innate immunity in AD" 线索下。它也提醒我，读 AD 机制时不能只盯着 TH2 cytokines，还要看 innate lymphoid cells、monocytes、DCs、NK cells 和 JAK/STAT signaling 在不同细胞类型里的分布。
+
+## Source
+
+- DOI: [10.1111/all.16121](https://doi.org/10.1111/all.16121)
+- PDF: [Mapping the Immune Cell Landscape of Severe Atopic Dermatitis by Single-Cell RNA-seq](../assets/pdf/005.pdf)
