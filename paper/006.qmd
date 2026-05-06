@@ -1,0 +1,48 @@
+---
+title: "006"
+date: 2026-05-06
+categories: [article]
+tags: [atopic dermatitis, single-cell, scrna-seq, skin, fibroblast]
+draft: false
+---
+
+## Intro
+
+**Single-Cell Transcriptome Analysis of Human Skin Identifies Novel Fibroblast Subpopulation and Enrichment of Immune Subsets in Atopic Dermatitis** 是 He et al. 在 2020 年发表于 *Journal of Allergy and Clinical Immunology* 的研究文章，用 human skin scRNA-seq 分析 atopic dermatitis (AD) 的 lesional、nonlesional 和 healthy skin。DOI: [10.1016/j.jaci.2020.01.042](https://doi.org/10.1016/j.jaci.2020.01.042)
+
+## Why I Read It
+
+前面读 severe AD PBMC scRNA-seq 时，重点是外周血里的系统性免疫重塑。这篇更贴近皮肤组织本身：AD 的炎症、屏障异常和组织重塑到底分别落在哪些细胞类型里。
+
+它也是 AD skin single-cell 领域很早的一篇 atlas。读它的价值不只是看有哪些 cluster，而是理解 AD lesion 里 keratinocyte、fibroblast、DC/macrophage 和 T cell 怎样共同组成一个局部 inflammatory circuit。
+
+## What It Says
+
+作者分析了 5 个 AD 患者和 7 个 healthy controls 的 skin biopsy，包括 lesional AD、nonlesional AD 和 healthy skin。过滤后得到 39,042 个高质量细胞，其中 healthy 22,220 个、lesional AD 10,169 个、nonlesional AD 6,653 个。
+
+文章把 human skin 分解成 keratinocytes、fibroblasts、vascular/perivascular cells、melanocytes、neuronal/Schwann cells、sweat gland cells、endothelial cells、macrophages/DCs 和 T cells 等主要群体。Lesional AD 中 immune cells 增加，同时 keratinocytes 显示 hyperproliferation、wound-healing-like 和 inflammatory gene programs。
+
+最值得记住的是 fibroblast 线索。作者发现一个主要出现在 AD lesion 的 `COL6A5+COL18A1+` inflammatory fibroblast subset，表达 `CCL2`、`CCL19`、`IL32`、`POSTN`、`TNC`、`VCAM1` 和 `CCL26`。免疫染色显示这些 `COL6A5+` cells 在 AD skin 中增加，位于 upper dermis / dermal-epidermal junction 附近，并与 T cells 空间邻近。
+
+免疫细胞方面，lesional AD 中 `LAMP3+CCR7+` DCs、cDC2/LC-like DCs、macrophages 和 CD8 tissue-resident memory T cells 增加。T cell cytokine profile 以 `IL13+` type 2、`IL22+` type 22 和 `IL26+` type 17-like cells 更突出，`IFNG+` type 1 cells 不是主要特征。
+
+## What I Take From It
+
+这篇文章把 AD 从“TH2 inflammation + barrier defect”推进到更具体的组织细胞网络。AD lesion 不是单纯 immune-cell infiltration，而是 keratinocyte activation、fibroblast inflammatory remodeling、DC/macrophage chemokine expression 和 T cell recruitment 共同形成的局部 circuit。
+
+`COL6A5+COL18A1+` fibroblast 是这篇最重要的观察。它提示 fibroblast 不只是结构细胞，也可能通过 `CCL19`、`CCL2`、`CCL26`、`POSTN` 等分子参与 T cell recruitment、type 2 inflammation 和 tissue remodeling。
+
+这篇也适合用来提醒自己：single-cell 里的 ligand-receptor analysis 是线索，不是机制证明。比如 fibroblast `CCL19` - immune cell `CCR7`、keratinocyte/fibroblast `CCL2` - macrophage/DC `CCR1/CCR2`、T cell `IL13` - stromal `IL4R/IL13RA1` 都很合理，但仍需要空间、扰动和功能实验支持。
+
+## Note
+
+这篇要谨慎当作早期 atlas 来读。样本量不大，AD lesional samples 只有 4 个；subcluster proportion、rare cell states 和 ligand-receptor 推断都可能受个体差异、取样部位和组织处理影响。
+
+另一个限制是数据可复用性。GEO 里能下载到 sample-level processed expression matrices，但缺少完整 cell-level metadata 和作者细胞类型注释；表达值也是 normalized 后再 scaled/log-transformed，不是原始 UMI counts。因此它不适合直接作为一个完整规范的 Seurat raw-count workflow 案例。
+
+后面整理 AD single-cell 主题时，这篇适合放在 "AD skin tissue circuit"、"inflammatory fibroblast in AD" 和 "stromal-immune communication" 这几条线索下。它可以和 severe AD PBMC 那篇形成对照：一个讲皮肤病灶局部网络，一个讲外周血系统性免疫景观。
+
+## Source
+
+- DOI: [10.1016/j.jaci.2020.01.042](https://doi.org/10.1016/j.jaci.2020.01.042)
+- PDF: [Single-Cell Transcriptome Analysis of Human Skin Identifies Novel Fibroblast Subpopulation and Enrichment of Immune Subsets in Atopic Dermatitis](../assets/pdf/006.pdf)
