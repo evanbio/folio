@@ -28,6 +28,7 @@ website:
       - section: "Article"
         contents:
           - paper/005.qmd
+          - paper/006.qmd
       - section: "Concept"
         href: concept/index.qmd
         contents:
