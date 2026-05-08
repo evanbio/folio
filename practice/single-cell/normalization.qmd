@@ -3,7 +3,7 @@ title: "Single-Cell Normalization"
 date: 2026-05-07
 categories: [practice, single-cell]
 tags: [single-cell, normalization, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose

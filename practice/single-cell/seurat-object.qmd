@@ -3,7 +3,7 @@ title: "Seurat Object"
 date: 2026-05-07
 categories: [practice, single-cell]
 tags: [single-cell, seurat, object, metadata]
-draft: true
+draft: false
 ---
 
 ## Purpose

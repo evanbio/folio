@@ -3,7 +3,7 @@ title: "Module Score"
 date: 2026-05-08
 categories: [practice, single-cell]
 tags: [single-cell, module-score, gene-set, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose

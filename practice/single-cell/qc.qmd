@@ -3,7 +3,7 @@ title: "Single-Cell QC"
 date: 2026-05-07
 categories: [practice, single-cell]
 tags: [single-cell, qc, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose

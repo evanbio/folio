@@ -3,7 +3,7 @@ title: "Cell Composition"
 date: 2026-05-08
 categories: [practice, single-cell]
 tags: [single-cell, composition, cell-type, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose

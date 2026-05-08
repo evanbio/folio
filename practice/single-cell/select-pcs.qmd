@@ -3,7 +3,7 @@ title: "Select Principal Components"
 date: 2026-05-08
 categories: [practice, single-cell]
 tags: [single-cell, pca, pcs, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose

@@ -3,7 +3,7 @@ title: "PCA"
 date: 2026-05-07
 categories: [practice, single-cell]
 tags: [single-cell, pca, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose

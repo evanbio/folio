@@ -3,7 +3,7 @@ title: "Single-Cell Gene Sets"
 date: 2026-05-07
 categories: [practice, single-cell]
 tags: [single-cell, gene-set, qc, cell-cycle]
-draft: true
+draft: false
 ---
 
 ## Purpose

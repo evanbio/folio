@@ -3,7 +3,7 @@ title: "t-SNE"
 date: 2026-05-08
 categories: [practice, single-cell]
 tags: [single-cell, tsne, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose

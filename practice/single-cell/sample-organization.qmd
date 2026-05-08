@@ -3,7 +3,7 @@ title: "Single-Cell Sample Organization"
 date: 2026-05-07
 categories: [practice, single-cell]
 tags: [single-cell, sample, metadata]
-draft: true
+draft: false
 ---
 
 ## Purpose

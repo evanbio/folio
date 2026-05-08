@@ -3,7 +3,7 @@ title: "UMAP"
 date: 2026-05-08
 categories: [practice, single-cell]
 tags: [single-cell, umap, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose

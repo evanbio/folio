@@ -3,7 +3,7 @@ title: "Markers"
 date: 2026-05-08
 categories: [practice, single-cell]
 tags: [single-cell, markers, differential-expression, seurat]
-draft: true
+draft: false
 ---
 
 ## Purpose
