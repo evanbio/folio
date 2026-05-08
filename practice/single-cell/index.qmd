@@ -1,0 +1,39 @@
+---
+title: "Single-Cell Practice"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell]
+draft: false
+---
+
+## Single-Cell Practice
+
+Reusable notes for practical single-cell analysis decisions.
+
+## Index
+
+| Page | Purpose | Added |
+|---|---|---|
+| [Packages](packages.qmd) | Packages and software ecosystem notes | 2026-05-07 |
+| [Data Formats](data-formats.qmd) | Common single-cell file formats and loading notes | 2026-05-07 |
+| [Sample Organization](sample-organization.qmd) | Relationship between files, samples, and metadata | 2026-05-07 |
+| [Seurat Object](seurat-object.qmd) | Inspecting and accessing a Seurat object | 2026-05-07 |
+| [Reference](reference.qmd) | Reference resources for annotation and interpretation | 2026-05-08 |
+| [Single-Cell Gene Sets](gene-sets.qmd) | Common gene sets used in QC and scoring | 2026-05-07 |
+| [Single-Cell QC](qc.qmd) | Basic quality control metrics and filtering decisions | 2026-05-07 |
+| [Doublet Detection](doublets.qmd) | Detecting and filtering likely doublets | 2026-05-07 |
+| [Single-Cell Normalization](normalization.qmd) | Normalizing raw counts for cell-level comparison | 2026-05-07 |
+| [Variable Features](variable-features.qmd) | Selecting highly variable genes for downstream analysis | 2026-05-07 |
+| [Cell Cycle Scoring](cell-cycle.qmd) | Scoring and deciding whether to regress cell cycle effects | 2026-05-07 |
+| [Single-Cell Scaling](scaling.qmd) | Scaling expression values before PCA | 2026-05-07 |
+| [PCA](pca.qmd) | Running and inspecting principal components | 2026-05-07 |
+| [Select Principal Components](select-pcs.qmd) | Choosing PCs for downstream graph and visualization steps | 2026-05-08 |
+| [SCTransform](sctransform.qmd) | Alternative Seurat preprocessing workflow | 2026-05-07 |
+| [Graph Construction](graph-construction.qmd) | Building KNN/SNN graphs for clustering | 2026-05-08 |
+| [Clustering](clustering.qmd) | Graph-based clustering and resolution selection | 2026-05-08 |
+| [t-SNE](tsne.qmd) | Running and plotting t-SNE embeddings | 2026-05-08 |
+| [UMAP](umap.qmd) | Running and plotting UMAP embeddings | 2026-05-08 |
+| [Markers](markers.qmd) | Cluster markers, condition markers, and marker visualization | 2026-05-08 |
+| [Cell Annotation](cell-annotation.qmd) | Assigning and reviewing cell type labels | 2026-05-08 |
+| [Cell Composition](cell-composition.qmd) | Cell type counts and sample-level proportions | 2026-05-08 |
+| [Module Score](module-score.qmd) | Gene set and signature scoring in cells | 2026-05-08 |

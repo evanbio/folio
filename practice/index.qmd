@@ -1,0 +1,18 @@
+---
+title: "Practice"
+date: 2026-05-07
+categories: [practice]
+draft: false
+---
+
+## Practice
+
+Practice pages collect reusable workflows, SOPs, package notes, and hands-on decisions.
+
+They are for "how I do this", while concept pages are for "what this means" and literature pages are for "where the evidence came from".
+
+## Index
+
+| Area | Page | Added |
+|---|---|---|
+| Single-cell | [Single-Cell Practice](single-cell/index.qmd) | 2026-05-07 |

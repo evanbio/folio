@@ -56,15 +56,25 @@ website:
               - practice/single-cell/data-formats.qmd
               - practice/single-cell/sample-organization.qmd
               - practice/single-cell/seurat-object.qmd
+              - practice/single-cell/reference.qmd
               - practice/single-cell/gene-sets.qmd
               - practice/single-cell/qc.qmd
+              - practice/single-cell/doublets.qmd
               - practice/single-cell/normalization.qmd
               - practice/single-cell/variable-features.qmd
               - practice/single-cell/cell-cycle.qmd
               - practice/single-cell/scaling.qmd
               - practice/single-cell/pca.qmd
-              - practice/single-cell/doublets.qmd
+              - practice/single-cell/select-pcs.qmd
               - practice/single-cell/sctransform.qmd
+              - practice/single-cell/graph-construction.qmd
+              - practice/single-cell/clustering.qmd
+              - practice/single-cell/tsne.qmd
+              - practice/single-cell/umap.qmd
+              - practice/single-cell/markers.qmd
+              - practice/single-cell/cell-annotation.qmd
+              - practice/single-cell/cell-composition.qmd
+              - practice/single-cell/module-score.qmd
 
   page-footer:
     left: "© 2026 Yibin Zhou"
