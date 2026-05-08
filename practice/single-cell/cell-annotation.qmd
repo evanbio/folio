@@ -1,0 +1,1013 @@
+---
+title: "Cell Annotation"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, annotation, cell-type, seurat]
+draft: true
+---
+
+## Purpose
+
+After clustering and dimensionality reduction, the next step is to interpret the cell groups.
+
+At this stage, the object usually already has:
+
+- clusters from `FindClusters()`
+- UMAP or t-SNE coordinates
+- marker genes from `FindAllMarkers()` or `FindMarkers()`
+
+Cell annotation assigns biological labels to clusters or cells, such as `T cell`, `B cell`, `monocyte`, or more specific subtypes.
+
+Annotation is an interpretation step. It should combine marker genes, reference datasets, metadata, and biological knowledge.
+
+## Overall Approaches
+
+Common annotation approaches include:
+
+| Approach | Typical tools | Best use |
+|---|---|---|
+| Manual marker-based annotation | marker genes, `FeaturePlot()`, `VlnPlot()`, `DotPlot()` | final validation and biologically interpretable labels |
+| Reference-based annotation | `SingleR` + `celldex` | quick label suggestions from curated expression references |
+| Projection-based annotation | `scmap` | project query cells to reference clusters or reference cells |
+| Seurat reference mapping | `FindTransferAnchors()`, `TransferData()`, `MapQuery()`, `Azimuth` | mapping query cells to a curated Seurat reference |
+| Marker database scoring | `ScType` or similar marker-based scoring tools | fast annotation from curated marker databases |
+| Classifier-based annotation | `CellTypist` or other pretrained classifiers | model-based annotation, often useful for human immune or atlas-scale data |
+| Hybrid annotation | combine automated labels, cluster markers, metadata, and biological knowledge | practical final annotation workflow |
+
+For practical analysis, a hybrid approach is often the most useful: use references to suggest labels, then confirm them with marker genes and plots.
+
+Automated annotation should be treated as label suggestion. Final labels should be checked against cluster markers, known biology, sample metadata, and visualization.
+
+## celldex
+
+`celldex` provides curated reference datasets that can be used for cell annotation.
+
+These references can be used by annotation tools or inspected directly as reference expression datasets.
+
+Local celldex reference files are stored in:
+
+```text
+assets/data/celldex/
+```
+
+Examples include:
+
+```text
+HumanPrimaryCellAtlasData.rds
+BlueprintEncodeData.rds
+MonacoImmuneData.rds
+ImmGenData.rds
+```
+
+Choose the reference by species and tissue context. For example, use human immune references for human immune datasets, and mouse references for mouse datasets.
+
+## Basic celldex Usage
+
+Load references directly from the `celldex` package:
+
+```r
+HumanPrimaryCellAtlasData <- celldex::HumanPrimaryCellAtlasData()
+BlueprintEncodeData <- celldex::BlueprintEncodeData()
+MonacoImmuneData <- celldex::MonacoImmuneData()
+ImmGenData <- celldex::ImmGenData()
+```
+
+Other available references include:
+
+```r
+DatabaseImmuneCellExpressionData <- celldex::DatabaseImmuneCellExpressionData()
+MouseRNAseqData <- celldex::MouseRNAseqData()
+NovershternHematopoieticData <- celldex::NovershternHematopoieticData()
+```
+
+Check available references from the package:
+
+```r
+celldex::surveyReferences()
+```
+
+Fetch a specific reference by name and version:
+
+```r
+hpca_ref <- celldex::fetchReference(
+  name = "hpca",
+  version = "2024-02-26"
+)
+```
+
+The wrapper functions are convenient for interactive work. `surveyReferences()` and `fetchReference()` make the reference name and version explicit.
+
+Local `.rds` files under `assets/data/celldex/` can be used as cached copies when remote downloads are not desired.
+
+```r
+hpca_ref <- readRDS(
+  file = "assets/data/celldex/HumanPrimaryCellAtlasData.rds"
+)
+```
+
+## Reference Object
+
+The objects returned by `celldex` are `SummarizedExperiment` objects.
+
+In this object:
+
+- expression values are stored in assays
+- cell or sample labels are stored in `colData`
+- gene information is stored in `rowData`
+
+Basic checks:
+
+```r
+class(HumanPrimaryCellAtlasData)
+
+SummarizedExperiment::assayNames(HumanPrimaryCellAtlasData)
+colnames(SummarizedExperiment::colData(HumanPrimaryCellAtlasData))
+```
+
+Common label columns include broad labels such as `label.main` and finer labels such as `label.fine`, depending on the reference.
+
+## SummarizedExperiment To SingleCellExperiment
+
+Some annotation tools expect a `SingleCellExperiment` object.
+
+`SingleCellExperiment` extends `SummarizedExperiment` for single-cell data. It can store expression assays, cell metadata, gene metadata, reduced dimensions, and other single-cell-specific information.
+
+When a celldex reference is a `SummarizedExperiment`, it can be converted to `SingleCellExperiment` while keeping the same assays, row data, column data, and metadata.
+
+Check the input first:
+
+```r
+inherits(HumanPrimaryCellAtlasData, "SummarizedExperiment")
+SummarizedExperiment::assayNames(HumanPrimaryCellAtlasData)
+```
+
+Convert to `SingleCellExperiment`:
+
+```r
+hpca_sce <- SingleCellExperiment::SingleCellExperiment(
+  assays = SummarizedExperiment::assays(HumanPrimaryCellAtlasData),
+  rowData = SummarizedExperiment::rowData(HumanPrimaryCellAtlasData),
+  colData = SummarizedExperiment::colData(HumanPrimaryCellAtlasData),
+  metadata = S4Vectors::metadata(HumanPrimaryCellAtlasData)
+)
+```
+
+Check the result:
+
+```r
+class(hpca_sce)
+SingleCellExperiment::reducedDimNames(hpca_sce)
+colnames(SummarizedExperiment::colData(hpca_sce))
+```
+
+This conversion preserves the reference data. It does not annotate the query object by itself.
+
+## scmap
+
+`scmap` is a Bioconductor method for projecting query single-cell data onto a reference.
+
+It is useful when a reference dataset already has reliable labels, such as cell types or annotated clusters, and the goal is to transfer those labels to a query dataset.
+
+`scmap` has two main modes:
+
+| Mode | Use |
+|---|---|
+| `scmapCluster()` | project query cells to reference clusters or cell types |
+| `scmapCell()` | project query cells to individual reference cells |
+
+The input is usually a `SingleCellExperiment` object. This is why converting celldex `SummarizedExperiment` references to `SingleCellExperiment` can be useful.
+
+### scmap-cluster Workflow
+
+`scmapCluster()` projects query cells to reference clusters or labels.
+
+The workflow is:
+
+```text
+celldex reference -> ref_sce
+Seurat query object -> target_sce -> logNormCounts()
+ref_sce + target_sce -> scmapCluster()
+scmap labels -> Seurat metadata
+```
+
+### Prepare Reference
+
+Load a celldex reference:
+
+```r
+ref <- readRDS(
+  file = "assets/data/celldex/HumanPrimaryCellAtlasData.rds"
+)
+```
+
+Convert the reference from `SummarizedExperiment` to `SingleCellExperiment`:
+
+```r
+ref_sce <- SingleCellExperiment::SingleCellExperiment(
+  assays = SummarizedExperiment::assays(ref),
+  rowData = SummarizedExperiment::rowData(ref),
+  colData = SummarizedExperiment::colData(ref),
+  metadata = S4Vectors::metadata(ref)
+)
+```
+
+Choose the reference label column:
+
+```r
+label_col <- "label.fine"
+
+ref_sce$cell_type1 <- as.factor(ref_sce[[label_col]])
+```
+
+`label.fine` gives more detailed labels. `label.main` gives broader labels when available.
+
+### Prepare Query
+
+Convert the Seurat object to `SingleCellExperiment`:
+
+```r
+target_sce <- Seurat::as.SingleCellExperiment(
+  x = seu,
+  assay = "RNA"
+)
+```
+
+Create a `logcounts` assay for scmap:
+
+```r
+target_sce <- scater::logNormCounts(target_sce)
+```
+
+Check assays:
+
+```r
+SummarizedExperiment::assayNames(target_sce)
+SummarizedExperiment::assayNames(ref_sce)
+```
+
+Both `target_sce` and `ref_sce` should have a `logcounts` assay. celldex references usually already contain log-normalized expression, but check the assay names before running scmap.
+
+If the reference lacks `logcounts`, normalize it explicitly:
+
+```r
+ref_sce <- scater::logNormCounts(ref_sce)
+```
+
+### Select Features
+
+Create `feature_symbol` fields required by scmap:
+
+```r
+SummarizedExperiment::rowData(ref_sce)$feature_symbol <- rownames(ref_sce)
+SummarizedExperiment::rowData(target_sce)$feature_symbol <- rownames(target_sce)
+```
+
+Select scmap features from the reference:
+
+```r
+n_features <- 500
+
+ref_sce <- scmap::selectFeatures(
+  object = ref_sce,
+  n_features = n_features,
+  suppress_plot = TRUE
+)
+```
+
+`n_features` controls how many informative genes are selected for projection.
+
+### Build Cluster Index
+
+Build the scmap-cluster index from the reference:
+
+```r
+ref_sce <- scmap::indexCluster(ref_sce)
+
+cluster_index <- S4Vectors::metadata(ref_sce)$scmap_cluster_index
+```
+
+This index represents the reference labels used for projection.
+
+### Run scmapCluster
+
+Project query cells to the reference index:
+
+```r
+threshold <- 0.1
+
+scmap_cluster_res <- scmap::scmapCluster(
+  projection = target_sce,
+  index_list = list(reference = cluster_index),
+  threshold = threshold
+)
+```
+
+`threshold` controls the minimum similarity required for assigning a label.
+
+### Add Labels Back To Seurat
+
+Extract predicted labels:
+
+```r
+label_vector <- scmap_cluster_res$combined_labs
+names(label_vector) <- colnames(target_sce)
+```
+
+Match labels back to the Seurat object by cell name:
+
+```r
+match_idx <- match(
+  x = colnames(seu),
+  table = names(label_vector)
+)
+
+if (any(is.na(match_idx))) {
+  stop("Some Seurat cells were not matched to scmap labels.", call. = FALSE)
+}
+
+seu$scmap_cluster_label <- label_vector[match_idx]
+```
+
+Check annotation distribution:
+
+```r
+table(seu$scmap_cluster_label)
+```
+
+Visualize scmap labels:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "umap",
+  group.by = "scmap_cluster_label",
+  label = TRUE,
+  repel = TRUE
+)
+```
+
+Treat scmap labels as annotation suggestions. Check them against marker genes and UMAP/t-SNE visualization before assigning final cell type labels.
+
+### scmap-cell Workflow
+
+`scmapCell()` projects query cells to individual reference cells.
+
+This can provide finer annotation than `scmapCluster()`, but it requires an extra step to summarize nearest reference cells into labels.
+
+The preparation steps are the same:
+
+```text
+ref_sce
+target_sce
+label_col
+feature_symbol
+scmap features
+```
+
+Build a cell-level index:
+
+```r
+ref_sce <- scmap::indexCell(ref_sce)
+
+cell_index <- S4Vectors::metadata(ref_sce)$scmap_cell_index
+```
+
+Run `scmapCell()`:
+
+```r
+w <- 10
+
+scmap_cell_res <- scmap::scmapCell(
+  projection = target_sce,
+  index_list = list(reference = cell_index),
+  w = w
+)
+```
+
+`w` controls how many nearest reference cells are returned for each query cell.
+
+Extract nearest reference cell indices:
+
+```r
+nn_cells <- scmap_cell_res$reference$cells
+```
+
+Get reference labels:
+
+```r
+ref_labels <- as.character(ref_sce[[label_col]])
+```
+
+Assign each query cell the majority label among its nearest reference cells:
+
+```r
+get_majority_label <- function(indices) {
+  labels <- ref_labels[indices]
+  tbl <- table(labels)
+  top <- which(tbl == max(tbl))
+
+  if (length(top) == 1) {
+    names(top)
+  } else {
+    "ambiguous"
+  }
+}
+
+predicted_labels <- apply(
+  X = nn_cells,
+  MARGIN = 2,
+  FUN = get_majority_label
+)
+```
+
+Add scmap-cell labels back to the Seurat object:
+
+```r
+label_vector <- predicted_labels
+names(label_vector) <- colnames(target_sce)
+
+match_idx <- match(
+  x = colnames(seu),
+  table = names(label_vector)
+)
+
+if (any(is.na(match_idx))) {
+  stop("Some Seurat cells were not matched to scmap-cell labels.", call. = FALSE)
+}
+
+seu$scmap_cell_label <- label_vector[match_idx]
+```
+
+Check annotation distribution:
+
+```r
+table(seu$scmap_cell_label)
+```
+
+Visualize scmap-cell labels:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "umap",
+  group.by = "scmap_cell_label",
+  label = TRUE,
+  repel = TRUE
+)
+```
+
+`scmapCell()` returns nearest reference cells. The final cell type label depends on how those neighbors are summarized, such as majority vote.
+
+The majority-vote approach above is one practical way to convert nearest reference cells into labels. `scmap` also provides `scmapCell2Cluster()` for converting scmap-cell nearest-cell results into cluster-level labels when reference labels are available.
+
+## SingleR
+
+`SingleR` annotates query cells by comparing their expression profiles with a labeled reference.
+
+It can be run at two useful levels:
+
+| Mode | Use |
+|---|---|
+| cluster mode | annotate clusters, then assign the cluster label to all cells in that cluster |
+| cell mode | annotate each cell independently |
+
+Both modes use the prepared `target_sce`, `ref_sce`, and reference labels.
+
+Common setup:
+
+```r
+labels <- ref_sce$label.fine
+
+SummarizedExperiment::assayNames(target_sce)
+SummarizedExperiment::assayNames(ref_sce)
+```
+
+Both objects should have the assay specified by `assay.type.test` and `assay.type.ref`, usually `logcounts`.
+
+### SingleR Cluster Mode
+
+Cluster mode gives one label per cluster.
+
+Use the clustering result from the Seurat object:
+
+```r
+clusters <- seu$seurat_clusters
+```
+
+Run SingleR:
+
+```r
+singleR_cluster_res <- SingleR::SingleR(
+  test = target_sce,
+  ref = ref_sce,
+  labels = labels,
+  clusters = clusters,
+  genes = "de",
+  sd.thresh = 1,
+  de.method = "classic",
+  quantile = 0.8,
+  fine.tune = TRUE,
+  prune = TRUE,
+  assay.type.test = "logcounts",
+  assay.type.ref = "logcounts"
+)
+```
+
+Extract cluster labels:
+
+```r
+cluster_label <- singleR_cluster_res$pruned.labels
+names(cluster_label) <- rownames(singleR_cluster_res)
+
+cluster_label[is.na(cluster_label)] <- "ambiguous"
+```
+
+Expand cluster labels back to cell-level metadata:
+
+```r
+label_vector <- cluster_label[as.character(clusters)]
+names(label_vector) <- colnames(target_sce)
+
+match_idx <- match(
+  x = colnames(seu),
+  table = names(label_vector)
+)
+
+if (any(is.na(match_idx))) {
+  stop("Some Seurat cells were not matched to SingleR cluster labels.", call. = FALSE)
+}
+
+seu$singleR_cluster_label <- label_vector[match_idx]
+```
+
+Check annotation distribution:
+
+```r
+table(seu$singleR_cluster_label)
+```
+
+Visualize cluster-level SingleR labels:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "umap",
+  group.by = "singleR_cluster_label",
+  label = TRUE,
+  repel = TRUE
+)
+```
+
+Cluster mode is useful when clusters are already stable and biologically meaningful.
+
+### SingleR Cell Mode
+
+Cell mode gives one label per cell.
+
+Run SingleR without the `clusters` argument:
+
+```r
+singleR_cell_res <- SingleR::SingleR(
+  test = target_sce,
+  ref = ref_sce,
+  labels = labels,
+  genes = "de",
+  sd.thresh = 1,
+  de.method = "classic",
+  quantile = 0.8,
+  fine.tune = TRUE,
+  prune = TRUE,
+  assay.type.test = "logcounts",
+  assay.type.ref = "logcounts"
+)
+```
+
+Extract cell labels:
+
+```r
+label_vector <- singleR_cell_res$pruned.labels
+names(label_vector) <- rownames(singleR_cell_res)
+
+label_vector[is.na(label_vector)] <- "ambiguous"
+```
+
+Add labels back to Seurat metadata:
+
+```r
+match_idx <- match(
+  x = colnames(seu),
+  table = names(label_vector)
+)
+
+if (any(is.na(match_idx))) {
+  stop("Some Seurat cells were not matched to SingleR cell labels.", call. = FALSE)
+}
+
+seu$singleR_cell_label <- label_vector[match_idx]
+```
+
+Check annotation distribution:
+
+```r
+table(seu$singleR_cell_label)
+```
+
+Visualize cell-level SingleR labels:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "umap",
+  group.by = "singleR_cell_label",
+  label = TRUE,
+  repel = TRUE
+)
+```
+
+Cell mode can capture within-cluster heterogeneity, but it can also be noisier than cluster mode.
+
+Common SingleR parameters:
+
+| Parameter | Meaning |
+|---|---|
+| `labels` | reference labels, such as `ref_sce$label.fine` |
+| `clusters` | optional query cluster labels for cluster mode |
+| `genes` | feature selection method, commonly `"de"` |
+| `de.method` | differential expression method used for marker selection |
+| `fine.tune` | refine labels among close candidates |
+| `prune` | remove weak or ambiguous assignments |
+| `assay.type.test` | assay used from query object |
+| `assay.type.ref` | assay used from reference object |
+
+## SCINA
+
+`SCINA` is a semi-supervised annotation method based on marker gene signatures.
+
+Unlike `SingleR` or `scmap`, SCINA does not require a reference expression object. It requires:
+
+- a normalized expression matrix
+- a named marker list
+
+Each element of the marker list represents one expected cell type.
+
+Example marker list:
+
+```r
+marker_list <- list(
+  T_cells = c("CD3D", "CD3E", "TRAC"),
+  B_cells = c("MS4A1", "CD79A", "CD79B"),
+  Monocytes = c("LYZ", "S100A8", "S100A9")
+)
+```
+
+### Prepare Expression Matrix
+
+Use normalized expression, not raw counts.
+
+For Seurat v5:
+
+```r
+expr_mat <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  layer = "data"
+)
+```
+
+The matrix should have genes as rows and cells as columns:
+
+```r
+dim(expr_mat)
+head(rownames(expr_mat))
+head(colnames(expr_mat))
+```
+
+### Load Marker List
+
+The marker list should be a named list:
+
+```r
+marker_list <- list(
+  T_cells = c("CD3D", "CD3E", "TRAC"),
+  B_cells = c("MS4A1", "CD79A", "CD79B")
+)
+```
+
+### Run SCINA
+
+Run cell-level SCINA annotation:
+
+```r
+scina_res <- SCINA::SCINA(
+  exp = expr_mat,
+  signatures = marker_list,
+  max_iter = 100,
+  convergence_n = 10,
+  convergence_rate = 0.99,
+  sensitivity_cutoff = 1,
+  rm_overlap = FALSE,
+  allow_unknown = TRUE,
+  log_file = "logs/cell_annotation/SCINA.log"
+)
+```
+
+Important parameters:
+
+| Parameter | Meaning |
+|---|---|
+| `signatures` | named list of marker genes |
+| `max_iter` | maximum number of EM iterations |
+| `convergence_n` | number of stable iterations required for convergence |
+| `convergence_rate` | fraction of stable assignments required for convergence |
+| `sensitivity_cutoff` | controls removal of signatures with weak support |
+| `rm_overlap` | whether to remove overlapping markers between signatures |
+| `allow_unknown` | whether cells can be assigned to `unknown` |
+
+### Add Labels Back To Seurat
+
+Extract SCINA labels:
+
+```r
+label_vector <- scina_res$cell_labels
+names(label_vector) <- colnames(expr_mat)
+```
+
+Match labels back to the Seurat object:
+
+```r
+match_idx <- match(
+  x = colnames(seu),
+  table = names(label_vector)
+)
+
+if (any(is.na(match_idx))) {
+  stop("Some Seurat cells were not matched to SCINA labels.", call. = FALSE)
+}
+
+seu$scina_cell_label <- label_vector[match_idx]
+```
+
+Check annotation distribution:
+
+```r
+table(seu$scina_cell_label)
+```
+
+Visualize SCINA labels:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "umap",
+  group.by = "scina_cell_label",
+  label = TRUE,
+  repel = TRUE
+)
+```
+
+SCINA is useful when the marker list is reliable and the expected cell types are known. Poor or overly broad marker sets can lead to misleading labels.
+
+## Seurat Label Transfer
+
+Seurat label transfer maps a query Seurat object to a labeled reference Seurat object.
+
+This is different from integration. Label transfer does not aim to create a corrected expression assay for the query. It uses anchors to transfer metadata, such as cell type labels, from the reference to the query.
+
+Typical use:
+
+```text
+labeled reference Seurat object + query Seurat object -> predicted query labels
+```
+
+### Prepare Reference And Query
+
+The reference should already have reliable labels:
+
+```r
+table(reference$cell_type)
+```
+
+The query is the object to annotate:
+
+```r
+query <- seu
+```
+
+Choose dimensions:
+
+```r
+dims <- 1:30
+```
+
+For SCT-normalized objects, use `normalization.method = "SCT"`. For log-normalized objects, use `normalization.method = "LogNormalize"`.
+
+### Find Transfer Anchors
+
+Find anchors between reference and query:
+
+```r
+transfer_anchors <- Seurat::FindTransferAnchors(
+  reference = reference,
+  query = query,
+  normalization.method = "SCT",
+  reference.assay = "SCT",
+  query.assay = "SCT",
+  reduction = "pcaproject",
+  dims = dims,
+  k.anchor = 5,
+  k.filter = NA,
+  k.score = 30,
+  verbose = TRUE
+)
+```
+
+`reduction = "pcaproject"` projects the reference PCA structure onto the query. This is commonly used for reference mapping.
+
+### Transfer Labels
+
+Transfer cell type labels from reference to query:
+
+```r
+predictions <- Seurat::TransferData(
+  anchorset = transfer_anchors,
+  refdata = reference$cell_type,
+  dims = dims,
+  k.weight = 50,
+  sd.weight = 1,
+  verbose = TRUE
+)
+```
+
+Add prediction results to the query metadata:
+
+```r
+query <- Seurat::AddMetaData(
+  object = query,
+  metadata = predictions
+)
+```
+
+Common added columns include predicted labels and prediction scores.
+
+```r
+colnames(query@meta.data)
+```
+
+For example:
+
+```r
+table(query$predicted.id)
+```
+
+Rename the predicted label column if needed:
+
+```r
+query$seurat_transfer_label <- query$predicted.id
+```
+
+Visualize transferred labels:
+
+```r
+Seurat::DimPlot(
+  object = query,
+  reduction = "umap",
+  group.by = "seurat_transfer_label",
+  label = TRUE,
+  repel = TRUE
+)
+```
+
+### MapQuery
+
+`MapQuery()` is a convenience wrapper around label transfer, embedding integration, and UMAP projection.
+
+It is useful when the reference has a trained UMAP model and the goal is to project query cells onto the reference UMAP space.
+
+```r
+query <- Seurat::MapQuery(
+  anchorset = transfer_anchors,
+  query = query,
+  reference = reference,
+  refdata = list(cell_type = "cell_type"),
+  reference.reduction = "pca",
+  reduction.model = "umap"
+)
+```
+
+Use `TransferData()` when the main goal is transferring labels. Use `MapQuery()` when the goal also includes reference embedding projection.
+
+Seurat label transfer is useful when a high-quality Seurat reference is available. The transferred labels should still be checked against query markers and metadata.
+
+## Azimuth
+
+`Azimuth` is a reference-mapping workflow from the Seurat ecosystem.
+
+It can be used when an appropriate Azimuth reference is available. Compared with writing `FindTransferAnchors()` and `TransferData()` manually, `RunAzimuth()` wraps the mapping workflow and returns a Seurat object with predicted annotations and reference projection results.
+
+Typical use:
+
+```r
+query <- Azimuth::RunAzimuth(
+  query = query,
+  reference = "pbmcref"
+)
+```
+
+The returned object contains predicted labels, often at multiple annotation levels, and prediction scores.
+
+Check metadata columns:
+
+```r
+colnames(query@meta.data)
+```
+
+Visualize one predicted label level:
+
+```r
+Seurat::DimPlot(
+  object = query,
+  reduction = "ref.umap",
+  group.by = "predicted.celltype.l2",
+  label = TRUE,
+  repel = TRUE
+)
+```
+
+Available references depend on the installed Azimuth or SeuratData resources, or on references downloaded from the Azimuth ecosystem.
+
+```r
+available_data <- SeuratData::AvailableData()
+available_data[grep("Azimuth", available_data[, 3]), 1:3]
+```
+
+Use Azimuth when the query dataset matches a well-curated reference. Do not force an unrelated tissue, species, or modality into an unsuitable reference.
+
+## Finalize Cell Labels
+
+Automatic annotation methods produce candidate labels. Final cell labels should be decided by combining several sources of evidence.
+
+Useful checks:
+
+- cluster markers
+- known canonical markers
+- automated annotation labels
+- label proportions within each cluster
+- UMAP or t-SNE consistency
+- sample metadata and biological context
+
+Compare labels against clusters:
+
+```r
+table(seu$seurat_clusters, seu$singleR_cluster_label)
+table(seu$seurat_clusters, seu$scmap_cluster_label)
+table(seu$seurat_clusters, seu$scina_cell_label)
+```
+
+Check proportions within each cluster:
+
+```r
+prop.table(
+  x = table(seu$seurat_clusters, seu$singleR_cluster_label),
+  margin = 1
+)
+```
+
+Create a manual cluster-to-cell-type map:
+
+```r
+cluster_to_cell_type <- c(
+  "0" = "CD4 T cell",
+  "1" = "B cell",
+  "2" = "Monocyte",
+  "3" = "NK cell",
+  "4" = "ambiguous"
+)
+```
+
+Write final labels to metadata:
+
+```r
+seu$cell_type <- cluster_to_cell_type[
+  as.character(seu$seurat_clusters)
+]
+```
+
+Check final labels:
+
+```r
+table(seu$cell_type)
+```
+
+Visualize final labels:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "umap",
+  group.by = "cell_type",
+  label = TRUE,
+  repel = TRUE
+)
+```
+
+Use `ambiguous` or a broader label when evidence is weak or methods disagree. A conservative label is better than an over-specific unsupported label.

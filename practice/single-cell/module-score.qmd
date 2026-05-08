@@ -1,0 +1,349 @@
+---
+title: "Module Score"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, module-score, gene-set, seurat]
+draft: true
+---
+
+## Purpose
+
+Module scoring summarizes the expression of a gene set in each cell.
+
+Typical questions:
+
+- which cells show high interferon response?
+- which clusters have high exhaustion signature?
+- does a pathway-like signature differ between conditions?
+- where is a custom marker signature enriched on UMAP?
+
+In Seurat, module scoring is usually done with `AddModuleScore()`.
+
+Signature scoring is related to functional enrichment, but the output is different.
+
+| Analysis | Input | Output | Typical question |
+|---|---|---|---|
+| Signature scoring | expression matrix + predefined gene set | score per cell or sample | which cells have high activity for this signature? |
+| Functional enrichment | marker genes, DE genes, or ranked gene list | enriched pathways or GO terms | what functions are over-represented in this gene list? |
+
+Methods such as `AddModuleScore()`, `AUCell`, and `UCell` assign scores to cells. GO, KEGG, Reactome, and GSEA-style analyses summarize gene lists or ranked gene lists.
+
+## Scoring Methods
+
+Common single-cell signature scoring methods:
+
+| Method | Main idea | Notes |
+|---|---|---|
+| `AddModuleScore()` | average expression of a gene set compared with control genes | common in Seurat workflows |
+| `AUCell` | AUC of gene-set genes in each cell's expression ranking | rank-based, often used for regulon or signature activity |
+| `UCell` | Mann-Whitney U statistic from per-cell gene rankings | rank-based and robust for sparse data |
+| `singscore` | rank-based single-sample scoring | general signature scoring method |
+| `GSVA` / `ssGSEA` | sample-wise gene set variation scoring | can be used on cell or pseudobulk-like matrices, but may be heavier |
+
+`AddModuleScore()` is a practical default in Seurat. Rank-based methods such as `AUCell` and `UCell` are useful when relative within-cell rankings are preferred over expression averages.
+
+## Input Gene Sets
+
+`AddModuleScore()` expects a list of gene vectors.
+
+One score:
+
+```r
+ifn_genes <- list(
+  c("ISG15", "IFIT1", "IFIT3", "MX1", "OAS1")
+)
+```
+
+Multiple scores:
+
+```r
+signature_genes <- list(
+  IFN_response = c("ISG15", "IFIT1", "IFIT3", "MX1", "OAS1"),
+  Cytotoxicity = c("NKG7", "GNLY", "GZMB", "PRF1")
+)
+```
+
+Gene sets can come from `gene-sets.qmd`, marker signatures, pathway databases, or curated literature.
+
+## Run AddModuleScore
+
+Basic example:
+
+```r
+seu <- Seurat::AddModuleScore(
+  object = seu,
+  features = ifn_genes,
+  assay = "RNA",
+  name = "IFN_score",
+  seed = 42
+)
+```
+
+`AddModuleScore()` writes the result to metadata.
+
+The output column usually has a number suffix:
+
+```r
+colnames(seu@meta.data)
+```
+
+For the example above, the score column is usually:
+
+```r
+seu$IFN_score1
+```
+
+The suffix exists because `features` is a list. If multiple gene sets are provided, Seurat creates one score column per list element.
+
+## Check Genes
+
+Before scoring, check which genes are present in the object:
+
+```r
+genes <- ifn_genes[[1]]
+
+genes_found <- intersect(
+  x = genes,
+  y = rownames(seu)
+)
+
+genes_missing <- setdiff(
+  x = genes,
+  y = rownames(seu)
+)
+
+genes_found
+genes_missing
+```
+
+If many genes are missing, the score may not be meaningful.
+
+## Visualize Score
+
+Feature plot:
+
+```r
+Seurat::FeaturePlot(
+  object = seu,
+  features = "IFN_score1",
+  reduction = "umap",
+  pt.size = 0.5,
+  alpha = 0.7
+)
+```
+
+Violin plot by cluster:
+
+```r
+Seurat::VlnPlot(
+  object = seu,
+  features = "IFN_score1",
+  group.by = "seurat_clusters",
+  pt.size = 0
+)
+```
+
+Violin plot by cell type:
+
+```r
+Seurat::VlnPlot(
+  object = seu,
+  features = "IFN_score1",
+  group.by = "cell_type",
+  pt.size = 0
+)
+```
+
+## Compare By Condition
+
+Compare score distributions by condition:
+
+```r
+Seurat::VlnPlot(
+  object = seu,
+  features = "IFN_score1",
+  group.by = "condition",
+  pt.size = 0
+)
+```
+
+Compare within one cell type:
+
+```r
+t_cells <- subset(
+  x = seu,
+  subset = cell_type == "T cell"
+)
+
+Seurat::VlnPlot(
+  object = t_cells,
+  features = "IFN_score1",
+  group.by = "condition",
+  pt.size = 0
+)
+```
+
+For formal condition comparison, use sample-level summaries rather than treating every cell as an independent biological replicate.
+
+## Summarize Scores
+
+Summarize by cluster:
+
+```r
+score_by_cluster <- seu@meta.data |>
+  dplyr::group_by(seurat_clusters) |>
+  dplyr::summarise(
+    mean_score = mean(IFN_score1, na.rm = TRUE),
+    median_score = median(IFN_score1, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+score_by_cluster
+```
+
+Summarize by sample and cell type:
+
+```r
+score_by_sample_celltype <- seu@meta.data |>
+  dplyr::group_by(sample, condition, cell_type) |>
+  dplyr::summarise(
+    mean_score = mean(IFN_score1, na.rm = TRUE),
+    median_score = median(IFN_score1, na.rm = TRUE),
+    n_cells = dplyr::n(),
+    .groups = "drop"
+  )
+
+score_by_sample_celltype
+```
+
+This gives one row per sample-cell type combination.
+
+## AUCell
+
+`AUCell` is another common method for single-cell signature scoring.
+
+It scores whether genes from a gene set are enriched near the top of each cell's expression ranking.
+
+This makes AUCell a per-cell scoring method, even though it uses an enrichment-like idea internally.
+
+### Prepare Input
+
+Use an expression matrix with genes as rows and cells as columns:
+
+```r
+expr_mat <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  layer = "data"
+)
+```
+
+Prepare gene sets:
+
+```r
+gene_sets <- list(
+  IFN_response = c("ISG15", "IFIT1", "IFIT3", "MX1", "OAS1"),
+  Cytotoxicity = c("NKG7", "GNLY", "GZMB", "PRF1")
+)
+```
+
+Check genes:
+
+```r
+lapply(
+  X = gene_sets,
+  FUN = function(genes) {
+    intersect(genes, rownames(expr_mat))
+  }
+)
+```
+
+### Build Rankings
+
+Build per-cell gene rankings:
+
+```r
+rankings <- AUCell::AUCell_buildRankings(
+  exprMat = expr_mat,
+  nCores = 1,
+  plotStats = FALSE
+)
+```
+
+Each cell gets a ranking of genes based on expression.
+
+### Calculate AUC Scores
+
+Calculate AUC scores:
+
+```r
+auc <- AUCell::AUCell_calcAUC(
+  geneSets = gene_sets,
+  rankings = rankings
+)
+```
+
+Extract the score matrix:
+
+```r
+auc_mat <- SummarizedExperiment::assay(auc)
+
+dim(auc_mat)
+rownames(auc_mat)
+```
+
+Rows are gene sets and columns are cells.
+
+### Add AUCell Scores To Seurat
+
+Add one AUCell score to metadata:
+
+```r
+seu$IFN_AUCell <- as.numeric(
+  auc_mat["IFN_response", colnames(seu)]
+)
+```
+
+Add all AUCell scores:
+
+```r
+auc_df <- as.data.frame(t(auc_mat))
+
+colnames(auc_df) <- paste0(
+  colnames(auc_df),
+  "_AUCell"
+)
+
+seu <- Seurat::AddMetaData(
+  object = seu,
+  metadata = auc_df
+)
+```
+
+Visualize AUCell score:
+
+```r
+Seurat::FeaturePlot(
+  object = seu,
+  features = "IFN_response_AUCell",
+  reduction = "umap",
+  pt.size = 0.5,
+  alpha = 0.7
+)
+```
+
+AUCell is useful when the relative rank of genes within each cell is more important than the average expression level.
+
+## Notes
+
+Module scores are relative scores, not direct pathway activity measurements.
+
+Interpret scores carefully:
+
+- gene sets should be biologically coherent
+- very small gene sets can be unstable
+- very broad gene sets can lose specificity
+- missing genes weaken the score
+- condition comparisons should respect sample-level replication
+
+Use module scores as evidence alongside markers, annotation, metadata, and biological context.

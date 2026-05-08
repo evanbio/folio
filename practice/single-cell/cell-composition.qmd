@@ -1,0 +1,178 @@
+---
+title: "Cell Composition"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, composition, cell-type, seurat]
+draft: true
+---
+
+## Purpose
+
+After cell annotation, a natural next step is to examine cell type composition.
+
+Typical questions:
+
+- how many cells are assigned to each cell type?
+- what fraction of each sample is each cell type?
+- does cell type composition differ between conditions?
+
+Cell composition is descriptive unless a proper statistical model is used.
+
+## Required Metadata
+
+The Seurat object should contain cell type labels:
+
+```r
+table(seu$cell_type)
+```
+
+It should also contain sample or condition metadata:
+
+```r
+table(seu$sample)
+table(seu$condition)
+```
+
+Use sample-level metadata when comparing groups. Do not rely only on pooled cell counts across all samples.
+
+## Cell Type Counts
+
+Count cells by cell type:
+
+```r
+cell_type_counts <- as.data.frame(
+  table(seu$cell_type)
+)
+
+colnames(cell_type_counts) <- c("cell_type", "n_cells")
+
+cell_type_counts
+```
+
+Count cells by sample and cell type:
+
+```r
+sample_cell_type_counts <- as.data.frame(
+  table(seu$sample, seu$cell_type)
+)
+
+colnames(sample_cell_type_counts) <- c(
+  "sample",
+  "cell_type",
+  "n_cells"
+)
+
+sample_cell_type_counts
+```
+
+## Cell Type Proportions
+
+Calculate cell type proportions within each sample:
+
+```r
+sample_cell_type_props <- sample_cell_type_counts |>
+  dplyr::group_by(sample) |>
+  dplyr::mutate(
+    prop = n_cells / sum(n_cells)
+  ) |>
+  dplyr::ungroup()
+
+sample_cell_type_props
+```
+
+Add condition metadata if each sample has one condition:
+
+```r
+sample_metadata <- seu@meta.data |>
+  dplyr::select(sample, condition) |>
+  dplyr::distinct()
+
+sample_cell_type_props <- sample_cell_type_props |>
+  dplyr::left_join(
+    sample_metadata,
+    by = "sample"
+  )
+```
+
+## Plot Composition
+
+Stacked bar plot by sample:
+
+```r
+ggplot2::ggplot(
+  data = sample_cell_type_props,
+  mapping = ggplot2::aes(
+    x = sample,
+    y = prop,
+    fill = cell_type
+  )
+) +
+  ggplot2::geom_col(width = 0.8) +
+  ggplot2::scale_y_continuous(labels = scales::percent) +
+  ggplot2::labs(
+    x = "Sample",
+    y = "Cell type proportion",
+    fill = "Cell type"
+  ) +
+  ggplot2::theme_classic()
+```
+
+Stacked bar plot grouped by condition:
+
+```r
+ggplot2::ggplot(
+  data = sample_cell_type_props,
+  mapping = ggplot2::aes(
+    x = condition,
+    y = prop,
+    fill = cell_type
+  )
+) +
+  ggplot2::geom_col(
+    position = "fill",
+    width = 0.8
+  ) +
+  ggplot2::scale_y_continuous(labels = scales::percent) +
+  ggplot2::labs(
+    x = "Condition",
+    y = "Cell type proportion",
+    fill = "Cell type"
+  ) +
+  ggplot2::theme_classic()
+```
+
+## Compare One Cell Type
+
+Plot sample-level proportions for one cell type:
+
+```r
+target_cell_type <- "T cell"
+
+one_cell_type <- sample_cell_type_props |>
+  dplyr::filter(cell_type == target_cell_type)
+
+ggplot2::ggplot(
+  data = one_cell_type,
+  mapping = ggplot2::aes(
+    x = condition,
+    y = prop,
+    color = condition
+  )
+) +
+  ggplot2::geom_boxplot(outlier.shape = NA) +
+  ggplot2::geom_jitter(width = 0.15, height = 0) +
+  ggplot2::scale_y_continuous(labels = scales::percent) +
+  ggplot2::labs(
+    x = "Condition",
+    y = paste(target_cell_type, "proportion")
+  ) +
+  ggplot2::theme_classic()
+```
+
+Each point should represent a sample, not an individual cell.
+
+## Note
+
+Cell composition plots are useful for exploration.
+
+For formal differential abundance analysis, use methods designed for sample-level or replicate-aware testing. Do not treat cells from the same sample as independent biological replicates.

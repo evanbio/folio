@@ -1,0 +1,150 @@
+---
+title: "Graph Construction"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, graph, neighbors, seurat]
+draft: true
+---
+
+## Purpose
+
+Graph construction converts low-dimensional cell embeddings into a cell-cell graph.
+
+In Seurat, this is usually done with `FindNeighbors()`.
+
+The graph is then used by:
+
+- `FindClusters()`
+- graph-based community detection
+- downstream interpretation of cell neighborhoods
+
+## Where It Fits
+
+Typical position:
+
+```text
+RunPCA() -> FindNeighbors() -> FindClusters() -> RunUMAP()
+```
+
+After Harmony integration:
+
+```text
+RunPCA() -> RunHarmony() -> FindNeighbors() -> FindClusters() -> RunUMAP()
+```
+
+`FindNeighbors()` should use the same reduction and dimensions chosen for downstream analysis.
+
+## What FindNeighbors Does
+
+`FindNeighbors()` uses a low-dimensional reduction to find nearby cells.
+
+It commonly builds:
+
+- KNN graph: k-nearest neighbor graph
+- SNN graph: shared nearest neighbor graph
+
+The SNN graph is usually the graph used by `FindClusters()`.
+
+## Choose Reduction And Dims
+
+The two most important inputs are:
+
+- `reduction`: which embedding to use
+- `dims`: which dimensions to include
+
+Common choices:
+
+| Workflow | `reduction` | `dims` |
+|---|---|---|
+| Classic PCA | `"pca"` | selected PCs, often `1:30` |
+| SCT PCA | `"pca"` | selected PCs, often `1:40` |
+| CCA/SCT integration | `"pca"` | PCs computed from integrated assay |
+| Harmony integration | `"harmony"` | selected Harmony dimensions |
+
+Choose `dims` from PCA diagnostics, elbow plot, variance explained, and biological interpretation.
+
+## Run FindNeighbors
+
+For classic, SCT, or integrated assay PCA:
+
+```r
+dims <- 1:30
+
+seu <- Seurat::FindNeighbors(
+  object = seu,
+  reduction = "pca",
+  dims = dims,
+  k.param = 20,
+  verbose = TRUE
+)
+```
+
+For Harmony:
+
+```r
+dims <- 1:30
+
+seu <- Seurat::FindNeighbors(
+  object = seu,
+  reduction = "harmony",
+  dims = dims,
+  k.param = 20,
+  verbose = TRUE
+)
+```
+
+`k.param = 20` is the default number of nearest neighbors used to build the KNN graph.
+
+## Check Graphs
+
+Check graph names stored in the Seurat object:
+
+```r
+names(seu@graphs)
+```
+
+Common graph names include:
+
+```text
+RNA_nn
+RNA_snn
+SCT_nn
+SCT_snn
+integrated_nn
+integrated_snn
+```
+
+The exact names depend on the active assay and graph construction settings.
+
+## Graph Names
+
+If multiple graph construction steps are run in the same object, set graph names explicitly:
+
+```r
+seu <- Seurat::FindNeighbors(
+  object = seu,
+  reduction = "harmony",
+  dims = dims,
+  k.param = 20,
+  graph.name = c("harmony_nn", "harmony_snn"),
+  verbose = TRUE
+)
+```
+
+Then use the SNN graph for clustering:
+
+```r
+seu <- Seurat::FindClusters(
+  object = seu,
+  graph.name = "harmony_snn",
+  resolution = 0.5
+)
+```
+
+This avoids accidentally clustering on an older graph.
+
+## Note
+
+Graph construction is not clustering itself. It prepares the neighborhood graph that clustering uses.
+
+Changing `reduction`, `dims`, or `k.param` can change the graph and therefore the final clusters.

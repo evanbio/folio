@@ -1,0 +1,294 @@
+---
+title: "Markers"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, markers, differential-expression, seurat]
+draft: true
+---
+
+## Purpose
+
+Marker detection identifies genes that are enriched in one group of cells compared with another group.
+
+In Seurat, marker detection is usually done with:
+
+- `FindMarkers()`
+- `FindAllMarkers()`
+
+The same functions are used for different questions. The key is to define what groups are being compared.
+
+## Common Marker Questions
+
+| Question | Typical comparison |
+|---|---|
+| Cluster markers | one cluster vs other clusters |
+| Cell type markers | one annotated cell type vs other cell types |
+| Condition markers | one condition vs another condition within the same cell type or cluster |
+
+Do not mix all cells together for condition comparison if the real question is cell-type-specific differential expression.
+
+## Choose Assay
+
+For marker detection, use the biologically meaningful expression assay.
+
+Common choices:
+
+| Workflow | Common assay for markers |
+|---|---|
+| Classic workflow | `"RNA"` |
+| SCT workflow | `"SCT"` |
+| CCA/SCT integration | usually `"SCT"` or `"RNA"`, not `"integrated"` |
+| Harmony integration | usually `"SCT"` or `"RNA"` |
+
+The integrated assay is mainly for alignment and clustering. It is usually not the assay used for marker testing.
+
+Set the assay explicitly:
+
+```r
+Seurat::DefaultAssay(seu) <- "SCT"
+```
+
+## SCT Note
+
+If an object contains multiple SCT models, run `PrepSCTFindMarkers()` before marker testing.
+
+This is common after merging SCT-normalized objects.
+
+```r
+seu <- Seurat::PrepSCTFindMarkers(seu)
+```
+
+This prepares corrected counts for marker detection across SCT models.
+
+## Cluster Markers
+
+Find markers for all clusters:
+
+```r
+markers_all <- Seurat::FindAllMarkers(
+  object = seu,
+  assay = "SCT",
+  only.pos = TRUE,
+  min.pct = 0.25,
+  logfc.threshold = 0.25,
+  test.use = "wilcox",
+  verbose = TRUE
+)
+```
+
+Common parameters:
+
+| Parameter | Meaning |
+|---|---|
+| `only.pos` | return only genes enriched in the target group |
+| `min.pct` | minimum fraction of cells expressing the gene in either group |
+| `logfc.threshold` | minimum log fold change threshold |
+| `test.use` | statistical test |
+
+The result is a data frame of marker genes.
+
+Common result columns:
+
+| Column | Meaning |
+|---|---|
+| `p_val` | raw p-value before multiple-testing correction |
+| `avg_log2FC` | average log2 fold change; positive values mean higher expression in the target group |
+| `pct.1` | fraction of cells expressing the gene in group 1 |
+| `pct.2` | fraction of cells expressing the gene in group 2 |
+| `p_val_adj` | adjusted p-value, usually Bonferroni-corrected in Seurat |
+| `cluster` | cluster associated with the marker; returned by `FindAllMarkers()` |
+| `gene` | gene name |
+
+Check top markers:
+
+```r
+head(markers_all)
+```
+
+Get top markers per cluster:
+
+```r
+top_markers <- markers_all |>
+  dplyr::group_by(cluster) |>
+  dplyr::slice_max(
+    order_by = avg_log2FC,
+    n = 10,
+    with_ties = FALSE
+  ) |>
+  dplyr::ungroup()
+
+top_markers
+```
+
+## One Cluster Versus Others
+
+Find markers for one cluster:
+
+```r
+cluster_0_markers <- Seurat::FindMarkers(
+  object = seu,
+  assay = "SCT",
+  ident.1 = "0",
+  only.pos = TRUE,
+  min.pct = 0.25,
+  logfc.threshold = 0.25,
+  test.use = "wilcox",
+  verbose = TRUE
+)
+```
+
+This compares cluster `0` against all other cells by default.
+
+## Cluster Versus Cluster
+
+Compare two clusters directly:
+
+```r
+cluster_0_vs_1 <- Seurat::FindMarkers(
+  object = seu,
+  assay = "SCT",
+  ident.1 = "0",
+  ident.2 = "1",
+  min.pct = 0.25,
+  logfc.threshold = 0.25,
+  test.use = "wilcox",
+  verbose = TRUE
+)
+```
+
+This compares cluster `0` against cluster `1`.
+
+## Conserved Markers
+
+`FindConservedMarkers()` finds markers for one identity that are conserved across groups such as samples, batches, or conditions.
+
+Typical question:
+
+```text
+Which markers define cluster 3 consistently across control and treatment?
+```
+
+Example:
+
+```r
+cluster_3_conserved <- Seurat::FindConservedMarkers(
+  object = seu,
+  assay = "SCT",
+  ident.1 = "3",
+  grouping.var = "condition",
+  test.use = "wilcox",
+  only.pos = TRUE,
+  min.pct = 0.25,
+  logfc.threshold = 0.25,
+  verbose = TRUE
+)
+```
+
+This tests cluster `3` against other cells within each level of `condition`, then combines the evidence across groups.
+
+Important parameters:
+
+| Parameter | Meaning |
+|---|---|
+| `ident.1` | target cluster or identity |
+| `grouping.var` | metadata column used to split groups for conservation testing |
+| `only.pos` | return only genes enriched in the target identity |
+| `min.pct` | minimum fraction of cells expressing the gene in either group |
+| `logfc.threshold` | minimum log fold change threshold |
+| `test.use` | statistical test |
+
+Use conserved markers when annotating clusters across multiple samples or conditions. Do not use this as a replacement for condition differential expression.
+
+| Function | Question |
+|---|---|
+| `FindAllMarkers()` | What marks each cluster? |
+| `FindMarkers()` | What differs between two selected groups? |
+| `FindConservedMarkers()` | What marks one cluster consistently across groups? |
+
+## Condition Markers
+
+For condition comparison, compare conditions within a cell type or cluster.
+
+First subset the relevant cells:
+
+```r
+t_cells <- subset(
+  x = seu,
+  subset = cell_type == "T cell"
+)
+```
+
+Then compare conditions:
+
+```r
+condition_markers <- Seurat::FindMarkers(
+  object = t_cells,
+  assay = "SCT",
+  ident.1 = "treated",
+  ident.2 = "control",
+  group.by = "condition",
+  min.pct = 0.25,
+  logfc.threshold = 0.25,
+  test.use = "wilcox",
+  verbose = TRUE
+)
+```
+
+This asks which genes differ between treated and control cells within T cells.
+
+## Filter Results
+
+Filter marker results:
+
+```r
+markers_filtered <- markers_all |>
+  dplyr::filter(
+    p_val_adj < 0.05,
+    avg_log2FC > 0.25
+  )
+```
+
+## Visualize Markers
+
+Feature plot:
+
+```r
+Seurat::FeaturePlot(
+  object = seu,
+  features = c("MS4A1", "CD3D"),
+  reduction = "umap",
+  pt.size = 0.5,
+  alpha = 0.7,
+  label = TRUE, # show cluster labels
+  repel = TRUE # avoid label overlap
+)
+```
+
+Violin plot:
+
+```r
+Seurat::VlnPlot(
+  object = seu,
+  features = c("MS4A1", "CD3D"),
+  group.by = "seurat_clusters",
+  pt.size = 0
+)
+```
+
+Dot plot:
+
+```r
+Seurat::DotPlot(
+  object = seu,
+  features = c("MS4A1", "CD3D", "LYZ"),
+  group.by = "seurat_clusters",
+  dot.scale = 6
+) +
+  ggplot2::coord_flip()
+```
+
+## Note
+
+Marker results depend on the assay, identities, grouping variable, statistical test, filtering thresholds, and whether the comparison is biologically appropriate.
+
+Cluster markers help interpret clusters. Condition markers answer differential-expression questions within a defined biological group.

@@ -1,0 +1,198 @@
+---
+title: "Clustering"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, clustering, seurat]
+draft: true
+---
+
+## Purpose
+
+Clustering groups cells based on the neighborhood graph built by `FindNeighbors()`.
+
+In Seurat, clustering is usually done with `FindClusters()`.
+
+Clustering is not cell type annotation. It creates data-driven groups that need to be interpreted later with marker genes, metadata, and biological context.
+
+## Where It Fits
+
+Typical position:
+
+```text
+RunPCA() -> FindNeighbors() -> FindClusters() -> RunUMAP()
+```
+
+After Harmony integration:
+
+```text
+RunPCA() -> RunHarmony() -> FindNeighbors() -> FindClusters() -> RunUMAP()
+```
+
+`FindClusters()` expects a graph that has already been created by `FindNeighbors()`.
+
+## Run Clustering
+
+Basic clustering:
+
+```r
+seu <- Seurat::FindClusters(
+  object = seu,
+  resolution = 0.5,
+  algorithm = 1,
+  verbose = TRUE
+)
+```
+
+`resolution` controls clustering granularity:
+
+- lower resolution gives fewer, broader clusters
+- higher resolution gives more, finer clusters
+
+There is no universally correct resolution. It should be evaluated from the dataset and analysis goal.
+
+`algorithm = 1` uses the original Louvain algorithm.
+
+## Use A Specific Graph
+
+If the object contains multiple graphs, specify which graph to use.
+
+Check available graphs:
+
+```r
+names(seu@graphs)
+```
+
+Then cluster on the desired SNN graph:
+
+```r
+seu <- Seurat::FindClusters(
+  object = seu,
+  graph.name = "SCT_snn",
+  resolution = 0.5,
+  algorithm = 1,
+  verbose = TRUE
+)
+```
+
+For Harmony workflows, use the graph created from the Harmony reduction:
+
+```r
+seu <- Seurat::FindClusters(
+  object = seu,
+  graph.name = "harmony_snn",
+  resolution = 0.5,
+  algorithm = 1,
+  verbose = TRUE
+)
+```
+
+Using `graph.name` avoids accidentally clustering on an older graph.
+
+## Try Multiple Resolutions
+
+It is common to test several resolutions:
+
+```r
+resolutions <- c(0.4, 0.6, 0.8, 1.0, 1.4)
+
+seu <- Seurat::FindClusters(
+  object = seu,
+  resolution = resolutions,
+  algorithm = 1,
+  verbose = TRUE
+)
+```
+
+Seurat stores each result as a metadata column.
+
+Check clustering columns:
+
+```r
+cluster_cols <- grep(
+  pattern = "snn_res",
+  x = colnames(seu@meta.data),
+  value = TRUE
+)
+
+cluster_cols
+```
+
+Check the number and size of clusters for each resolution:
+
+```r
+graph_prefix <- "SCT_snn"
+
+for (res in resolutions) {
+  col_name <- paste0(graph_prefix, "_res.", res)
+
+  message("Resolution = ", res)
+  message("Number of clusters: ", length(unique(seu@meta.data[[col_name]])))
+  print(table(seu@meta.data[[col_name]]))
+}
+```
+
+Choose one resolution for the working cluster identity:
+
+```r
+selected_resolution <- 0.8
+selected_col <- paste0(graph_prefix, "_res.", selected_resolution)
+
+Seurat::Idents(seu) <- selected_col
+seu$seurat_clusters <- seu@meta.data[[selected_col]]
+```
+
+The exact metadata column name depends on the graph used and the resolution value. For CCA/SCT integration this may be `integrated_snn`; for Harmony this may be `harmony_snn` if that graph name was set explicitly.
+
+## Check Clusters
+
+Check cluster sizes:
+
+```r
+table(Seurat::Idents(seu))
+```
+
+Check the default clustering column:
+
+```r
+head(seu$seurat_clusters)
+```
+
+Store a selected clustering result with a clearer name:
+
+```r
+seu$cluster_res_0.8 <- Seurat::Idents(seu)
+```
+
+This makes later marker detection and plotting less ambiguous.
+
+## Algorithm
+
+`FindClusters()` supports different community detection algorithms.
+
+The default is usually sufficient for routine analysis:
+
+```r
+seu <- Seurat::FindClusters(
+  object = seu,
+  resolution = 0.5,
+  algorithm = 1,
+  verbose = TRUE
+)
+```
+
+Common values include:
+
+| `algorithm` | Meaning |
+|---|---|
+| `1` | Louvain |
+| `2` | Louvain with multilevel refinement |
+| `3` | SLM |
+| `4` | Leiden |
+
+Leiden clustering requires the `leidenbase` package.
+
+## Note
+
+Changing `dims`, `reduction`, `k.param`, `graph.name`, `resolution`, or `algorithm` can change clusters.
+
+Choose clustering parameters by checking marker genes, biological interpretability, cluster stability, and whether clusters are over-split or under-split.

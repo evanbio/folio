@@ -1,0 +1,156 @@
+---
+title: "UMAP"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, umap, seurat]
+draft: true
+---
+
+## Purpose
+
+UMAP is a nonlinear dimensionality reduction method used to visualize cells in two dimensions.
+
+In Seurat, UMAP is usually run with `RunUMAP()`.
+
+UMAP is a visualization method. It does not create clusters by itself. Cluster labels usually come from `FindClusters()`.
+
+## Where It Fits
+
+Typical position:
+
+```text
+RunPCA() -> FindNeighbors() -> FindClusters() -> RunUMAP()
+```
+
+After Harmony integration:
+
+```text
+RunPCA() -> RunHarmony() -> FindNeighbors() -> FindClusters() -> RunUMAP()
+```
+
+Run UMAP after choosing the reduction and dimensions used for downstream analysis.
+
+## Choose Reduction And Dims
+
+Use the same reduction and dimensions used for graph construction.
+
+Common choices:
+
+| Workflow | `reduction` | `dims` |
+|---|---|---|
+| Classic PCA | `"pca"` | selected PCs, often `1:30` |
+| SCT PCA | `"pca"` | selected PCs, often `1:40` |
+| CCA/SCT integration | `"pca"` | PCs computed from integrated assay |
+| Harmony integration | `"harmony"` | selected Harmony dimensions |
+
+## Run UMAP
+
+For classic, SCT, or integrated assay PCA:
+
+```r
+dims <- 1:30
+
+seu <- Seurat::RunUMAP(
+  object = seu,
+  reduction = "pca",
+  dims = dims,
+  n.neighbors = 30,
+  min.dist = 0.3,
+  dim.embed = 2,
+  seed.use = 42,
+  verbose = TRUE
+)
+```
+
+For Harmony:
+
+```r
+dims <- 1:30
+
+seu <- Seurat::RunUMAP(
+  object = seu,
+  reduction = "harmony",
+  dims = dims,
+  n.neighbors = 30,
+  min.dist = 0.3,
+  dim.embed = 2,
+  seed.use = 42,
+  verbose = TRUE
+)
+```
+
+`RunUMAP()` stores the result as a reduction, usually named `umap`.
+
+`dim.embed = 2` sets the output embedding dimension. The default 2D UMAP layout is usually used for visualization.
+
+## Parameters
+
+Common UMAP parameters:
+
+| Parameter | Meaning |
+|---|---|
+| `n.neighbors` | size of local neighborhood used by UMAP |
+| `min.dist` | how tightly points can be packed in the embedding |
+| `dim.embed` | number of output dimensions |
+| `seed.use` | random seed for reproducible layout |
+
+Smaller `min.dist` can produce tighter clusters. Larger `min.dist` can produce a more spread-out layout.
+
+## Check UMAP
+
+Check reductions:
+
+```r
+Seurat::Reductions(seu)
+```
+
+Extract UMAP coordinates:
+
+```r
+umap_embeddings <- Seurat::Embeddings(
+  object = seu,
+  reduction = "umap"
+)
+
+head(umap_embeddings)
+```
+
+## Plot UMAP
+
+Plot clusters on UMAP:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "umap",
+  group.by = "seurat_clusters",
+  label = TRUE, # show cluster labels
+  repel = TRUE # avoid label overlap
+)
+```
+
+Plot metadata on UMAP:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "umap",
+  group.by = "sample"
+)
+```
+
+Plot gene expression on UMAP:
+
+```r
+Seurat::FeaturePlot(
+  object = seu,
+  features = "MS4A1",
+  reduction = "umap"
+)
+```
+
+## Note
+
+UMAP is useful for visualization, but distances between far-apart groups should not be overinterpreted.
+
+Changing `reduction`, `dims`, `n.neighbors`, `min.dist`, or `seed.use` can change the UMAP layout.
