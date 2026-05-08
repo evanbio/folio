@@ -1,0 +1,56 @@
+---
+title: "007"
+date: 2026-05-08
+categories: [article]
+tags: [single-cell, best-practices, multi-omics, scrna-seq, spatial]
+draft: false
+---
+
+## Intro
+
+**Best Practices for Single-Cell Analysis across Modalities** 是 Heumos et al. 在 2023 年发表于 *Nature Reviews Genetics* 的综述文章，系统梳理 scRNA-seq、scATAC-seq、CITE-seq/ADT、AIRR、空间转录组和多模态整合的分析实践。DOI: [10.1038/s41576-023-00586-w](https://doi.org/10.1038/s41576-023-00586-w)
+
+这篇也出现在 Mikhail Dozmorov 的 [scRNA-seq_notes](https://github.com/mdozmorov/scRNA-seq_notes) 里。原仓库把它归为 single-cell analysis best-practice 资源，尤其强调它覆盖多种模态，而不是只讨论标准 scRNA-seq。
+
+## Why I Read It
+
+前面几篇文献更多围绕 atopic dermatitis、skin/PBMC single-cell atlas 和具体疾病问题。这篇的作用不同：它提供一个分析流程层面的检查框架，帮助判断一篇 single-cell 文章或一个自己的 workflow 是否遗漏了关键步骤。
+
+我现在正在整理 Folio 的 single-cell practice notes，从 QC、normalization、SCT、integration、PCA、clustering、marker、annotation 到 composition 和 module score。读这篇的目的，是把这些碎片放回一个更完整的 best-practice 视角里：哪些步骤是通用骨架，哪些步骤必须按模态、样本设计和研究问题调整。
+
+## What It Says
+
+文章的核心观点是：现代单细胞分析已经不存在一个固定 workflow。合理做法是把分析拆成模块，并根据数据模态、实验设计、batch 结构和 biological question 选择方法。
+
+对于 scRNA-seq，作者强调从 sample-level QC 开始，而不是直接进入 UMAP 或 clustering。低质量细胞、ambient RNA、doublets、batch effect 和 cell-cycle signal 都可能制造看似合理的 cluster 或 marker。QC 阈值也不应该机械套用，而应该按样本分布和后续 annotation 结果迭代调整。
+
+Normalization 和 feature selection 也不是一刀切。shifted log、Scran、Pearson residuals / SCT 类方法各有适用场景。Integration 的目标是减少技术结构，同时保留真实生物差异；Harmony、scVI/scANVI、Scanorama 等方法适合不同复杂度的 batch/reference mapping 任务，但不能只凭 UMAP 混合程度判断整合成功。
+
+Clustering 推荐基于低维 KNN graph 做社区发现，并探索多个 resolution。UMAP、t-SNE 和 PHATE 是可视化工具，不应作为轨迹、距离或细胞关系的唯一证据。Annotation 应结合自动注释、marker review 和专家判断；reference-based 方法依赖 reference 质量，marker-based 方法也受 cluster 粒度和 marker 选择影响。
+
+文章对 DGE 的提醒非常关键：single-cell 条件比较不能简单把细胞当独立重复。更稳妥的做法是 sample-level pseudobulk，或者使用能建模个体/样本相关性的模型。细胞组成变化也不是简单比例检验问题，而是 compositional data 问题，需要 sample-level 或 replicate-aware 的分析。
+
+其他模态方面，文章强调 scATAC-seq、CITE-seq/ADT、AIRR、spatial 和 multimodal integration 都有模态特异噪声和对象结构。多模态整合前，应先完成各模态自己的 QC、normalization 和 annotation，再评估 joint representation 是否保留可信的 biological structure。
+
+## What I Take From It
+
+这篇文章最大的价值不是列工具，而是反复提醒：single-cell workflow 必须围绕实验设计和 biological question 来组织。一个漂亮的 UMAP、一个自动注释标签或一个 integration embedding，都不能替代样本级 QC、marker 检查和统计设计。
+
+这篇也适合用来校正读 single-cell 文章时的关注点：不要只看作者用了什么工具，而要看每个分析步骤的输入、假设和统计单位是否合理。比如 normalization、integration、annotation、composition 和 DGE 这些环节都可能改变生物学解释。
+
+它也提醒我不要过早把高级分析写成固定模板。Trajectory、cell-cell communication、spatial、multiome、CNV 等都依赖具体数据和问题，应该在看文献或遇到项目时再补，而不是为了完整性堆工具。
+
+## Note
+
+这是一篇综述型 best-practice 文章，不是 benchmark 原文。很多建议来自已有独立评测和社区经验，因此会滞后于最新工具。它适合做流程设计和阅读检查清单，但具体实现仍要回到 Seurat、Scanpy、Bioconductor、scvi-tools、Signac、ArchR 等工具文档。
+
+另一个需要注意的点是：文章覆盖面很广，所以每个环节都不可能讲得很细。实际做项目时，关键仍然是把 sample metadata、batch structure、condition design、reference choice 和下游统计问题写清楚。
+
+对 AD single-cell 文献阅读来说，这篇可以作为方法学背景。读任何 disease single-cell 文章时，都可以用它追问：QC 是否按 sample 做？是否处理 doublet/ambient RNA？annotation 有没有 marker 支持？condition DE 是否避免 pseudoreplication？composition 是否按 sample 比较？integration 是否可能移除真实疾病差异？
+
+## Source
+
+- DOI: [10.1038/s41576-023-00586-w](https://doi.org/10.1038/s41576-023-00586-w)
+- Nature Reviews Genetics: [Best practices for single-cell analysis across modalities](https://www.nature.com/articles/s41576-023-00586-w)
+- GitHub notes: [mdozmorov/scRNA-seq_notes](https://github.com/mdozmorov/scRNA-seq_notes)
+- PDF: [Best Practices for Single-Cell Analysis across Modalities](../assets/pdf/007.pdf)

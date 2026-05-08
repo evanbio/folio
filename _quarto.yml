@@ -25,6 +25,7 @@ website:
           - paper/002.qmd
           - paper/003.qmd
           - paper/004.qmd
+          - paper/007.qmd
       - section: "Article"
         contents:
           - paper/005.qmd
@@ -45,6 +46,25 @@ website:
           - section: "Single-cell"
             contents:
               - concept/single-cell/cell-annotation.qmd
+      - section: "Practice"
+        href: practice/index.qmd
+        contents:
+          - section: "Single-cell"
+            href: practice/single-cell/index.qmd
+            contents:
+              - practice/single-cell/packages.qmd
+              - practice/single-cell/data-formats.qmd
+              - practice/single-cell/sample-organization.qmd
+              - practice/single-cell/seurat-object.qmd
+              - practice/single-cell/gene-sets.qmd
+              - practice/single-cell/qc.qmd
+              - practice/single-cell/normalization.qmd
+              - practice/single-cell/variable-features.qmd
+              - practice/single-cell/cell-cycle.qmd
+              - practice/single-cell/scaling.qmd
+              - practice/single-cell/pca.qmd
+              - practice/single-cell/doublets.qmd
+              - practice/single-cell/sctransform.qmd
 
   page-footer:
     left: "© 2026 Yibin Zhou"
