@@ -1,0 +1,219 @@
+---
+title: "Single-Cell Sample Organization"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, sample, metadata]
+draft: true
+---
+
+## Purpose
+
+The first practical question is not only "what file format is this", but also "how many biological samples are inside this file or folder".
+
+The key distinction:
+
+```text
+File is not sample.
+Folder is not sample.
+Object is not necessarily sample.
+```
+
+A single file can contain multiple samples, and a single sample can be stored as multiple files. The analysis structure should follow biological samples, not file count.
+
+## Four Situations
+
+| Situation | Example | Main Concern |
+|---|---|---|
+| Single sample, single file | one 10x H5, one `.h5ad`, one Seurat RDS | load and add/check metadata |
+| Single sample, multiple files | one 10x Matrix folder with `matrix.mtx.gz`, `barcodes.tsv.gz`, `features.tsv.gz` | treat the folder as one sample |
+| Multiple samples, single file or folder | one `.h5ad` or Seurat RDS containing many samples | metadata must identify samples |
+| Multiple samples, multiple files or folders | one 10x folder, H5, h5ad, or RDS per sample | read separately, add metadata, then decide list vs merged object |
+
+## Single Sample, Single File
+
+This is simple. Load the file, create or inspect the object, then make sure sample metadata exists.
+
+Examples:
+
+- one `filtered_feature_bc_matrix.h5`
+- one `sample.h5ad`
+- one `sample_seurat.rds`
+
+Main checks:
+
+- Is this really one biological sample?
+- Does the object already contain `sample_id`, `condition`, or `batch`?
+- Are the cell names unique enough if this object will later be merged?
+
+## Single Sample, Multiple Files
+
+This is also simple when it is a 10x Matrix folder.
+
+```text
+sample/
+  matrix.mtx.gz
+  barcodes.tsv.gz
+  features.tsv.gz
+```
+
+There are multiple files, but they form one count matrix from one sample.
+
+Main checks:
+
+- Do the three files belong to the same sample?
+- Are the names standard enough for `Seurat::Read10X()`?
+- Should this sample get a prefix before future merging?
+
+## Multiple Samples, Single File Or Folder
+
+This happens when a provider gives one processed object containing all samples.
+
+Examples:
+
+- one `.h5ad` containing all donors
+- one Seurat RDS containing all conditions
+- one SCE RDS containing many samples
+
+This is still manageable if metadata is good. The important question is whether cell-level metadata already contains sample information.
+
+Main checks:
+
+- Which column defines sample?
+- Which column defines condition?
+- Which column defines patient or donor?
+- Is there a batch or sequencing-run column?
+- Was the object already normalized, integrated, clustered, or annotated?
+
+If no sample column exists, downstream analysis becomes risky because sample-level comparisons, pseudobulk, and composition analysis depend on sample identity.
+
+## Multiple Samples, Multiple Files Or Folders
+
+This is the case that needs the most care.
+
+Common pattern:
+
+```text
+sample_A/filtered_feature_bc_matrix/
+sample_B/filtered_feature_bc_matrix/
+sample_C/filtered_feature_bc_matrix/
+```
+
+or:
+
+```text
+sample_A.h5ad
+sample_B.h5ad
+sample_C.h5ad
+```
+
+Each file or folder usually corresponds to one biological sample. The practical question is how to store objects after loading.
+
+### Option 1: List Of Objects
+
+Read each sample separately and store the result in a named list.
+
+Conceptually:
+
+```r
+objects <- list(
+  sample_A = seurat_A,
+  sample_B = seurat_B,
+  sample_C = seurat_C
+)
+```
+
+This is useful before merging because each sample can be inspected independently.
+
+Good for:
+
+- per-sample QC
+- checking cell counts per sample
+- adding sample-specific metadata
+- avoiding barcode collisions before merge
+- keeping raw per-sample objects available
+
+For Seurat, each object should already have metadata such as:
+
+```r
+seurat_obj$sample_id <- "sample_A"
+seurat_obj$condition <- "control"
+seurat_obj$batch <- "batch_1"
+```
+
+### Option 2: One Merged Object
+
+After metadata and cell names are clean, multiple sample objects can be merged into one object.
+
+Conceptually:
+
+```r
+merged_obj <- merge(
+  x = objects[[1]],
+  y = objects[-1],
+  add.cell.ids = names(objects)
+)
+```
+
+The merged object is useful for analysis steps that operate across all cells:
+
+- shared QC visualization
+- normalization workflow
+- dimensionality reduction
+- clustering
+- annotation
+- integration setup
+
+But the merged object must still preserve sample identity in metadata. Without `sample_id`, the merged object loses the biological replicate structure.
+
+### Join Layers After Merge
+
+In Seurat v5, merging objects may keep sample-specific layers inside the same assay.
+
+After merge, check layers:
+
+```r
+Seurat::Layers(merged_obj[["RNA"]])
+```
+
+You may see layers such as:
+
+```text
+counts.sample_A
+counts.sample_B
+counts.sample_C
+```
+
+If the next analysis step expects one joined layer, use `JoinLayers()`:
+
+```r
+merged_obj <- Seurat::JoinLayers(merged_obj)
+```
+
+Then check again:
+
+```r
+Seurat::Layers(merged_obj[["RNA"]])
+```
+
+What to remember:
+
+- This is mainly a Seurat v5 layer issue.
+- Do not call it blindly before checking layers.
+- Use it when downstream functions expect a unified layer or give layer-related errors.
+
+### List Or Merged Object
+
+The practical answer is usually both.
+
+Keep:
+
+- a list of per-sample objects for sample-level checking
+- a merged object for joint analysis
+
+Do not think of list vs merged object as an either/or choice. The list is the safer staging structure; the merged object is the working analysis structure.
+
+## Note
+
+For multiple samples, the most important metadata columns are usually `sample_id`, `condition`, `patient_id`, and `batch`.
+
+The goal is not just to load cells. The goal is to preserve the sample structure needed for QC, merging, integration, pseudobulk, and composition analysis.

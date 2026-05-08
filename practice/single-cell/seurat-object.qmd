@@ -1,0 +1,228 @@
+---
+title: "Seurat Object"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, seurat, object, metadata]
+draft: true
+---
+
+## Purpose
+
+This page is for learning how to inspect and access a Seurat object.
+
+The goal is not to run a full workflow yet. The goal is to know where common information lives: assays, counts, metadata, identities, and reductions.
+
+## Basic Checks
+
+Start with the object itself:
+
+```r
+class(seu)
+## [1] "Seurat"
+## attr(,"package")
+## [1] "SeuratObject"
+
+seu
+## An object of class Seurat
+## 22305 features across 22177 samples within 1 assay
+## Active assay: RNA (22305 features, 0 variable features)
+##  1 layer present: counts
+```
+
+For a deeper but noisy look:
+
+```r
+str(seu, max.level = 2)
+```
+
+Common questions:
+
+- How many cells are in the object?
+- How many features are in the active assay?
+- Which assays are present?
+- Has the object already been normalized, clustered, or embedded?
+
+## Assays
+
+Assays store different data modalities or feature spaces.
+
+Common assays:
+
+- `RNA`
+- `SCT`
+- `ADT`
+- `integrated`
+
+Check assays:
+
+```r
+Seurat::Assays(seu)
+Seurat::DefaultAssay(seu)
+```
+
+Common assay data slots:
+
+- `counts`: raw count matrix
+- `data`: normalized expression
+- `scale.data`: scaled expression
+
+## Metadata
+
+Cell metadata are stored in `seu@meta.data`.
+
+Inspect metadata:
+
+```r
+metadata <- seu[[]]
+
+head(metadata)
+colnames(metadata)
+dim(metadata)
+```
+
+`seu[[]]` is a convenient Seurat shortcut for extracting cell metadata.
+
+Access one metadata column:
+
+```r
+table(seu$sample_id)
+table(seu$condition)
+```
+
+Add metadata:
+
+```r
+seu$sample_id <- "sample_A"
+seu$condition <- "control"
+```
+
+What to remember:
+
+- Rows of `meta.data` are cells.
+- Row names should match cell names.
+- Metadata should preserve sample, condition, patient, and batch information.
+
+## Cells And Features
+
+Cells are columns in the expression matrix. Features are rows, usually genes for the `RNA` assay.
+
+Check cell names:
+
+```r
+cells <- colnames(seu)
+
+length(cells)
+head(cells)
+```
+
+Check feature names:
+
+```r
+features <- rownames(seu)
+
+length(features)
+head(features)
+sample(features, 10)
+```
+
+Check object dimensions:
+
+```r
+dim(seu)
+```
+
+What to remember:
+
+- `colnames(seu)` gives cell barcodes or cell names.
+- `rownames(seu)` gives feature names in the active assay.
+- For scRNA-seq, features are usually genes.
+- Sampling feature names helps check naming style, such as gene symbols, Ensembl IDs, upper case, or lower case.
+- Cell names must stay unique after merging samples.
+
+## Idents
+
+`Idents()` stores the active identity class. It is often used by plotting and differential expression functions.
+
+Check active identities:
+
+```r
+Seurat::Idents(seu)
+table(Seurat::Idents(seu))
+```
+
+Set active identities from metadata:
+
+```r
+Seurat::Idents(seu) <- "seurat_clusters"
+```
+
+What to remember:
+
+- `Idents()` is not the same thing as metadata, but it is often derived from a metadata column.
+- Before marker or differential expression functions, check what the active identity is.
+
+## Counts And Expression
+
+Extract raw counts:
+
+```r
+counts <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  slot = "counts"
+)
+```
+
+Extract normalized expression:
+
+```r
+data <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  slot = "data"
+)
+```
+
+Check matrix dimensions:
+
+```r
+dim(counts)
+counts[1:5, 1:5]
+```
+
+What to remember:
+
+- Rows are genes or features.
+- Columns are cells.
+- `counts` should be raw counts.
+- `data` is usually normalized expression if normalization has been run.
+
+## Reductions
+
+Dimensionality reductions are stored in the object after PCA, UMAP, t-SNE, or integration workflows.
+
+Check reductions:
+
+```r
+Seurat::Reductions(seu)
+```
+
+Extract embeddings:
+
+```r
+pca_embeddings <- Seurat::Embeddings(seu, reduction = "pca")
+umap_embeddings <- Seurat::Embeddings(seu, reduction = "umap")
+```
+
+Check dimensions:
+
+```r
+dim(pca_embeddings)
+head(umap_embeddings)
+```
+
+## Note
+
+For these practice notes, Seurat object is the default working object for basic inspection, metadata handling, plotting, merging, and early workflow steps.
+
+Other object systems such as SingleCellExperiment and AnnData can have their own pages later.

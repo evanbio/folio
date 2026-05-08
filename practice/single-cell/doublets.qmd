@@ -1,0 +1,231 @@
+---
+title: "Doublet Detection"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, doublet, seurat]
+draft: true
+---
+
+## Purpose
+
+Doublets are droplets or cell barcodes that likely contain more than one cell.
+
+In scRNA-seq, doublets can look like hybrid cell states. For example, a doublet made from a T cell and a B cell may express markers from both lineages and can form misleading clusters.
+
+This page first discusses the problem and common methods. Tool-specific workflows can be added after the method choice is clear.
+
+## What Doublets Look Like
+
+Doublets may show:
+
+- unusually high `nCount_RNA`
+- unusually high `nFeature_RNA`
+- mixed marker expression from different cell types
+- clusters between two major cell populations
+- sample-specific enrichment if loading concentration differed
+
+These signals are suggestive, not definitive. Formal doublet detection is a separate step from basic QC.
+
+## Where Doublet Detection Fits
+
+Doublet detection usually happens after basic QC and preliminary preprocessing.
+
+Typical position:
+
+```text
+QC -> NormalizeData() -> FindVariableFeatures() -> ScaleData() -> RunPCA() -> Doublet Detection
+```
+
+Some methods also use preliminary clustering or neighborhood structure.
+
+After removing doublets, downstream steps are often rerun.
+
+## Common Methods
+
+| Method | Ecosystem | Main Idea | Notes |
+|---|---|---|---|
+| `DoubletFinder` | Seurat / R | creates artificial doublets and finds cells with similar profiles | common in Seurat workflows; requires parameter tuning |
+| `scDblFinder` | Bioconductor / R | simulates doublets and classifies likely doublets | works with `SingleCellExperiment`; convenient for multi-sample handling |
+| `Scrublet` | Python | simulates doublets and scores observed cells | common in Scanpy/Python workflows |
+| hashtag / sample demultiplexing | experimental design | detects cross-sample doublets using sample tags | only available when hashing or multiplexing was used |
+
+## DoubletFinder
+
+`DoubletFinder` is a common choice in Seurat-based workflows.
+
+General idea:
+
+1. Generate artificial doublets.
+2. Combine artificial and real cells.
+3. Use neighborhood structure to score real cells.
+4. Classify cells based on expected doublet rate.
+
+Important points:
+
+- It is closely tied to a Seurat workflow.
+- It usually needs PCA and preprocessing first.
+- It requires choosing parameters such as `pK`.
+- Expected doublet number depends on cell loading and recovery.
+
+Use it when the analysis is already centered on Seurat and parameter tuning is acceptable.
+
+### DoubletFinder Workflow
+
+DoubletFinder is usually run after PCA and preliminary clustering.
+
+Choose PCs:
+
+```r
+pcs <- 1:20
+```
+
+Sweep `pK`:
+
+```r
+sweep_results <- DoubletFinder::paramSweep(
+  seu,       # Seurat object after PCA
+  PCs = pcs,
+  sct = FALSE
+)
+
+sweep_stats <- DoubletFinder::summarizeSweep(
+  sweep_results,
+  GT = FALSE
+)
+
+pk_table <- DoubletFinder::find.pK(sweep_stats)
+```
+
+Choose the `pK` with the highest BC metric:
+
+```r
+pK <- pk_table$pK[which.max(pk_table$BCmetric)]
+pK <- as.numeric(as.character(pK))
+```
+
+Estimate expected doublet number:
+
+```r
+doublet_rate <- 0.075 # example rate; adjust based on loading and platform
+n_expected <- round(doublet_rate * ncol(seu))
+```
+
+Optional homotypic adjustment if preliminary clusters exist:
+
+```r
+homotypic_prop <- DoubletFinder::modelHomotypic(seu$seurat_clusters)
+n_expected_adj <- round(n_expected * (1 - homotypic_prop))
+```
+
+This is optional. The main workflow can use `n_expected` directly.
+
+Run DoubletFinder:
+
+```r
+seu <- DoubletFinder::doubletFinder(
+  seu,                    # Seurat object
+  PCs = pcs,              # PCs used for neighborhood structure
+  pN = 0.25,              # artificial doublet proportion; commonly kept at 0.25
+  pK = pK,                # selected from parameter sweep
+  nExp = n_expected,      # expected number of doublets
+  reuse.pANN = FALSE,
+  sct = FALSE
+)
+```
+
+Find the new metadata columns:
+
+```r
+grep("DF|pANN", colnames(seu[[]]), value = TRUE)
+```
+
+DoubletFinder usually adds columns such as:
+
+- `pANN_*`
+- `DF.classifications_*`
+
+Check classifications:
+
+```r
+df_class_col <- grep("DF.classifications", colnames(seu[[]]), value = TRUE)
+table(seu[[df_class_col]][, 1])
+```
+
+Filter predicted singlets:
+
+```r
+singlet_cells <- rownames(seu[[]])[seu[[df_class_col]][, 1] == "Singlet"]
+
+seu <- subset(
+  x = seu,
+  cells = singlet_cells
+)
+```
+
+Important:
+
+- Run DoubletFinder per sample when possible.
+- `doublet_rate` should come from expected recovery/loading information, not a universal constant.
+- Homotypic adjustment is optional and should only be used when preliminary clusters exist.
+
+## scDblFinder
+
+`scDblFinder` is a Bioconductor method that works on `SingleCellExperiment`.
+
+General idea:
+
+1. Convert or prepare a `SingleCellExperiment`.
+2. Simulate artificial doublets.
+3. Train a classifier to distinguish singlets from doublets.
+4. Return doublet class and score.
+
+Important points:
+
+- It is convenient for `SingleCellExperiment` workflows.
+- It can be used from a Seurat workflow after conversion to SCE.
+- For multiple samples, detection should usually respect sample identity.
+- Results can be copied back into Seurat metadata.
+
+Use it when the workflow can bridge through SCE or when sample-aware doublet detection is important.
+
+## Expected Doublet Rate
+
+Doublet rate is related to cell loading and recovery.
+
+Higher loaded cell numbers usually increase the expected doublet rate. For 10x data, expected rates are often estimated from the platform documentation or sample loading plan.
+
+Do not choose a doublet threshold only from the software output. Check whether the predicted number is biologically and technically plausible.
+
+## Multiple Samples
+
+For multiple samples, doublet detection should usually be sample-aware.
+
+Reason:
+
+- each sample may have different cell number
+- each sample may have different loading concentration
+- sample-specific cell type composition affects artificial doublet simulation
+- pooled detection can distort expected doublet rates
+
+The practical rule:
+
+```text
+detect doublets per sample when possible
+```
+
+## What To Inspect
+
+After doublet detection, inspect:
+
+- doublet count and percentage
+- doublet rate by `sample_id`
+- doublet score distribution
+- whether doublets cluster together
+- whether doublets express markers from multiple cell types
+- whether filtering removes one sample disproportionately
+
+## Note
+
+Doublet detection is not a single universal command. It is a method choice plus an interpretation step.
+
+For these practice notes, `DoubletFinder` and `scDblFinder` are the main R options to remember. The final choice can depend on whether the working object is Seurat or SingleCellExperiment, and whether sample-aware handling is needed.

@@ -1,0 +1,119 @@
+---
+title: "Single-Cell Scaling"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, scaling, seurat]
+draft: true
+---
+
+## Purpose
+
+Scaling standardizes gene expression values before PCA and other downstream steps.
+
+In Seurat, `ScaleData()` centers and scales expression values for each gene. After scaling, genes are more comparable for dimensionality reduction.
+
+Typical position:
+
+```text
+NormalizeData() -> FindVariableFeatures() -> CellCycleScoring() -> ScaleData() -> RunPCA()
+```
+
+## Scale Variable Features
+
+By default, the standard workflow scales variable features before PCA.
+
+```r
+seu <- Seurat::ScaleData(
+  object = seu,                         # Seurat object
+  features = Seurat::VariableFeatures(seu), # use variable features
+  vars.to.regress = NULL,               # no regression; can use c("S.Score", "G2M.Score")
+  scale.max = 10,                       # maximum scaled value
+  do.scale = TRUE,                      # scale each feature
+  do.center = TRUE,                     # center each feature
+  verbose = TRUE                        # show progress messages
+)
+```
+
+What this does:
+
+- centers each feature
+- scales each feature
+- stores the result in `scale.data`
+
+## Scale All Features
+
+Sometimes all genes are scaled, for example when downstream plotting or heatmaps need genes outside the variable feature set.
+
+```r
+all_genes <- rownames(seu)
+
+seu <- Seurat::ScaleData(
+  object = seu,
+  features = all_genes,
+  verbose = TRUE
+)
+```
+
+Scaling all genes may use more memory.
+
+## Regress Variables
+
+`ScaleData()` can also regress out unwanted sources of variation.
+
+Common examples:
+
+- `nCount_RNA`
+- `percent.mt`
+- `S.Score`
+- `G2M.Score`
+
+Example:
+
+```r
+seu <- Seurat::ScaleData(
+  object = seu,
+  features = Seurat::VariableFeatures(seu),
+  vars.to.regress = c("nCount_RNA", "percent.mt"),
+  verbose = TRUE
+)
+```
+
+Cell cycle regression:
+
+```r
+seu <- Seurat::ScaleData(
+  object = seu,
+  features = Seurat::VariableFeatures(seu),
+  vars.to.regress = c("S.Score", "G2M.Score"),
+  verbose = TRUE
+)
+```
+
+Do not regress variables blindly. Regression can remove biological signal if the variable is part of the question.
+
+## Check Scaled Data
+
+Extract scaled data:
+
+```r
+scaled_data <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  slot = "scale.data"
+)
+```
+
+Check dimensions:
+
+```r
+dim(scaled_data)
+scaled_data[1:5, 1:5]
+```
+
+If only variable features were scaled, `scale.data` may contain fewer rows than the full count matrix.
+
+## Note
+
+Scaling is mainly preparation for PCA and related dimensionality reduction.
+
+For a simple first workflow, scale variable features first. Add regression only when there is a clear reason.

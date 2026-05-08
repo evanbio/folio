@@ -1,0 +1,156 @@
+---
+title: "PCA"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, pca, seurat]
+draft: true
+---
+
+## Purpose
+
+PCA is the first major dimensionality reduction step in the standard Seurat workflow.
+
+It summarizes high-dimensional gene expression variation into principal components. These PCs are then used for neighbor graph construction, clustering, UMAP, and other downstream steps.
+
+Typical position:
+
+```text
+NormalizeData() -> FindVariableFeatures() -> ScaleData() -> RunPCA()
+```
+
+## Before PCA
+
+PCA usually expects scaled data.
+
+Check that variable features exist:
+
+```r
+length(Seurat::VariableFeatures(seu))
+head(Seurat::VariableFeatures(seu), 10)
+```
+
+Check that scaling has been run:
+
+```r
+scaled_data <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  slot = "scale.data"
+)
+
+dim(scaled_data)
+```
+
+## Run PCA
+
+Standard PCA:
+
+```r
+seu <- Seurat::RunPCA(
+  object = seu,                         # Seurat object after ScaleData()
+  features = Seurat::VariableFeatures(seu), # use variable features
+  npcs = 50,                            # number of PCs to compute
+  verbose = TRUE                        # show progress messages
+)
+```
+
+What to remember:
+
+- PCA usually uses variable features.
+- PCA is stored as a reduction inside the Seurat object.
+- The number of computed PCs should be larger than the number you expect to use later.
+
+## Check PCA
+
+Check reductions:
+
+```r
+Seurat::Reductions(seu)
+```
+
+Extract PCA embeddings:
+
+```r
+pca_embeddings <- Seurat::Embeddings(
+  object = seu,
+  reduction = "pca"
+)
+
+dim(pca_embeddings)
+pca_embeddings[1:5, 1:5]
+```
+
+View top feature loadings for selected PCs:
+
+```r
+print(
+  x = seu[["pca"]],
+  dims = 1:5,
+  nfeatures = 5
+)
+```
+
+## Visualize PCA
+
+Basic PCA plot:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "pca"
+)
+```
+
+Color PCA by metadata:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  reduction = "pca",
+  group.by = "sample_id"
+)
+```
+
+Show PC loadings:
+
+```r
+Seurat::VizDimLoadings(
+  object = seu,
+  dims = 1:2,
+  reduction = "pca"
+)
+```
+
+Heatmap for top PC genes:
+
+```r
+Seurat::DimHeatmap(
+  object = seu,
+  dims = 1:6,
+  cells = 500,
+  balanced = TRUE
+)
+```
+
+## Choose PCs
+
+Use an elbow plot to inspect how much variation is captured by each PC:
+
+```r
+p_elbow <- Seurat::ElbowPlot(
+  object = seu,
+  reduction = "pca",
+  ndims = 50
+) +
+  ggplot2::labs(title = "Elbow Plot of PCA")
+
+p_elbow
+```
+
+The elbow plot helps choose how many PCs to use for downstream steps such as `FindNeighbors()`, `FindClusters()`, and `RunUMAP()`.
+
+## Note
+
+PCA is not the final visualization. It is mainly an intermediate representation for graph construction, clustering, and UMAP.
+
+The chosen number of PCs affects downstream results, so it should be checked rather than copied blindly.

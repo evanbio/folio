@@ -1,0 +1,113 @@
+---
+title: "Variable Features"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, variable-features, seurat]
+draft: true
+---
+
+## Purpose
+
+Variable feature selection identifies genes with high biological variation across cells.
+
+This step is usually done after normalization and before scaling and PCA.
+
+Typical order:
+
+```text
+NormalizeData() -> FindVariableFeatures() -> ScaleData() -> RunPCA()
+```
+
+## Why Variable Features
+
+Single-cell RNA-seq data contain thousands of genes, but many genes are uninformative for cell-state differences.
+
+Variable features are used to focus downstream dimensionality reduction on genes that capture meaningful cell-to-cell variation.
+
+What to remember:
+
+- variable features are not all genes
+- they are usually used for PCA
+- they are selected after normalized expression is available
+- the selected genes depend on dataset, normalization, and method
+
+## Find Variable Features
+
+Standard Seurat workflow:
+
+```r
+seu <- Seurat::FindVariableFeatures(
+  object = seu,              # Seurat object after NormalizeData()
+  selection.method = "vst",  # default and common method
+  nfeatures = 2000,          # number of variable features to keep
+  verbose = TRUE             # show progress messages
+)
+```
+
+Common parameters:
+
+| Parameter | Meaning |
+|---|---|
+| `object` | Seurat object |
+| `selection.method` | method for selecting variable features |
+| `nfeatures` | number of variable features to keep |
+
+For basic scRNA-seq analysis, `selection.method = "vst"` and `nfeatures = 2000` are common starting choices.
+
+## Check Variable Features
+
+Extract selected features:
+
+```r
+variable_features <- Seurat::VariableFeatures(seu)
+
+length(variable_features)
+head(variable_features, 10)
+sample(variable_features, 10)
+```
+
+Check whether expected marker genes appear:
+
+```r
+"IL7R" %in% variable_features
+"MS4A1" %in% variable_features
+```
+
+This is only a sanity check. A gene does not need to be variable to be biologically meaningful.
+
+## Visualize Variable Features
+
+Plot variable features:
+
+```r
+variable_feature_plot <- Seurat::VariableFeaturePlot(
+  object = seu,
+  log = NULL,               # decide automatically based on data
+  col = c("black", "red"),  # black = ordinary genes, red = variable genes
+  pt.size = 1               # point size
+)
+
+variable_feature_plot
+```
+
+Label top features:
+
+```r
+top_variable_genes <- head(variable_features, 10)
+
+variable_feature_plot <- Seurat::LabelPoints(
+  plot = variable_feature_plot,
+  points = top_variable_genes,
+  repel = TRUE, # avoid label overlap
+  xnudge = 0.3,
+  ynudge = 0.05
+)
+
+variable_feature_plot
+```
+
+## Note
+
+Variable feature selection is a preprocessing step for dimensionality reduction.
+
+It should not be interpreted as a final list of disease genes, marker genes, or differentially expressed genes.

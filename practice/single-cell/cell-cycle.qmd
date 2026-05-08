@@ -1,0 +1,122 @@
+---
+title: "Cell Cycle Scoring"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, cell-cycle, seurat]
+draft: true
+---
+
+## Purpose
+
+Cell cycle scoring estimates whether each cell is likely in S phase, G2M phase, or neither.
+
+This is useful because cell cycle can be a strong source of variation in scRNA-seq data. Sometimes it is a biological signal; sometimes it is a confounder.
+
+Typical position:
+
+```text
+NormalizeData() -> FindVariableFeatures() -> CellCycleScoring() -> ScaleData()
+```
+
+## Gene Sets
+
+Create S phase and G2M phase gene vectors:
+
+```r
+s_genes <- Seurat::cc.genes$s.genes
+g2m_genes <- Seurat::cc.genes$g2m.genes
+```
+
+If gene-name casing does not match the object, use `CaseMatch()`:
+
+```r
+s_genes <- Seurat::CaseMatch(
+  search = s_genes,
+  match = rownames(seu)
+)
+
+g2m_genes <- Seurat::CaseMatch(
+  search = g2m_genes,
+  match = rownames(seu)
+)
+```
+
+## Score Cell Cycle
+
+Run cell cycle scoring:
+
+```r
+seu <- Seurat::CellCycleScoring(
+  object = seu,             # Seurat object after normalization
+  s.features = s_genes,     # S phase genes
+  g2m.features = g2m_genes, # G2M phase genes
+  set.ident = FALSE         # keep current identities unchanged
+)
+```
+
+This adds metadata columns:
+
+- `S.Score`
+- `G2M.Score`
+- `Phase`
+
+## Check Scores
+
+Inspect metadata:
+
+```r
+metadata <- seu[[]]
+
+head(metadata[, c("S.Score", "G2M.Score", "Phase")])
+table(seu$Phase)
+```
+
+Visualize score distributions:
+
+```r
+Seurat::VlnPlot(
+  object = seu,
+  features = c("S.Score", "G2M.Score"),
+  group.by = "Phase",
+  pt.size = 0.1,
+  ncol = 2
+)
+```
+
+If clustering or embeddings already exist, check whether cell cycle explains structure:
+
+```r
+Seurat::DimPlot(
+  object = seu,
+  group.by = "Phase"
+)
+```
+
+## Regress Or Not
+
+Cell cycle scores can be regressed during scaling:
+
+```r
+seu <- Seurat::ScaleData(
+  object = seu,
+  vars.to.regress = c("S.Score", "G2M.Score")
+)
+```
+
+But do not regress cell cycle blindly.
+
+Consider regression when:
+
+- clusters are mainly separated by cell cycle phase
+- cell cycle is not part of the biological question
+- proliferating cells obscure the main cell-type structure
+
+Avoid or be cautious when:
+
+- studying proliferation
+- studying tumor, development, regeneration, stem cells, or immune activation
+- cell cycle state is itself biologically meaningful
+
+## Note
+
+Cell cycle scoring is a diagnostic step. The important decision is not only how to calculate `S.Score` and `G2M.Score`, but whether those scores should be treated as unwanted variation.

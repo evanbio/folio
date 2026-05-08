@@ -1,0 +1,111 @@
+---
+title: "Reference"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, reference, annotation, celldex]
+draft: true
+---
+
+## Purpose
+
+Reference resources help interpret single-cell results.
+
+They can include:
+
+- curated marker gene tables
+- cell type annotation references
+- public expression references
+- ontology or label mapping tables
+- locally saved `.rds`, `.rda`, or `.csv` files
+
+References are supporting evidence. They should not replace marker inspection and biological interpretation.
+
+## Project Location
+
+Reference files used by this project can be stored under:
+
+```text
+assets/data/
+```
+
+For example, local celldex references are stored in:
+
+```text
+assets/data/celldex/
+```
+
+Current files:
+
+```text
+assets/data/celldex/BlueprintEncodeData.rds
+assets/data/celldex/DatabaseImmuneCellExpressionData.rds
+assets/data/celldex/HumanPrimaryCellAtlasData.rds
+assets/data/celldex/ImmGenData.rds
+assets/data/celldex/MonacoImmuneData.rds
+assets/data/celldex/MouseRNAseqData.rds
+assets/data/celldex/NovershternHematopoieticData.rds
+assets/data/celldex/celldex_reference.rda
+```
+
+This keeps reference files separate from analysis notebooks.
+
+## celldex References
+
+`celldex` provides curated reference datasets commonly used with cell annotation workflows such as `SingleR`.
+
+The local celldex folder contains seven individual reference datasets and one combined `.rda` file.
+
+| File | General use |
+|---|---|
+| `BlueprintEncodeData.rds` | human immune and hematopoietic reference |
+| `DatabaseImmuneCellExpressionData.rds` | immune cell expression reference |
+| `HumanPrimaryCellAtlasData.rds` | broad human primary cell reference |
+| `ImmGenData.rds` | mouse immune cell reference |
+| `MonacoImmuneData.rds` | human immune cell reference |
+| `MouseRNAseqData.rds` | mouse RNA-seq reference |
+| `NovershternHematopoieticData.rds` | human hematopoietic reference |
+| `celldex_reference.rda` | combined local reference object file |
+
+Choose references by species, tissue, platform, and the biological question.
+
+## Load References
+
+Load one reference:
+
+```r
+hpca_ref <- readRDS(
+  file = "assets/data/celldex/HumanPrimaryCellAtlasData.rds"
+)
+```
+
+Load the combined reference file:
+
+```r
+load("assets/data/celldex/celldex_reference.rda")
+```
+
+After loading, check available labels:
+
+```r
+colnames(SummarizedExperiment::colData(hpca_ref))
+```
+
+Common label columns include broad labels and finer labels, depending on the reference.
+
+## Reproducibility
+
+For reproducible annotation, keep track of:
+
+- reference source
+- reference version or download date
+- file path
+- label column used
+- species and tissue compatibility
+
+Locally saved references make annotation less dependent on remote download behavior.
+
+## Note
+
+Reference data should be used together with cluster markers, known biology, sample metadata, and visualization.
+
+The final cell type label should be treated as an interpretation, not as a direct output of the reference file alone.

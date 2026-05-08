@@ -1,0 +1,253 @@
+---
+title: "Select Principal Components"
+date: 2026-05-08
+categories: [practice, single-cell]
+tags: [single-cell, pca, pcs, seurat]
+draft: true
+---
+
+## Purpose
+
+Choosing the number of principal components is a key step before graph construction, clustering, UMAP, or t-SNE.
+
+The chosen dimension range usually appears as:
+
+```r
+dims <- 1:30
+```
+
+Common starting values are:
+
+| Workflow | Common starting `dims` |
+|---|---|
+| Classic log-normalized workflow | `1:30` |
+| SCT workflow | `1:40` |
+| Integrated assay PCA | `1:30` or `1:40` |
+| Harmony reduction | use the selected PCA dimensions, often `1:30` or `1:40` |
+
+These values are starting points, not rules. SCT workflows often use more PCs than the classic workflow because SCT normalization can preserve more biological signal in higher PCs.
+
+This value should still be checked from the data. Do not copy `1:30` or `1:40` blindly.
+
+## Where PCs Are Used
+
+PC selection affects downstream steps such as:
+
+```r
+seu <- Seurat::FindNeighbors(
+  object = seu,
+  reduction = "pca",
+  dims = dims
+)
+
+seu <- Seurat::FindClusters(seu)
+
+seu <- Seurat::RunUMAP(
+  object = seu,
+  reduction = "pca",
+  dims = dims
+)
+```
+
+For Harmony integration, the same idea applies, but the reduction is usually `harmony`:
+
+```r
+seu <- Seurat::FindNeighbors(
+  object = seu,
+  reduction = "harmony",
+  dims = dims
+)
+
+seu <- Seurat::RunUMAP(
+  object = seu,
+  reduction = "harmony",
+  dims = dims
+)
+```
+
+## Main Approaches
+
+Seurat workflows commonly use several complementary approaches.
+
+| Approach | Use |
+|---|---|
+| Biological inspection | Check PC loadings, marker genes, pathway signals, and known metadata |
+| Elbow plot | Look for where additional PCs add much less variation |
+| Variance heuristic | Use explained variance rules for automated or batch workflows |
+
+These approaches should be treated as guidance, not as absolute rules.
+
+## Elbow Plot
+
+Use `ElbowPlot()` to inspect how quickly the standard deviation drops across PCs:
+
+```r
+p_elbow <- Seurat::ElbowPlot(
+  object = seu,
+  reduction = "pca",
+  ndims = 50
+) +
+  ggplot2::labs(title = "Elbow Plot of PCA")
+
+p_elbow
+```
+
+The elbow is the point where additional PCs start contributing less new structure.
+
+For Harmony, inspect the original PCA before Harmony and then use the selected dimension range for the Harmony reduction.
+
+## Inspect PC Loadings
+
+PCs should also make biological sense.
+
+Check genes driving selected PCs:
+
+```r
+print(
+  x = seu[["pca"]],
+  dims = 1:10,
+  nfeatures = 10
+)
+```
+
+Visualize loadings:
+
+```r
+Seurat::VizDimLoadings(
+  object = seu,
+  dims = 1:5,
+  reduction = "pca"
+)
+```
+
+Heatmap selected PCs:
+
+```r
+Seurat::DimHeatmap(
+  object = seu,
+  dims = 1:10,
+  cells = 500,
+  balanced = TRUE
+)
+```
+
+PCs dominated by technical effects, stress genes, mitochondrial genes, or sample-specific artifacts should be interpreted carefully.
+
+## Variance-Based Heuristic
+
+The PCA reduction stores `stdev` for each PC. The variance explained by each PC is based on squared standard deviation:
+
+```r
+stdev <- seu[["pca"]]@stdev
+variance <- stdev^2
+var_ratio <- variance / sum(variance) * 100
+cum_var <- cumsum(var_ratio)
+```
+
+Do not compute variance explained directly from `stdev`. Use `stdev^2`.
+
+Check the first few PCs:
+
+```r
+head(var_ratio, 10)
+head(cum_var, 10)
+```
+
+`var_ratio` is the percentage of variance explained by each PC. `cum_var` is the cumulative percentage explained by the first k PCs.
+
+### Cutoff 1
+
+The first cutoff asks for the first PC where:
+
+- cumulative variance is greater than 90%
+- the current PC explains less than 5% of variance
+
+```r
+pc_cutoff_1 <- which(cum_var > 90 & var_ratio < 5)[1]
+
+pc_cutoff_1
+```
+
+This rule tries to avoid selecting too few PCs. It keeps enough PCs to cover most of the variation, while also requiring the current PC to no longer be a dominant axis.
+
+In words:
+
+```text
+Use enough PCs to explain most variation, but stop after individual PCs are no longer very large.
+```
+
+### Cutoff 2
+
+The second cutoff approximates the elbow point by looking at the drop in explained variance between adjacent PCs:
+
+```r
+var_diff <- head(var_ratio, -1) - tail(var_ratio, -1)
+
+head(var_diff, 10)
+```
+
+Then find the last PC where the drop is still greater than 0.1%:
+
+```r
+pc_cutoff_2 <- if (any(var_diff > 0.1)) {
+  max(which(var_diff > 0.1)) + 1
+} else {
+  NA_integer_
+}
+
+pc_cutoff_2
+```
+
+This rule asks where the variance curve is still dropping meaningfully. After that point, additional PCs contribute less extra structure and are more likely to add noise or weak technical signal.
+
+In words:
+
+```text
+Keep PCs until the explained variance curve has mostly flattened.
+```
+
+### Suggested PCs
+
+Use the smaller of the two cutoffs as a conservative suggestion:
+
+```r
+n_pcs <- min(pc_cutoff_1, pc_cutoff_2, na.rm = TRUE)
+
+if (!is.finite(n_pcs)) {
+  n_pcs <- length(stdev)
+}
+
+dims <- 1:n_pcs
+
+n_pcs
+dims
+```
+
+The two cutoffs capture different ideas:
+
+| Cutoff | Meaning |
+|---|---|
+| `pc_cutoff_1` | enough cumulative variance has been captured |
+| `pc_cutoff_2` | the elbow-like drop in variance has mostly flattened |
+
+This is only a heuristic. Compare the result with `ElbowPlot()`, PC loadings, and biological interpretation.
+
+## Practical Rule
+
+For routine analysis, start by computing more PCs than expected:
+
+```r
+seu <- Seurat::RunPCA(
+  object = seu,
+  npcs = 50,
+  verbose = TRUE
+)
+```
+
+Then inspect the elbow plot, PC loadings, and the variance heuristic. Use the selected `dims` consistently in `FindNeighbors()`, `RunUMAP()`, and `RunTSNE()`.
+
+## Note
+
+PC selection is not specific to SCT. It applies after classic PCA, SCT PCA, integrated assay PCA, and Harmony-based workflows.
+
+The final choice should balance statistical signal, biological interpretability, and downstream clustering stability.

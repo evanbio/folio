@@ -1,0 +1,333 @@
+---
+title: "Single-Cell QC"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, qc, seurat]
+draft: true
+---
+
+## Purpose
+
+This page covers basic cell-level QC metrics after loading a filtered scRNA-seq count matrix into a Seurat object.
+
+The goal is to inspect cell quality before normalization, dimensionality reduction, clustering, and annotation.
+
+This page does not cover empty-droplet calling or formal doublet detection. Those are related but separate steps.
+
+## Common QC Metrics
+
+| Metric | Meaning | Interpretation |
+|---|---|---|
+| `nCount_RNA` | total UMI counts per cell | too low may indicate poor quality or low sequencing depth; very high may suggest doublets |
+| `nFeature_RNA` | number of detected genes per cell | too low may indicate dead or low-quality cells; very high may suggest doublets or contamination |
+| `percent.mt` | mitochondrial gene percentage | high values often indicate stressed, damaged, or dying cells |
+| `percent.hb` | hemoglobin gene percentage | high values may indicate red blood cell contamination |
+| `percent.ribo` | ribosomal gene percentage | reflects ribosomal gene signal; interpret with tissue and experiment context |
+| `log10_ratio_features_to_umi` | `log10(nFeature_RNA) / log10(nCount_RNA)` | low values may indicate low expression complexity or RNA degradation |
+
+## Default Seurat Metrics
+
+`CreateSeuratObject()` automatically calculates:
+
+- `nCount_RNA`: column sums of the counts matrix
+- `nFeature_RNA`: number of non-zero features per cell
+
+Check them in metadata:
+
+```r
+metadata <- seu[[]]
+
+head(metadata[, c("nCount_RNA", "nFeature_RNA")])
+summary(metadata[, c("nCount_RNA", "nFeature_RNA")])
+```
+
+## Calculate Default Metrics
+
+If `nCount_RNA` or `nFeature_RNA` is missing, calculate them from the raw count matrix.
+
+```r
+counts <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  slot = "counts"
+)
+
+seu$nCount_RNA <- Matrix::colSums(counts)
+seu$nFeature_RNA <- Matrix::colSums(counts > 0)
+```
+
+Check again:
+
+```r
+summary(seu$nCount_RNA)
+summary(seu$nFeature_RNA)
+```
+
+What they mean:
+
+- `nCount_RNA`: total UMI counts per cell.
+- `nFeature_RNA`: number of detected genes per cell.
+
+## Add QC Metrics
+
+Mitochondrial percentage for human data:
+
+```r
+seu <- Seurat::PercentageFeatureSet(
+  object = seu,             # Seurat object
+  pattern = "^MT-",         # human mitochondrial genes
+  col.name = "percent.mt"   # metadata column to store the result
+)
+```
+
+For mouse data, mitochondrial genes usually start with `mt-`:
+
+```r
+seu <- Seurat::PercentageFeatureSet(
+  object = seu,             # Seurat object
+  pattern = "^mt-",         # mouse mitochondrial genes
+  col.name = "percent.mt"   # metadata column to store the result
+)
+```
+
+Hemoglobin percentage:
+
+```r
+hb_genes <- c("HBA1", "HBA2", "HBB", "HBD", "HBE1", "HBG1", "HBG2", "HBM", "HBQ1", "HBZ")
+hb_genes <- Seurat::CaseMatch(search = hb_genes, match = rownames(seu)) # case-insensitive gene matching
+
+seu <- Seurat::PercentageFeatureSet(
+  object = seu,             # Seurat object
+  features = hb_genes,      # hemoglobin gene set found in the object
+  col.name = "percent.hb"   # metadata column to store the result
+)
+```
+
+Ribosomal percentage:
+
+```r
+ribo_genes <- grep("^RP[SL]", rownames(seu), value = TRUE, ignore.case = TRUE) # case-insensitive RPL/RPS matching
+
+seu <- Seurat::PercentageFeatureSet(
+  object = seu,              # Seurat object
+  features = ribo_genes,     # ribosomal protein genes found in the object
+  col.name = "percent.ribo"  # metadata column to store the result
+)
+```
+
+Expression complexity:
+
+```r
+seu$log10_ratio_features_to_umi <- log10(seu$nFeature_RNA) / log10(seu$nCount_RNA)
+```
+
+Check added metrics:
+
+```r
+metadata <- seu[[]]
+
+summary(metadata[, c(
+  "nCount_RNA",
+  "nFeature_RNA",
+  "percent.mt",
+  "percent.hb",
+  "percent.ribo",
+  "log10_ratio_features_to_umi"
+)])
+```
+
+## Visualize QC Metrics
+
+Violin plots:
+
+Violin plots show the distribution of each QC metric across cells. They are useful for seeing outliers and deciding whether thresholds should be sample-specific.
+
+```r
+Seurat::VlnPlot(
+  object = seu, # Seurat object
+  features = c(
+    "nFeature_RNA",
+    "nCount_RNA",
+    "percent.mt",
+    "percent.hb",
+    "log10_ratio_features_to_umi"
+  ),            # QC metrics to visualize
+  pt.size = 0.1, # point size
+  ncol = 5      # number of panels per row
+)
+```
+
+Add a threshold line for one metric:
+
+```r
+feature_threshold <- 200
+
+p <- Seurat::VlnPlot(
+  object = seu,              # Seurat object
+  features = "nFeature_RNA", # QC metric
+  group.by = "sample_id",    # compare samples if available
+  pt.size = 0.1              # point size
+) +
+  ggplot2::labs(title = "Genes per Cell") +
+  ggplot2::geom_hline(
+    yintercept = feature_threshold, # threshold value
+    linetype = "dashed",
+    color = "red"
+  )
+
+p
+```
+
+Scatter plots:
+
+Scatter plots show relationships between QC metrics. They help identify cells with unusual combinations, such as high counts but low complexity, or high mitochondrial percentage.
+
+```r
+Seurat::FeatureScatter(
+  object = seu,             # Seurat object
+  feature1 = "nCount_RNA",  # total counts per cell
+  feature2 = "nFeature_RNA" # detected genes per cell
+)
+
+Seurat::FeatureScatter(
+  object = seu,            # Seurat object
+  feature1 = "nCount_RNA", # total counts per cell
+  feature2 = "percent.mt"  # mitochondrial percentage
+)
+
+Seurat::FeatureScatter(
+  object = seu,                            # Seurat object
+  feature1 = "nCount_RNA",                 # total counts per cell
+  feature2 = "log10_ratio_features_to_umi" # expression complexity
+)
+```
+
+### Comprehensive QC Scatter
+
+A comprehensive scatter plot can show library size, detected genes, mitochondrial percentage, sample structure, and threshold lines in one figure.
+
+This is useful for multi-sample QC.
+
+```r
+metadata <- seu[[]]
+
+umi_threshold <- 500
+feature_threshold <- 200
+
+p_comprehensive <- metadata |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      x = nCount_RNA,
+      y = nFeature_RNA,
+      color = percent.mt
+    )
+  ) +
+  ggplot2::geom_point(
+    size = 1,
+    alpha = 0.8
+  ) +
+  ggplot2::scale_colour_gradient(
+    low = "gray90",
+    high = "#8856a7"
+  ) +
+  ggplot2::scale_x_log10() +
+  ggplot2::scale_y_log10() +
+  ggplot2::geom_vline(
+    xintercept = umi_threshold,
+    linetype = "dashed",
+    color = "red"
+  ) +
+  ggplot2::geom_hline(
+    yintercept = feature_threshold,
+    linetype = "dashed",
+    color = "red"
+  ) +
+  ggplot2::facet_wrap(
+    facets = ~sample_id,
+    labeller = ggplot2::label_both
+  ) +
+  ggplot2::theme_classic() +
+  ggplot2::labs(
+    title = "UMI Counts vs Genes by Sample",
+    x = "UMI Counts",
+    y = "Genes Detected",
+    color = "Mitochondrial %"
+  )
+
+p_comprehensive
+```
+
+Optional trend line:
+
+```r
+p_comprehensive +
+  ggplot2::stat_smooth(
+    method = "lm",
+    color = "darkblue",
+    linewidth = 1,
+    linetype = "solid",
+    se = FALSE
+  )
+```
+
+If `sample_id` exists, inspect QC by sample:
+
+```r
+Seurat::VlnPlot(
+  object = seu, # Seurat object
+  features = c(
+    "nFeature_RNA",
+    "nCount_RNA",
+    "percent.mt"
+  ),            # QC metrics
+  pt.size = 0.1, # point size
+  group.by = "sample_id", # split distributions by sample
+  ncol = 3      # number of panels per row
+)
+```
+
+## Filtering
+
+Filtering removes cells that look technically low quality based on QC metrics.
+
+Thresholds are dataset-specific. The values below are common starting points, not fixed rules.
+
+| Metric | Common Minimum | Common Maximum | Purpose |
+|---|---:|---:|---|
+| `nCount_RNA` | 500 | dataset-specific | remove cells with very low UMI counts |
+| `nFeature_RNA` | 200 | 6000 | remove low-complexity cells and unusually feature-rich cells |
+| `percent.mt` | 0 | 10-20 | remove cells with high mitochondrial signal |
+| `percent.hb` | 0 | 5 | remove cells with high hemoglobin signal, if relevant |
+| `percent.ribo` | 0 | 50 | check high ribosomal signal, if relevant |
+| `log10_ratio_features_to_umi` | 0.8 | `Inf` | optional metric for low expression complexity |
+
+Filter cells:
+
+```r
+seu <- subset(
+  x = seu,
+  subset = nCount_RNA > 500 &
+    nFeature_RNA > 200 &
+    nFeature_RNA < 6000 &
+    percent.mt < 10 &
+    percent.hb < 5 &
+    percent.ribo < 50 &
+    log10_ratio_features_to_umi > 0.8
+)
+```
+
+Check after filtering:
+
+```r
+dim(seu)
+
+if ("sample_id" %in% colnames(seu[[]])) {
+  table(seu$sample_id)
+}
+```
+
+## Note
+
+Basic QC mainly asks whether each cell has reasonable library size, detected gene number, mitochondrial signal, blood-related signal, and expression complexity.
+
+Doublet detection and empty-droplet calling can use related signals, but they should be treated as separate analysis steps.

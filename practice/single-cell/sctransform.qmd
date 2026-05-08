@@ -1,0 +1,311 @@
+---
+title: "SCTransform"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, sctransform, seurat]
+draft: true
+---
+
+## Purpose
+
+`SCTransform()` is an alternative preprocessing workflow in Seurat.
+
+It is not an extra step after the classic workflow. It replaces the usual sequence of normalization, variable feature selection, and scaling.
+
+Classic workflow:
+
+```text
+NormalizeData() -> FindVariableFeatures() -> ScaleData() -> RunPCA()
+```
+
+SCT workflow:
+
+```text
+SCTransform() -> RunPCA()
+```
+
+## What SCTransform Does
+
+SCTransform performs model-based normalization and variance stabilization.
+
+In practice, it handles:
+
+- normalization
+- variance stabilization
+- variable feature selection
+- scaled residuals for downstream PCA
+- optional regression of unwanted variables
+
+It creates a new assay, usually named `SCT`.
+
+## Run SCTransform
+
+Basic SCT workflow:
+
+```r
+seed.use <- 1234
+
+seu <- Seurat::SCTransform(
+  object = seu,              # Seurat object
+  assay = "RNA",             # input assay
+  new.assay.name = "SCT",    # output assay
+  vst.flavor = "v2",          # SCT v2 regularization
+  method = "glmGamPoi",       # faster model fitting; requires glmGamPoi
+  ncells = 5000,              # cells sampled for model fitting
+  seed.use = seed.use,        # reproducible subsampling
+  vars.to.regress = NULL,    # no regression by default
+  variable.features.n = 3000, # number of variable features
+  verbose = TRUE             # show progress messages
+)
+```
+
+`method = "glmGamPoi"` is commonly used with `vst.flavor = "v2"` to speed up SCTransform. It requires the `glmGamPoi` package.
+
+`ncells = 5000` is the default number of cells sampled to fit the SCT model. `seed.use` makes this subsampling reproducible.
+
+If mitochondrial signal should be regressed:
+
+```r
+seu <- Seurat::SCTransform(
+  object = seu,
+  assay = "RNA",
+  new.assay.name = "SCT",
+  vst.flavor = "v2",
+  method = "glmGamPoi",
+  ncells = 5000,
+  seed.use = seed.use,
+  vars.to.regress = "percent.mt",
+  variable.features.n = 3000,
+  verbose = TRUE
+)
+```
+
+Do not regress variables blindly. `percent.mt`, cell cycle scores, or other metadata columns may reflect biological differences in some datasets.
+
+## Multi-Sample SCT
+
+For formal multi-sample analysis, run `SCTransform()` separately for each sample or library.
+
+Do not treat a merged multi-sample object as the default input for one shared SCT model.
+
+SCT estimates a model of technical variation related to sequencing depth. Different samples or libraries can have different depth, capture efficiency, chemistry, batch structure, or cell composition. Fitting one model across all samples assumes those technical structures are shared, which is often not a good assumption.
+
+Recommended pattern:
+
+```r
+seed.use <- 1234
+
+seu.list <- Seurat::SplitObject(
+  object = seu,
+  split.by = "sample"
+)
+
+seu.list <- lapply(
+  X = seu.list,
+  FUN = function(x) {
+    Seurat::SCTransform(
+      object = x,
+      assay = "RNA",
+      new.assay.name = "SCT",
+      vst.flavor = "v2",
+      method = "glmGamPoi",
+      ncells = min(5000, ncol(x)),
+      seed.use = seed.use,
+      variable.features.n = 3000,
+      verbose = FALSE
+    )
+  }
+)
+```
+
+Here `ncells` is computed inside each sample object. It means each sample uses up to 5000 cells for model fitting.
+
+After this step, `seu.list` is still a list of Seurat objects. Each object has its own `SCT` assay and its own SCT model.
+
+## After Per-Sample SCT
+
+Per-sample SCT does not directly return one combined Seurat object.
+
+The result is:
+
+```r
+class(seu.list)
+length(seu.list)
+Seurat::Assays(seu.list[[1]])
+```
+
+To continue downstream analysis, choose one route explicitly.
+
+### SCT Integration
+
+If batch correction or sample integration is needed, keep `seu.list` as a list and run the SCT integration workflow.
+
+The common anchor-based route uses CCA by default or explicitly with `reduction = "cca"`:
+
+```r
+features <- Seurat::SelectIntegrationFeatures(
+  object.list = seu.list,
+  nfeatures = 3000
+)
+
+seu.list <- Seurat::PrepSCTIntegration(
+  object.list = seu.list,
+  anchor.features = features
+)
+
+anchors <- Seurat::FindIntegrationAnchors(
+  object.list = seu.list,
+  normalization.method = "SCT",
+  anchor.features = features,
+  reduction = "cca",
+  dims = 1:30,
+  k.anchor = 5,
+  k.filter = 200,
+  k.score = 30
+)
+
+seu <- Seurat::IntegrateData(
+  anchorset = anchors,
+  normalization.method = "SCT",
+  dims = 1:30
+)
+
+Seurat::DefaultAssay(seu) <- "integrated"
+
+seu <- Seurat::RunPCA(
+  object = seu,
+  assay = "integrated",
+  npcs = 50,
+  seed.use = 42,
+  verbose = TRUE
+)
+```
+
+`k.anchor`, `k.filter`, and `k.score` control anchor selection, filtering, and scoring. The values above are Seurat defaults.
+
+After `IntegrateData()`, `seu` is a single Seurat object again. Set the default assay to `integrated` and run PCA on the integrated assay before graph construction, clustering, and UMAP.
+
+### Harmony Integration
+
+Harmony is another common route after per-sample SCT.
+
+Unlike anchor-based SCT integration, Harmony works on a single merged Seurat object and corrects the PCA embedding. It returns an integrated reduction, usually named `harmony`, rather than an integrated assay.
+
+If there are multiple samples, first choose shared variable features and merge the SCT-normalized objects:
+
+```r
+features <- Seurat::SelectIntegrationFeatures(
+  object.list = seu.list,
+  nfeatures = 3000,
+  assay = rep("SCT", length(seu.list))
+)
+
+seu <- merge(
+  x = seu.list[[1]],
+  y = seu.list[-1],
+  merge.data = TRUE
+)
+
+Seurat::DefaultAssay(seu) <- "SCT"
+Seurat::VariableFeatures(seu, assay = "SCT") <- features
+```
+
+Then run PCA on the merged SCT assay and correct the PCA space with Harmony:
+
+```r
+seu <- Seurat::RunPCA(
+  object = seu,
+  assay = "SCT",
+  npcs = 50,
+  verbose = TRUE
+)
+
+seu <- harmony::RunHarmony(
+  object = seu,
+  group.by.vars = "sample",
+  theta = NULL,
+  sigma = 0.1,
+  dims.use = 1:30,
+  verbose = TRUE
+)
+```
+
+Downstream neighbors, clustering, and UMAP should then use the Harmony reduction:
+
+```r
+seu <- Seurat::FindNeighbors(
+  object = seu,
+  reduction = "harmony",
+  dims = 1:30
+)
+
+seu <- Seurat::FindClusters(seu)
+
+seu <- Seurat::RunUMAP(
+  object = seu,
+  reduction = "harmony",
+  dims = 1:30
+)
+```
+
+This keeps the per-sample SCT models in the merged object. For marker testing after merging SCT-normalized objects, check whether `PrepSCTFindMarkers()` is needed.
+
+## Check SCT Assay
+
+For a single SCT-normalized object, or for the merged object used before Harmony, check the `SCT` assay directly.
+
+Check assays:
+
+```r
+Seurat::Assays(seu)
+```
+
+Set SCT as the active assay:
+
+```r
+Seurat::DefaultAssay(seu) <- "SCT"
+```
+
+Check variable features:
+
+```r
+variable_features <- Seurat::VariableFeatures(seu)
+
+length(variable_features)
+head(variable_features, 10)
+```
+
+## Downstream PCA
+
+After `SCTransform()` on a single object, run PCA on the `SCT` assay:
+
+```r
+seu <- Seurat::RunPCA(
+  object = seu,
+  assay = "SCT",
+  features = Seurat::VariableFeatures(seu),
+  npcs = 50,
+  verbose = TRUE
+)
+```
+
+Then continue with neighbor graph, clustering, and UMAP using selected PCs.
+
+After anchor-based SCT integration, downstream PCA usually uses the integrated assay returned by `IntegrateData()`. After Harmony integration, downstream steps should use `reduction = "harmony"` instead of rerunning this SCT PCA section.
+
+## Classic Or SCT
+
+Use one preprocessing route clearly.
+
+| Route | Main Steps | Notes |
+|---|---|---|
+| Classic | `NormalizeData()` -> `FindVariableFeatures()` -> `ScaleData()` | simple and widely used |
+| SCT | `SCTransform()` | model-based normalization and variance stabilization |
+
+Do not mix the two routes casually. If using SCT, downstream PCA and clustering should usually use the `SCT` assay.
+
+## Note
+
+For single-sample or simple exploratory analysis, either classic normalization or SCT can be used.
+
+For multi-sample analysis, the default SCT principle is to split by sample or library first, then run `SCTransform()` on each object separately. SCT integration should be treated as a separate workflow after per-sample SCT.

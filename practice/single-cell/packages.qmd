@@ -1,0 +1,71 @@
+---
+title: "Single-Cell Packages"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, packages, software]
+draft: true
+---
+
+## Purpose
+
+This page is for collecting packages encountered while learning and doing single-cell analysis.
+
+Keep it practical: package name, ecosystem, task, and when it becomes relevant.
+
+## Packages
+
+| Package | Ecosystem | Task | Notes |
+|---|---|---|---|
+| Seurat | R | General workflow | Common entry point for scRNA-seq case analysis |
+| patchwork | R | Plot composition | Combine ggplot figures into one layout |
+| SingleCellExperiment | R / Bioconductor | Data object | Core Bioconductor container |
+| zellkonverter | R / Bioconductor | h5ad import/export | Bridges AnnData and SingleCellExperiment |
+| Scanpy | Python | General workflow | Main AnnData-based analysis framework |
+| AnnData | Python | Data object | Common `.h5ad` object format |
+
+## Package Notes
+
+### Seurat
+
+Seurat is the main R package I will encounter for practical scRNA-seq analysis. It is often used as a full workflow framework rather than a single-purpose tool.
+
+Typical uses:
+
+- create a single-cell object from count matrices
+- store cell metadata, gene metadata, assays, reductions, graphs, and cluster labels
+- run QC, normalization, feature selection, PCA, UMAP, clustering, marker detection, and integration
+- handle common multimodal extensions such as CITE-seq, spatial data, and multi-assay objects
+
+What to remember:
+
+- Seurat is convenient because many steps live in one ecosystem.
+- A Seurat object is not just an expression matrix; it also stores metadata and analysis results.
+- For condition-level differential expression, do not blindly use cell-level marker tests as final evidence. For multi-sample disease comparisons, pseudobulk is usually the safer direction.
+- When importing from `.h5ad`, check whether raw counts, normalized data, layers, reductions, and metadata survived conversion.
+
+### patchwork
+
+patchwork is an R package for combining multiple `ggplot2` plots into one figure layout.
+
+In single-cell work, it is useful when comparing related plots side by side, such as QC plots, UMAPs, feature plots, dot plots, or condition-specific panels.
+
+Common pattern:
+
+```r
+p1 + p2
+p1 / p2
+(p1 + p2) / p3
+```
+
+What to remember:
+
+- `+` places plots side by side.
+- `/` stacks plots vertically.
+- Parentheses control the layout.
+- It is mainly for figure assembly, not data analysis.
+
+## Open Questions
+
+- Should data objects have separate pages?
+- Should this stay as a package list or become a workflow map?
+- Should R and Python ecosystems be separated later?

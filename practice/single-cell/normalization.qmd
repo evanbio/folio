@@ -1,0 +1,125 @@
+---
+title: "Single-Cell Normalization"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, normalization, seurat]
+draft: true
+---
+
+## Purpose
+
+Normalization adjusts raw count data so cells can be compared more fairly.
+
+In scRNA-seq, different cells can have different total UMI counts because of capture efficiency, sequencing depth, cell size, or RNA content. Normalization reduces this technical difference before downstream steps.
+
+This page only covers normalization. Variable feature selection, scaling, PCA, and integration are separate steps.
+
+## What Normalization Does
+
+The usual Seurat default is log-normalization:
+
+```text
+raw counts -> divide by total counts per cell -> multiply by scale factor -> log1p transform
+```
+
+Conceptually:
+
+```text
+normalized value = log1p(count / total_counts_per_cell * scale_factor)
+```
+
+This creates normalized expression values in the `data` slot of the RNA assay.
+
+## Normalization Methods
+
+`NormalizeData()` supports several normalization methods.
+
+| Method | Common Use | Meaning |
+|---|---|---|
+| `LogNormalize` | default for RNA | normalize by total counts, multiply by scale factor, then `log1p` |
+| `CLR` | often used for ADT in CITE-seq | centered log-ratio normalization |
+| `RC` | relative count normalization | normalize by total counts without log transformation |
+
+For basic scRNA-seq RNA analysis, `LogNormalize` is the usual starting point.
+
+For CITE-seq ADT data, `CLR` is commonly used:
+
+```r
+seu <- Seurat::NormalizeData(
+  object = seu,              # Seurat object
+  assay = "ADT",             # protein / antibody-derived tag assay
+  normalization.method = "CLR"
+)
+```
+
+## LogNormalize
+
+Standard Seurat normalization:
+
+```r
+seu <- Seurat::NormalizeData(
+  object = seu,                         # Seurat object
+  normalization.method = "LogNormalize", # default normalization method
+  scale.factor = 10000                  # counts are scaled to 10,000 per cell
+)
+```
+
+Common parameters:
+
+| Parameter | Meaning |
+|---|---|
+| `object` | Seurat object |
+| `normalization.method` | method used to normalize counts |
+| `scale.factor` | target total count scale per cell |
+
+For most basic scRNA-seq practice notes, `LogNormalize` with `scale.factor = 10000` is the starting point.
+
+## Check Normalized Data
+
+After normalization, raw counts should still be available, and normalized data should be stored separately.
+
+Extract raw counts:
+
+```r
+counts <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  slot = "counts"
+)
+```
+
+Extract normalized data:
+
+```r
+data <- Seurat::GetAssayData(
+  object = seu,
+  assay = "RNA",
+  slot = "data"
+)
+```
+
+Check dimensions:
+
+```r
+dim(counts)
+dim(data)
+```
+
+They should usually have the same number of features and cells.
+
+## Counts Versus Data
+
+Keep the distinction clear:
+
+| Slot | Meaning | Use |
+|---|---|---|
+| `counts` | raw count matrix | QC, count-based modeling, pseudobulk |
+| `data` | normalized expression | visualization, clustering workflow, marker exploration |
+
+Do not overwrite raw counts with normalized values.
+
+## Notes
+
+Normalization does not remove all unwanted variation. Batch effects, cell cycle effects, sample differences, and biological covariates may still remain.
+
+Normalization also does not choose variable genes. That is the next preprocessing step.

@@ -1,0 +1,469 @@
+---
+title: "Single-Cell Data Formats"
+date: 2026-05-07
+categories: [practice, single-cell]
+tags: [single-cell, data-format, h5ad, 10x, rds]
+draft: true
+---
+
+## Purpose
+
+Single-cell data files are not all the same thing. Some files are raw or filtered count matrices; others are saved analysis objects with metadata, embeddings, clusters, and annotations.
+
+This page keeps a small map of common formats and how to load them.
+
+## Format Overview
+
+Add formats one by one. Do not mix different storage formats in the same row.
+
+| Format | Files | Typical Loader | Notes |
+|---|---|---|---|
+| 10x Matrix | `matrix.mtx.gz`, `barcodes.tsv.gz`, `features.tsv.gz` | `Seurat::Read10X()` | Three-file sparse matrix format from Cell Ranger |
+| 10x Non-Canonical Matrix | non-standard `.mtx/.tsv` names | `Matrix::readMM()` | 10x-like files with non-standard names |
+| SingleCellExperiment RDS | `.rds` | `readRDS()` | Saved Bioconductor single-cell object |
+| 10x H5 | `.h5` | `Seurat::Read10X_h5()` | Compact HDF5 version of 10x output |
+| AnnData | `.h5ad` | `zellkonverter::readH5AD()` | Python AnnData object |
+| Loom | `.loom` | `BiocIO::import()`, `scanpy.read_loom()` | Older HDF5-based exchange format |
+| Seurat RDS | `.rds` | `readRDS()` | Saved R object |
+| Trajectory Object RDS | `.rds` | `readRDS()` | Saved pseudotime or trajectory analysis object |
+
+## 10x Matrix
+
+10x Matrix usually means the three sparse matrix files exported by Cell Ranger:
+
+- `matrix.mtx.gz`
+- `barcodes.tsv.gz`
+- `features.tsv.gz` or `genes.tsv.gz`
+
+The usual modern file is `features.tsv.gz`; older outputs may use `genes.tsv.gz`.
+
+The most common R entry point is Seurat. Seurat provides `Read10X()` for loading this folder directly.
+
+```r
+data <- Seurat::Read10X(
+  data.dir = "filtered_feature_bc_matrix/", # folder with 10x matrix files
+  gene.column = 2,                          # use gene symbols from features.tsv.gz
+  cell.column = 1,                          # use cell barcodes from barcodes.tsv.gz
+  unique.features = TRUE,                   # make duplicated feature names unique
+  strip.suffix = FALSE                      # keep barcode suffixes such as -1
+)
+```
+
+Then create a Seurat object:
+
+```r
+seurat_obj <- Seurat::CreateSeuratObject(
+  counts = data,        # count matrix from Read10X()
+  min.cells = 3,        # keep genes detected in at least 3 cells
+  min.features = 200,   # keep cells with at least 200 detected genes
+  project = "sample",   # project or sample name
+  assay = "RNA"         # assay name for gene expression
+)
+```
+
+Parameter notes:
+
+- `data.dir`: folder containing `matrix.mtx.gz`, `barcodes.tsv.gz`, and `features.tsv.gz`.
+- `gene.column`: `2` usually means gene symbols; `1` usually means gene IDs.
+- `cell.column`: `1` means the barcode column.
+- `unique.features`: whether feature names should be made unique. Usually keep `TRUE`.
+- `strip.suffix`: whether to remove trailing barcode suffixes such as `-1`. Usually keep `FALSE` unless suffixes interfere with merging or matching metadata.
+
+So the loading step gives a sparse count matrix or a list of matrices. `CreateSeuratObject()` is the next step that turns counts into a Seurat object.
+
+Check after loading:
+
+- cells are columns and genes/features are rows
+- gene names or feature IDs look correct
+- sample identity is added to metadata after object creation
+- values are raw counts, not normalized expression
+
+## 10x Non-Canonical Matrix
+
+Some downloaded datasets are 10x-like matrices, but the file names are not standard.
+
+Example:
+
+```text
+GSM000000_sample_matrix.mtx.gz
+GSM000000_sample_barcodes.tsv.gz
+GSM000000_sample_features.tsv.gz
+```
+
+When possible, the cleanest solution is to copy or rename files into a standard 10x folder:
+
+```text
+sample/
+  matrix.mtx.gz
+  barcodes.tsv.gz
+  features.tsv.gz
+```
+
+Then use `Seurat::Read10X()`.
+
+If renaming is not practical, read the files manually:
+
+```r
+mat <- Matrix::readMM("GSM000000_sample_matrix.mtx.gz")
+barcodes <- readr::read_tsv("GSM000000_sample_barcodes.tsv.gz", col_names = FALSE)
+features <- readr::read_tsv("GSM000000_sample_features.tsv.gz", col_names = FALSE)
+
+rownames(mat) <- make.unique(features$X2) # gene symbols
+colnames(mat) <- barcodes$X1             # cell barcodes
+```
+
+Before merging samples, add a sample prefix to cell barcodes:
+
+```r
+colnames(mat) <- paste("sample", colnames(mat), sep = "_")
+```
+
+Then create a Seurat object:
+
+```r
+seurat_obj <- Seurat::CreateSeuratObject(
+  counts = mat,
+  min.cells = 3,
+  min.features = 200,
+  project = "sample",
+  assay = "RNA"
+)
+```
+
+What to remember:
+
+- Prefer standard 10x names when possible.
+- Manual `readMM()` is useful for messy downloaded files.
+- Always check whether rows are genes and columns are cells.
+- Add sample prefixes before merging multiple samples.
+
+## SingleCellExperiment RDS
+
+SingleCellExperiment, often shortened as SCE, is the core single-cell data object in the Bioconductor ecosystem.
+
+SCE is not a file format by itself. It is an R object type. It is often saved as an `.rds` file, but `.rds` can store many kinds of R objects, so always check what was loaded.
+
+Load in R:
+
+```r
+sce <- readRDS("sample_sce.rds")
+```
+
+Check after loading:
+
+```r
+class(sce)              # should include "SingleCellExperiment"
+assayNames(sce)         # available assays, such as counts or logcounts
+colnames(colData(sce))  # cell metadata columns
+```
+
+What to remember:
+
+- SCE belongs to the Bioconductor ecosystem.
+- `assays` store expression matrices.
+- `colData` stores cell metadata.
+- `rowData` stores gene or feature metadata.
+- `.rds` is only the storage wrapper; the object inside needs to be checked.
+
+### Convert SCE to Seurat
+
+For learning, the clearest route is to extract the count matrix and metadata manually, then create a Seurat object.
+
+```r
+counts <- SummarizedExperiment::assay(sce, "counts")       # raw count matrix
+metadata <- as.data.frame(SummarizedExperiment::colData(sce)) # cell metadata
+
+all(colnames(counts) == rownames(metadata)) # check cell order before creating object
+
+seurat_obj <- Seurat::CreateSeuratObject(
+  counts = counts,
+  meta.data = metadata,
+  min.cells = 3,
+  min.features = 200,
+  project = "sample",
+  assay = "RNA"
+)
+```
+
+If the Seurat object already exists, metadata can also be added later:
+
+```r
+seurat_obj <- Seurat::AddMetaData(
+  object = seurat_obj,
+  metadata = metadata
+)
+```
+
+Shortcut route:
+
+```r
+seurat_obj <- Seurat::as.Seurat(
+  x = sce,
+  counts = "counts",
+  data = "logcounts"
+)
+```
+
+Before using the shortcut, check `assayNames(sce)`. Some SCE objects do not have both `counts` and `logcounts`.
+
+## 10x H5
+
+10x H5 is the compact HDF5 version of Cell Ranger matrix output. It is not the same storage format as the three-file 10x Matrix folder.
+
+The key point: `Read10X_h5()` is for 10x-formatted H5 files, not for every `.h5` file.
+
+Common file:
+
+- `filtered_feature_bc_matrix.h5`
+
+Load in R with Seurat:
+
+```r
+data <- Seurat::Read10X_h5(
+  filename = "filtered_feature_bc_matrix.h5", # 10x H5 file from Cell Ranger
+  use.names = TRUE,                           # use gene symbols instead of gene IDs
+  unique.features = TRUE                      # make duplicated feature names unique
+)
+```
+
+Then create a Seurat object:
+
+```r
+seurat_obj <- Seurat::CreateSeuratObject(
+  counts = data,
+  min.cells = 3,
+  min.features = 200,
+  project = "sample",
+  assay = "RNA"
+)
+```
+
+Check after loading:
+
+- whether the file contains one modality or multiple feature types
+- whether gene expression is named as expected
+- whether the resulting object is a matrix or a list of matrices
+- whether this is really a 10x H5 file, not AnnData `.h5ad` or a generic `.h5`
+
+## AnnData h5ad
+
+AnnData is the main Python object format used by Scanpy and many public atlas datasets. The file extension is `.h5ad`.
+
+Do not confuse `.h5ad` with 10x H5. Both are HDF5-based files, but their internal structures are different. `Seurat::Read10X_h5()` is for 10x H5, not AnnData.
+
+A `.h5ad` file may contain more than one kind of information:
+
+- expression matrix in `X`
+- raw counts or normalized values in `layers`
+- cell metadata in `obs`
+- gene metadata in `var`
+- embeddings such as PCA or UMAP in `obsm`
+- clustering, colors, and other analysis results in `uns`
+
+Load in R:
+
+```r
+sce <- zellkonverter::readH5AD(
+  file = "sample.h5ad", # AnnData file
+  reader = "python"     # use Python/anndata reader
+)
+```
+
+If the object is large:
+
+```r
+sce <- zellkonverter::readH5AD(
+  file = "sample.h5ad",
+  reader = "python",
+  use_hdf5 = TRUE       # keep assay data HDF5-backed when possible
+)
+```
+
+Check after loading:
+
+- `colData(sce)` for cell metadata
+- `rowData(sce)` for gene metadata
+- `assayNames(sce)` for counts or normalized matrices
+- reduced dimensions, if present
+
+What to remember:
+
+- `readH5AD()` returns a `SingleCellExperiment` object in R.
+- `reader = "python"` uses Python `anndata` through `zellkonverter` and `basilisk`.
+- `use_hdf5 = TRUE` is about HDF5-backed storage, not about choosing a pure R reader.
+- Always check which assay represents raw counts before creating a Seurat object or doing downstream analysis.
+
+## Loom
+
+Loom is an older HDF5-based single-cell exchange format. The file extension is `.loom`.
+
+It appears in some older single-cell workflows and RNA velocity pipelines. For new analysis, `.h5ad`, Seurat RDS, or SingleCellExperiment RDS are usually easier to work with.
+
+Use Loom mainly when a dataset is only distributed as `.loom`.
+
+Load in R with Bioconductor:
+
+```r
+sce <- BiocIO::import(
+  con = "sample.loom",
+  format = "LoomExperiment"
+)
+```
+
+If the first assay is the count matrix but is not named `counts`, rename it before downstream use:
+
+```r
+if (!"counts" %in% SummarizedExperiment::assayNames(sce)) {
+  SummarizedExperiment::assayNames(sce)[1] <- "counts"
+}
+```
+
+In Python:
+
+```python
+import scanpy as sc
+
+adata = sc.read_loom("sample.loom")
+```
+
+Check after loading:
+
+- whether the file stores counts or processed values
+- whether cell and gene metadata were imported
+- whether velocity-specific layers are present
+
+What to remember:
+
+- Loom is a container format, not a complete analysis workflow.
+- It is less common in current single-cell practice than `.h5ad`.
+- If possible, convert Loom to AnnData or Seurat/SCE before continuing analysis.
+
+## Seurat RDS
+
+Seurat RDS means a Seurat object saved as an `.rds` file.
+
+Like SCE RDS, `.rds` is only the R storage wrapper. The important part is the object inside. A Seurat RDS may already contain counts, normalized data, metadata, reductions, clusters, annotations, and previous analysis results.
+
+Load in R:
+
+```r
+seurat_obj <- readRDS("sample_seurat.rds")
+```
+
+Check after loading:
+
+```r
+class(seurat_obj)          # should include "Seurat"
+Seurat::Assays(seurat_obj) # available assays
+head(seurat_obj@meta.data) # cell metadata
+```
+
+Common checks:
+
+- Which assay is active?
+- Is raw count data still present?
+- What metadata columns describe sample, condition, batch, patient, or cell type?
+- Are reductions such as PCA or UMAP already stored?
+- Were clusters or annotations created by the data provider?
+
+## Trajectory Object RDS
+
+Trajectory or pseudotime results may also be saved as `.rds` files.
+
+This is not a raw data format. It usually stores an analysis object created after preprocessing, dimensionality reduction, clustering, or trajectory inference.
+
+Common examples:
+
+- Monocle `CellDataSet` or `cell_data_set`
+- Slingshot results stored inside a `SingleCellExperiment`
+- pseudotime columns stored in Seurat or SCE metadata
+
+Load in R:
+
+```r
+traj_obj <- readRDS("trajectory_object.rds")
+```
+
+Check after loading:
+
+```r
+class(traj_obj) # object type, such as CellDataSet or cell_data_set
+```
+
+If it is a Monocle object, inspect its cell metadata and pseudotime-related fields:
+
+```r
+colnames(SummarizedExperiment::colData(traj_obj))
+```
+
+What to remember:
+
+- Pseudotime objects are usually downstream analysis results.
+- They may not contain raw counts suitable for starting a fresh analysis.
+- Always check the object class before deciding how to use it.
+- If pseudotime is stored as metadata, the object may still be Seurat or SCE.
+
+### Convert Monocle to Seurat
+
+Some GEO datasets provide only a Monocle object. To reproduce analysis in Seurat, extract the expression matrix and cell metadata, then create a new Seurat object.
+
+First check the object type:
+
+```r
+cds <- readRDS("monocle_object.rds")
+class(cds)
+```
+
+Monocle 3 objects are usually `cell_data_set` objects:
+
+```r
+SummarizedExperiment::assayNames(cds)
+
+counts <- SummarizedExperiment::assay(cds, "counts")
+metadata <- as.data.frame(SummarizedExperiment::colData(cds))
+
+all(colnames(counts) == rownames(metadata))
+
+seurat_obj <- Seurat::CreateSeuratObject(
+  counts = counts,
+  meta.data = metadata,
+  min.cells = 3,
+  min.features = 200,
+  project = "sample",
+  assay = "RNA"
+)
+```
+
+Monocle 2 objects are usually `CellDataSet` objects:
+
+```r
+expr_mat <- Biobase::exprs(cds)
+metadata <- Biobase::pData(cds)
+features <- Biobase::fData(cds)
+
+all(colnames(expr_mat) == rownames(metadata))
+
+seurat_obj <- Seurat::CreateSeuratObject(
+  counts = expr_mat,
+  meta.data = metadata,
+  min.cells = 3,
+  min.features = 200,
+  project = "sample",
+  assay = "RNA"
+)
+```
+
+Important check:
+
+```r
+range(expr_mat)
+expr_mat[1:5, 1:5]
+```
+
+If the matrix contains many decimal values, it may already be normalized expression rather than raw counts. In that case, the converted Seurat object can still be useful for inspecting metadata or visualization, but it should not be treated as a fresh raw-count object without caution.
+
+## Note
+
+The first question is always: is this file a count matrix or a saved analysis object?
+
+That determines whether the next step is object creation, metadata inspection, QC, or checking what processing has already been done.
