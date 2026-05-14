@@ -33,6 +33,7 @@ website:
           - paper/006.qmd
           - paper/008.qmd
           - paper/009.qmd
+          - paper/011.qmd
       - section: "Concept"
         href: concept/index.qmd
         contents:

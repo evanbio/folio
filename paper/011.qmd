@@ -1,0 +1,58 @@
+---
+title: "011"
+date: 2026-05-14
+categories: [article]
+tags: [single-cell, scRNA-seq, representation-learning, disentanglement, semi-supervised]
+draft: false
+---
+
+## Intro
+
+**Semi-Supervised Disentangled Representation Learning for Single-Cell RNA Sequencing Data** 是 Liu, Zou and Wei 在 2026 年发表于 *Briefings in Bioinformatics* 的方法论文，提出 SCDRL，一个用于 scRNA-seq 的 semi-supervised disentangled representation learning 框架。DOI: [10.1093/bib/bbag222](https://doi.org/10.1093/bib/bbag222)
+
+这篇文章关注的是单细胞分析中很基础但容易被忽略的问题：很多 downstream analyses 都依赖低维 latent representation，比如 clustering、annotation transfer、batch integration 和 condition comparison；但普通 latent space 往往把 cell type、batch effect、disease state、donor effect 和 technical noise 混在一起。SCDRL 的目标就是用少量已标注细胞，把这些已知因素拆到不同 latent components 中，同时让 residual component 承接未建模的变化。
+
+## Why I Read It
+
+这篇也是从 *Briefings in Bioinformatics* News 里看到的。刚读完 trustworthy multi-omics AI 那篇综述后，里面反复强调 interpretability、stability 和 reproducibility；这篇 SCDRL 正好是一个更具体的方法例子，讨论如何让 scRNA-seq 的 latent representation 更可解释。
+
+我最近在整理 single-cell practice notes，也读了不少 AD skin、PBMC、spatial transcriptomics 和 multi-omics 文章。很多时候，分析结果是否可信不只取决于 UMAP 漂不漂亮，而取决于低维空间到底混入了哪些因素：batch 是否被去掉了，cell type 是否被保住了，disease signal 是否被误消除了，rare populations 是否被合并了。这篇文章正好切到这个问题。
+
+## What It Says
+
+SCDRL 的基本设计是 modular VAE。模型把每个细胞的表达向量看成由多个可解释 categorical factors 和一个 residual latent variable 共同生成。每个 factor 可以对应 batch、condition、disease state 或 cell type；residual 则用于表示没有被预先定义因素捕获的技术噪声或未知生物 variation。
+
+每个 factor 都有一个独立 encoder。如果某个细胞有标签，模型对该 factor 使用 cross-entropy loss；如果没有标签，则使用 entropy regularization，让模型对未标注细胞给出更明确的低熵预测。所有 factor predictions 和 residual component 再一起进入 decoder，用于重构原始表达。
+
+Residual regularization 是一个关键设计。作者对 residual 加 Gaussian noise，并施加 L2 magnitude penalty，使 residual 保持紧凑，避免模型把 batch、cell type 或 condition 这类结构性信息都偷偷塞进 residual，导致 factor-specific encoders 学不到真正有解释意义的表示。
+
+作者用三个数据集评估 SCDRL。第一个是 SymSim 模拟数据，约 10,000 cells、500 genes，包含 2 个 batches、两个 binary conditions 和 16 个 cell types，其中一个 rare population 只有 200 cells。第二个是 mouse-human cross-species dataset，约 10,000 cells、1,768 genes，重点考察跨物种的强 batch-like difference 下能否恢复 orthologous cell types。第三个是 COVID-19 scRNA-seq 数据，约 30,000 cells、16,743 genes，包含 2 个 batches 和 18 个 annotated cell types。
+
+对照方法包括 biolord、scVI 和 Seurat。SCDRL 和 biolord 可以直接输出 factor prediction，因此用 F1 score 评价；scVI 和 Seurat 主要输出 latent embedding 或 clustering，因此用 ARI 与 ground truth cell types 比较。半监督方法重复 10 次随机选择 labeled cells；scVI 和 Seurat 的 resolution 被调到接近真实 cell type 数量，以便比较。
+
+主要结果很清楚：SCDRL 在 binary factor 上和 biolord 都不错，但在复杂 multi-class cell type recovery 上优势更明显。模拟数据里，SCDRL 在只有 5% labeled cells 时能更好恢复 16 类 cell types，并区分其他方法容易合并或误分的群体。mouse-human 数据里，SCDRL 注释出 12/17 个 cell types，而 biolord 为 9/17。COVID-19 数据里，biolord 在 binary disease status classification 上略优，但 SCDRL 在 multi-class cell type classification、rare cell type recovery 和 clustering quality 上更强。
+
+作者还没有只靠 UMAP 说事，而是用 MIG、SAP、DCI、Hungarian matching 和 Spearman correlation 等 disentanglement metrics 评价 latent dimensions 与 ground-truth factors 的对齐程度。结果显示，SCDRL 的 latent dimensions 更接近 factor-specific block structure，而 scVI 和 Seurat 的表示更分散、更 entangled。
+
+## What I Take From It
+
+这篇对我最有用的点，是把“低维表示是否可解释”从一个模糊印象变成了可建模的问题。普通 single-cell workflow 里，我们常常默认 PCA、Harmony、scVI 或 Seurat integration 后的 latent space 可以拿来聚类和解释，但这个 latent space 里面到底混了什么，常常没有被明确拆开。SCDRL 的思路是：先定义自己关心的 factors，再用少量高置信标签约束模型学习对应的 components。
+
+这对疾病单细胞数据特别重要。比如 AD skin 或 PBMC 数据里，batch、donor、disease status、treatment、cell type composition 和 activation state 很容易纠缠。如果 integration 过强，疾病信号可能被当成 batch 去掉；如果 correction 不够，cluster 又可能只是技术差异。SCDRL 这类 factor-aware model 提供了一种中间思路：不是简单去除 variation，而是把不同来源的 variation 显式建模。
+
+它也提醒我，rare cell populations 和 closely related immune subsets 很容易被普通 clustering 合并。SCDRL 的优势主要体现在复杂多类别 cell type recovery 上，而不是简单 binary condition classification。也就是说，这类方法可能更适合细胞注释、跨数据集标签迁移和 rare population recovery，而不是只做一个健康/疾病二分类。
+
+## Note
+
+这篇也要谨慎读。Disentanglement 本身没有无条件的理论可识别性，模型学到的 factor-specific latent components 不等于真实因果因素。SCDRL 能提高 practical separation，但不能保证每个 latent dimension 都对应唯一、真实、稳定的生物机制。
+
+另一个关键前提是 factors of interest 必须指定得合理。如果遗漏了 donor effect、batch、condition 或其他重要 covariate，结构性信号可能泄漏到 residual，或者被错误归入 cell type factor。真实数据里标签也未必干净：cell type annotation 可能有层级差异、命名不一致或 marker-based error，这会直接影响半监督学习。
+
+对照实验也有边界。Seurat 和 scVI 本来就不是为 disentanglement 设计的；biolord 是更接近的对照。文章没有直接比较 scDisInFact，有方法定位上的理由，但因此也不能把结论扩大成“全面优于所有 disentangled scRNA-seq 方法”。此外，当前实验规模是 tens of thousands of cells，距离百万级 atlas 还有距离。
+
+总体上，这篇适合和前一篇 trustworthy multi-omics AI 综述放在一起读。TRUST 综述告诉我评价 AI 模型要看 interpretability、stability、reproducibility、bias 和 transferability；SCDRL 则给了一个具体方法例子，说明如何在 scRNA-seq latent representation 中追求 factor separation。后续如果真要用于项目，还需要额外检查随机种子稳定性、跨队列迁移、标签噪声和大规模数据效率。
+
+## Source
+
+- DOI: [10.1093/bib/bbag222](https://doi.org/10.1093/bib/bbag222)
+- PDF: [Semi-Supervised Disentangled Representation Learning for Single-Cell RNA Sequencing Data](../assets/pdf/011.pdf)
