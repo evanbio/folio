@@ -1,0 +1,60 @@
+---
+title: "010"
+date: 2026-05-14
+categories: [review]
+tags: [multi-omics, artificial-intelligence, trustworthiness, reproducibility, stability, interpretability]
+draft: false
+---
+
+## Intro
+
+**Toward Trustworthy Artificial Intelligence in Multi-Omics: A Review of Reproducibility, Stability, and Interpretability** 是 Vo and Le 在 2026 年发表于 *Briefings in Bioinformatics* 的综述文章，讨论多组学 AI 中“可信性”到底应该如何评价。文章围绕 interpretability、stability 和 reproducibility 三条主线展开，并进一步提出 TRUST 框架，将 trustworthy multi-omics AI 拆成 Transparency、Reproducibility、Uniform Stability、Safety and Bias Awareness 和 Transferability 五个维度。DOI: [10.1093/bib/bbag227](https://doi.org/10.1093/bib/bbag227)
+
+这篇不是提出新算法的文章，而是一个方法学评价框架。它的价值在于提醒读者：多组学 AI 不能只看 AUC、accuracy 或单队列结果，还要问模型解释是否有生物学意义、结果是否能复现、扰动下是否稳定、不同人群和平台下是否存在偏倚，以及能否迁移到外部队列。
+
+## Why I Read It
+
+这篇是从 *Briefings in Bioinformatics* News 里看到的。题目里同时出现 trustworthy AI、multi-omics、reproducibility、stability 和 interpretability，和我最近关注的 AI 医学应用、多组学整合、单细胞/空间组学评价框架都有关，所以顺手读了。
+
+前面读 Nature Medicine 里 ChatGPT Health 分诊那篇时，一个很重要的感受是：AI 系统不能只用总体准确率评价，必须看错误分布、风险场景、外部验证和真实使用后果。这篇文章把类似的思想放到 multi-omics AI 里：模型在一个 cohort 上表现好，不代表它是可信的；如果 biomarker ranking、cluster assignment 或 risk prediction 在随机种子、预处理、样本重采样和平台变化下不稳定，后续的生物解释和临床转化都会变得很脆弱。
+
+另外，我对 `Cell Genomics`、`Nature Genetics` 这类多组学和遗传学文章有时会觉得入口很高。这篇综述正好可以作为一个阅读检查清单，帮助我判断一篇复杂 multi-omics AI 文章到底应该看什么，而不是陷在模型名字和图表细节里。
+
+## What It Says
+
+文章首先定义 multi-omics AI 的问题背景。多组学可以整合 transcriptomics、epigenomics、proteomics、metabolomics、single-cell、spatial omics 和 clinical variables 等多种数据层，用于疾病分型、预后预测、biomarker discovery 和机制推断。但这些数据本身高度异质，存在 batch effects、modality-specific noise、missingness、sample imbalance 和 platform shift，因此模型即使在一个数据集上表现很好，也可能不稳定、不透明或不可复现。
+
+作者把 interpretability 分成三类。第一类是 intrinsic interpretability，例如 sparse linear models、decision trees、rule-based ensembles 和 patient-similarity networks，这些模型本身较透明。第二类是 post-hoc interpretability，例如 SHAP、LIME、saliency maps 和 perturbation-based methods，用来解释复杂模型。第三类是 architecture-guided interpretability，例如 attention-based multimodal models、graph neural networks、MOFA/MOFA+、scMM 等，把生物结构、图关系或 latent factors 编进模型。作者强调，解释结果不能只停留在 feature attribution，还需要 pathway enrichment、独立队列复现、已知 biomarker 或疾病机制的一致性来支持生物学有效性。
+
+Stability 是文章最值得记的一部分。作者区分 reproducibility 和 stability：reproducibility 是在相同数据、代码、软件环境和参数下能否重新得到结果；stability 是在轻微、非生物学扰动下，模型行为是否仍然一致。多组学模型可能因为随机初始化、样本重采样、模态缺失、噪声注入、批次效应、预处理差异和架构选择而改变预测结果、聚类结构、latent representation 或 biomarker ranking。
+
+作者建议把 stability evaluation 作为默认环节，而不是从单次高性能中假设模型稳定。具体做法包括：多随机种子重复训练，例如至少 10 次 initialization；bootstrap 或 repeated subsampling，例如 80% cohort resampling 至少 20 次；modality dropout 和 feature masking，例如 5%-20% 缺失水平；按 feature variance 注入 Gaussian noise；模拟 batch shift。报告指标也不应只有 accuracy，而应包括 performance dispersion、feature importance rank correlation、top-k feature overlap、Jaccard/Nogueira score、ARI/NMI 和 latent representation alignment。
+
+Reproducibility 部分强调数据、代码、环境和 benchmark。作者认为 multi-omics AI 的可重复性依赖 MIAME、MINSEQE、MAQC、FAIR principles、workflow engines、containerization、统一指标、多数据集 benchmark 和 cross-cohort validation。大型 benchmark 已经显示，模型性能会随 cancer type、dataset、platform 和 cohort composition 明显变化，所以单队列结果不能代表泛化能力。
+
+文章最后提出 TRUST 框架。`T` 是 Transparency，要求模型解释能连接到有生物意义的特征、通路或机制；`R` 是 Reproducibility，要求数据、预处理、软件环境、代码和随机种子透明；`U` 是 Uniform Stability，要求通过扰动测试和一致性指标评估模型稳健性；`S` 是 Safety and Bias Awareness，要求检查 ancestry、sex、disease subtype、assay platform、batch 等分层下的性能差异；最后一个 `T` 是 Transferability，要求在独立队列、不同平台和不同生物/临床语境下验证模型。
+
+## What I Take From It
+
+这篇最有用的地方，是把“可信 AI”从抽象词变成了可以逐项检查的 workflow。以后读 multi-omics AI 文章时，我可以不用先纠结模型是不是最新，而是先问五个更基本的问题：它能解释吗？能复现吗？稳定吗？有没有偏倚？能迁移吗？
+
+对具体论文阅读来说，TRUST 很适合当成审稿式清单。比如一篇癌症预后模型如果只报告 TCGA 上的 AUC，却没有外部队列、没有随机种子重复、没有 feature selection stability、没有平台差异分析，那么它最多说明“这个数据集上可预测”，还不能说明 biomarker 或模型具有转化价值。
+
+我也很喜欢文章对 stability 的强调。很多组学文章会把 selected genes 或 top pathways 当成核心发现，但如果这些特征在 resampling、normalization、batch correction 或 random seed 改变后就大幅变化，那么后续做机制解释会很危险。对 biomarker research 来说，稳定性本身就应该是证据链的一部分。
+
+这篇还提醒我，interpretability 不是画一张 SHAP plot 就结束。真正有用的解释应该能回到生物学：是否落在合理 pathway、是否在独立 cohort 复现、是否和已知 cell type、disease subtype、therapeutic target 或 clinical endpoint 相关。如果解释只在一个训练集里成立，它更像模型可视化，而不是机制证据。
+
+## Note
+
+这篇文章本身也要按综述来读。它不是系统综述，作者也说明表格中的研究和方法例子是代表性类别，不是 exhaustive systematic review。因为 multi-omics AI 里 oncology 研究最多，文中例子也偏向癌症和精准医学，这可能限制它对其他疾病领域的直接代表性。
+
+TRUST 框架很有启发性，但目前更像规范化建议，还不是已经被大量真实项目验证过的标准。尤其是 stability testing 和 cross-cohort benchmarking 会增加很多计算成本。对 deep multimodal architectures、GNN、VAE、diffusion models、single-cell 和 spatial multi-omics 来说，重复训练、模态缺失实验和 batch perturbation 都不便宜。
+
+不过，这并不削弱它的实用性。对我来说，TRUST 可以分层使用：高风险、临床转化导向的模型应该尽量完整执行；普通探索性研究至少要报告代码环境、外部验证、随机种子重复和 feature stability；只做 hypothesis generation 的文章，则要避免把不稳定的 feature attribution 过度解释成机制。
+
+这篇和前面读的 ChatGPT Health triage briefing 可以放在一起看。两者都提醒我，AI 医学应用的核心不是“模型看起来聪明”，而是能否在真实风险结构里保持可靠。分诊 AI 的风险是漏掉急症和改变患者行为；multi-omics AI 的风险是给出不稳定的 biomarker、不可复现的分型和过度解释的机制。评价指标必须跟应用风险对齐。
+
+## Source
+
+- DOI: [10.1093/bib/bbag227](https://doi.org/10.1093/bib/bbag227)
+- PDF: [Toward Trustworthy Artificial Intelligence in Multi-Omics](../assets/pdf/010.pdf)
