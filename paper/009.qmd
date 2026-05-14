@@ -1,0 +1,54 @@
+---
+title: "009"
+date: 2026-05-14
+categories: [article]
+tags: [aging, multimodal, clock, proteomics, cohort]
+draft: false
+---
+
+## Intro
+
+**Multimodal Clocks of Human Aging** 是 Li et al. 在 2026 年发表于 *Cell* 的 Resource 文章，建立了一个面向中国人群的多中心、多模态衰老测量框架。文章整合临床功能、影像、体能测试、血液检测、DNA methylome、PBMC bulk/scRNA-seq、plasma proteome、plasma metabolome 和 gut metagenome，构建多层 aging clocks，并进一步提出凝血因子可能参与驱动系统性衰老。DOI: [10.1016/j.cell.2026.04.025](https://doi.org/10.1016/j.cell.2026.04.025)
+
+## Why I Read It
+
+这篇是从 Cell news 里看到的。刘光慧是国内衰老研究很有代表性的学者之一，之前也听过相关讲座，所以看到这篇大型 aging clock / multi-omics Resource 就读了读。
+
+读它不只是为了看“衰老 clock”本身，也想看看国内团队如何组织大队列、多组学、机器学习和机制验证。整篇文章的组学手段用得很熟，图也非常完整，适合当作大型 Resource 文章的阅读案例：它不是靠单个发现支撑全文，而是靠 cohort、SOP、clock framework、multi-omics association、proxy model 和 functional validation 形成一整套证据链。
+
+## What It Says
+
+作者建立了 mCAS (multicentric Chinese aging standardized cohort)，纳入 2,019 名 18-91 岁健康中国参与者，来自北京、宁波、衢州和南昌四个中心。所有参与者经过统一 SOP 完成问卷、体能和认知测试、心肺功能、骨密度、血液和尿液检测、脑 MRI、颈动脉超声、视网膜成像、面部图像和步态视频采集。
+
+在分子层面，作者收集了 DNA methylomics、PBMC bulk RNA-seq、PBMC scRNA-seq、plasma proteomics、plasma metabolomics 和 gut metagenomics。这个数据规模使文章可以同时讨论 physiological decline、molecular signatures、organ aging 和 lifestyle associations。
+
+文章构建了三层衰老 clock。第一层是 core capacity clock (CC-clock)，用 8 个核心功能模块量化整体生理功能衰退，包括形态/体成分、神经认知、运动协调、循环、呼吸、代谢/消化/排泄、免疫防御和内分泌调节。第二层是 multimodal clock (MM-clock)，用 attention 和 inception-style 的多模态模型整合不同数据层。第三层是 organ-associated clocks，用 clinical、plasma protein 和 multimodal features 分别估计不同器官系统的衰老状态。
+
+单组学 clocks 中，methylation clock 的年龄预测性能最好；protein、transcript 和 metabolite clocks 也表现不错，microbiome clock 相对弱。比较有意思的是，作者认为 plasma protein clocks 虽然未必在 chronological age prediction 上超过 methylation clock，但更贴近 core physiological capacity，因此更像系统功能状态的紧凑读出。
+
+文章还提出几个衰老转折窗口。多组学轨迹显示，约 40-50 岁和 60-70 岁是两个重要 inflection periods。前者主要与激素波动和脂质积累相关，后者则与血压升高、骨密度下降和凝血级联激活相关。器官 clock 也显示 aging asynchrony，例如 liver 约 40 岁出现较早转折，早于 brain 约 50 岁。
+
+最强的机制线索是凝血因子。作者发现 `F5`、`F7`、`F8`、`F9`、`F10`、`F13B`、`TFPI`、`FGG` 等凝血相关蛋白随年龄累积，并与 accelerated aging、多器官功能下降和疾病风险关联。随后他们用 ELISA 独立验证，用 aged human liver tissue 显示 F9/F10/F13B 阳性细胞增加，再用 HAEC 细胞和 F13B 小鼠处理实验支持这些因子能够诱导 endothelial senescence、炎症激活和多器官衰老表型。
+
+## What I Take From It
+
+这篇文章最值得学习的是它的组织方式。它不是单纯做一个“预测年龄”的模型，而是把 aging clock 放在一个更大的框架里：先定义标准化 cohort 和生理功能，再构建 clocks，再比较不同组学层的解释力，再做 organ clocks 和 proxy clocks，最后从 accelerated aging proteins 里抽出凝血因子做机制验证。
+
+对我来说，最有启发的是 protein clock 的定位。DNA methylation clock 很擅长预测 chronological age，但 plasma proteins 更接近功能执行层，可能更容易连接到 organ function、disease risk 和 intervention endpoint。这一点对免疫、皮肤病和 biomarker 研究也有借鉴意义：一个血清 marker 到底是在预测状态，还是在反映具体组织/细胞过程，需要区分清楚。
+
+这篇里的 scRNA-seq 不是主角，但用得很合适。它主要用于 PBMC immune aging 的支持层，验证 naive CD4/CD8 T cells 下降、senescent/exhausted T cell phenotypes 增加，并为 bulk RNA-seq deconvolution 提供 reference。这提醒我，单细胞数据不一定每次都要成为全文中心，也可以作为多组学证据链中的一个清晰模块。
+
+## Note
+
+这篇要谨慎看待“clock”和“driver”两个词。首先，它主要是横截面 cohort，很多 aging trajectory 和 inflection period 反映的是不同年龄人群之间的差异，不等同于同一个人随时间的纵向衰老轨迹。真正要证明个体 aging pace，还需要长期随访。
+
+其次，年龄预测准确不等于 biological aging 解释力。一个 clock 的 R 和 MAE 很漂亮，只能说明它能预测年龄；它是否能预测疾病、死亡率、frailty、认知下降或干预响应，需要额外终点验证。
+
+凝血因子部分比普通 biomarker 文章强，因为有 MR、细胞实验和小鼠 F13B 处理，但仍然不能一步到位推到临床干预。凝血系统本身牵涉出血和血栓风险，未来如果要把它变成 anti-aging target，必须非常谨慎。
+
+整体上，这篇适合当作大型多组学 Resource 的范例来读。它的图和分析链路很完整，也体现了国内衰老研究在 cohort 建设、组学整合和机制验证上的推进。
+
+## Source
+
+- DOI: [10.1016/j.cell.2026.04.025](https://doi.org/10.1016/j.cell.2026.04.025)
+- PDF: [Multimodal Clocks of Human Aging](../assets/pdf/009.pdf)
