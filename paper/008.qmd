@@ -1,0 +1,54 @@
+---
+title: "008"
+date: 2026-05-14
+categories: [article]
+tags: [atopic dermatitis, spatial-transcriptomics, single-cell, skin, fibroblast]
+draft: false
+---
+
+## Intro
+
+**Spatial Transcriptomics Combined with Single-Cell RNA-sequencing Unravels the Complex Inflammatory Cell Network in Atopic Dermatitis** 是 Mitamura et al. 在 2023 年发表于 *Allergy* 的研究文章，用 spatial transcriptomics、既有 skin scRNA-seq reference、组织免疫染色和血清 proteomics 分析 atopic dermatitis (AD) 皮损中的局部炎症网络。DOI: [10.1111/all.15781](https://doi.org/10.1111/all.15781)
+
+## Why I Read It
+
+前面读 He et al. 2020 时，最重要的线索是 AD lesional skin 中出现 `COL6A5+COL18A1+` inflammatory fibroblasts，并且这些 fibroblasts 可能通过 `CCL19`、`CCL2`、`POSTN`、`TNC` 等分子参与 immune recruitment 和 tissue remodeling。
+
+这篇文章正好往前走了一步：它不只是问 AD 皮损里有哪些细胞，而是问这些细胞在组织里是否真的相邻、是否集中在同一个 inflammatory niche、以及它们之间可能通过哪些 ligand-receptor pairs 发生互作。也就是说，它把单细胞 atlas 里的细胞状态，放回了皮肤组织空间结构中。
+
+## What It Says
+
+作者对 6 名 healthy controls 和 7 名 AD patients 的皮肤样本做 10x Visium spatial transcriptomics，比较 healthy control、nonlesional AD 和 lesional AD skin。Visium spots 被分成 8 个 broad clusters，其中 lesional AD 的上真皮区域出现明显的 leukocyte-infiltrated cluster，表达 `CD74`、`HLA-DRA`、`HLA-DRB1`、`HLA-DPA1`、`HLA-DPB1` 等 MHC II 相关基因。
+
+为了给 spatial spots 解释细胞组成，作者重分析已发表的 AD skin scRNA-seq 数据，并用 Seurat label transfer 把 cell type annotations 映射到 Visium spots。结果显示，lesional AD 的 leukocyte-infiltrated area 富集 DCs、M2 macrophages、T cells 和特定 fibroblast subgroups，而这些细胞在 healthy control 和 nonlesional skin 中不明显。
+
+文章最关键的细胞轴是 `COL18A1+` activated fibroblasts 与 `LAMP3+/CCR7+` DCs。`COL18A1+` fibroblasts 在 AD lesion 中表达 `CCL19`、`TNC`、`COL6A5`、`COL4A1`、`COL4A2` 等 ECM 和炎症相关基因，并且定位在 leukocyte-infiltrated area。`LAMP3+` DCs 是 `CCR7` 的主要阳性细胞之一，与 `CCL19+` fibroblasts 空间接近。因此 `CCL19-CCR7` 成为本文最重要的 candidate interaction。
+
+M2 macrophage 是另一条重要线索。作者发现 `CD163/MRC1` high 的 M2 macrophages 在 AD lesion 中表达 `CCL13` 和 `CCL18`，并和 fibroblasts、DCs、T cells 出现在同一个 leukocyte-infiltrated niche。后续免疫染色支持 `MRC1+` macrophages 与 `CD45RO+` T cells 接近。
+
+作者还用免疫染色和 Olink serum proteomics 补强空间转录组结果。组织层面，他们看到 `COL18A1` 与 `TNC` 共定位、`CCL19+` fibroblasts 与 `CCR7+` cells 接近、部分 `CCR7+` cells 同时表达 `CD11C`。血清层面，`TNC`、`CCL18`、`REG1A` 在 AD 中升高，其中 `TNC`、`CCL18` 和 `AREG` 与 SCORAD 相关。
+
+最后，ligand-receptor analysis 显示 lesional AD 的 leukocyte-infiltrated area 中有 68 个显著相关的 ligand-receptor pairs，其中 54 个被认为是 lesion-specific。除了 `CCL19-CCR7`，还包括 `COL4A1-CD93`、`MRC1-PTPRC`、T cell 与 antigen-presenting cells 之间的 `CD3D/G-HLA/B2M` 相关互作，以及 endothelial recruitment 相关的 `VCAM1-ITGB2`、`VWF-SELP`。
+
+## What I Take From It
+
+这篇文章最有用的地方，是把 AD 皮损解释成一个局部 inflammatory niche，而不是一张平均化的细胞组成表。上真皮 leukocyte-infiltrated area 里，activated fibroblasts、mature DCs、M2 macrophages 和 T cells 不是孤立出现，而是空间上相邻，并共享 chemotaxis、antigen presentation、ECM remodeling 和 T-cell activation 相关信号。
+
+对 AD 机制来说，`COL18A1+` fibroblast 的意义被进一步加强了。He et al. 2020 已经在 scRNA-seq 中提出 `COL6A5+COL18A1+` fibroblast 是 AD lesion 的重要 stromal population；Mitamura et al. 则进一步显示这类 fibroblast 位于白细胞浸润区域，并可能通过 `CCL19-CCR7` 与 DC/T cell recruitment 相关。这使 fibroblast 更像 active immune organizer，而不是单纯结构背景。
+
+这篇也很适合作为 spatial transcriptomics 文章的读法模板：先用空间聚类找到组织 niche，再用 scRNA-seq reference 解释 cell composition，接着围绕核心 ligand-receptor pairs 做组织染色验证，最后看 serum proteomics 是否能连接到疾病严重程度。这个证据链比单纯 UMAP + marker + ligand-receptor heatmap 更完整。
+
+## Note
+
+这篇仍然要谨慎读。Visium spot 直径约 55 μm，一个 spot 可以包含多个细胞，所以 cell type assignment 和 ligand-receptor analysis 都不是单细胞级空间分辨率。皮肤又有明显的表皮/真皮层状结构，spot mixing 和表达 spillover 很容易影响解释。
+
+另外，ligand-receptor analysis 只能说明配体和受体表达在空间上相关，不能证明真实信号传递、方向性或因果关系。`CCL19-CCR7` 很合理，但是否真的是 `COL18A1+` fibroblasts 招募 `CCR7+` DC/T cells，还需要 perturbation、co-culture 或更高分辨率空间验证。
+
+作者提出 AD 皮损中可能存在 TLS-like cellular infiltrate，这个说法有启发性，但还不能当成已经证明的 TLS。要真正支持 TLS，还需要更直接的组织结构证据，例如 B cell follicle、FDC markers、HEV-like vasculature，或者更完整的免疫组织化结构分析。
+
+后面如果继续整理 AD skin single-cell/spatial 主题，可以把这篇和 He et al. 2020 连在一起：He et al. 提供 AD skin 的 single-cell atlas 和 inflammatory fibroblast 线索；Mitamura et al. 提供 spatial localization 和 stromal-immune crosstalk 证据。它们共同把 AD lesion 理解为 fibroblast、DC/macrophage 和 T cell 共同维持的局部炎症生态位。
+
+## Source
+
+- DOI: [10.1111/all.15781](https://doi.org/10.1111/all.15781)
+- PDF: [Spatial Transcriptomics Combined with Single-Cell RNA-sequencing Unravels the Complex Inflammatory Cell Network in Atopic Dermatitis](../assets/pdf/008.pdf)

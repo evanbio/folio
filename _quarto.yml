@@ -30,6 +30,7 @@ website:
         contents:
           - paper/005.qmd
           - paper/006.qmd
+          - paper/008.qmd
       - section: "Concept"
         href: concept/index.qmd
         contents:
