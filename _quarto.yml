@@ -38,6 +38,10 @@ website:
           - paper/013.qmd
           - paper/014.qmd
           - paper/015.qmd
+      - section: "Story"
+        href: story/index.qmd
+        contents:
+          - story/001.qmd
       - section: "Concept"
         href: concept/index.qmd
         contents:

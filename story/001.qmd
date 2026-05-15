@@ -1,0 +1,32 @@
+---
+title: "001"
+date: 2026-05-15
+categories: [story]
+tags: [immunology, vaccination, smallpox, history-of-medicine]
+draft: false
+---
+
+## Vaccination 这个词从 cow 来
+
+今天说“疫苗”和“接种”时，很容易把它们当成现代医学里天然存在的词。但 `vaccination` 这个词的来源其实很具体：它来自拉丁语 `vacca`，意思是 cow。这个词能留下来，是因为 18 世纪末 Edward Jenner 把一种民间观察变成了医学史上最有名的实验之一。
+
+在 Jenner 之前，人们已经知道“得过一次某些病之后，之后不容易再得”。这种朴素的 immunity 概念很早就存在。面对天花，人们也发展出一种更危险但有效的预防手段：人痘接种，也就是把天花患者脓疱或痂皮中的物质接种到健康人皮肤创口中，让人经历一次较轻的感染，以换取之后对天花的保护。这种做法在中国、中东等地流传，后来也传入欧洲。
+
+人痘接种的问题在于，它用的仍然是天花本身。被接种者可能真的患上严重天花，也可能把天花传给别人。它体现了“诱导保护”的思路，但还不是我们今天意义上更安全的 vaccination。
+
+Jenner 的关键观察来自牛痘。英国乡村里流传一种经验：挤奶女工得过较温和的 cowpox 后，似乎不容易再得致命的 smallpox。1796 年，Jenner 从挤奶女工 Sarah Nelmes 的牛痘病灶中取材，接种给 8 岁男孩 James Phipps。之后，他再用天花材料挑战，发现 Phipps 没有发病。
+
+按今天的伦理标准，这样的实验当然不可能被允许。但在当时，它把一个经验观察推进成了可重复的医学操作。1798 年，Jenner 发表 *An Inquiry into the Causes and Effects of the Variolae Vaccinae*，把 cowpox 与 smallpox protection 的关系系统写出来。`variolae vaccinae` 大致就是“牛的天花”，也就是 cowpox。后来，`vaccine` 和 `vaccination` 就从这里进入医学语言。
+
+这个故事有意思的地方在于，vaccination 并不是从“免疫系统机制”开始的。Jenner 并不知道抗体、B 细胞、T 细胞，也不知道病毒学意义上的 variola virus 和 vaccinia virus。他看到的是一个现象：一种温和感染可以保护人免受另一种致命感染。免疫学作为学科，后来才逐渐给这个现象补上机制解释。
+
+天花疫苗的普及也不是一夜之间完成的。从 Jenner 的 1796 年实验，到世界范围内真正消灭天花，中间隔了将近两个世纪。WHO 记录的最后一例自然发生天花病例出现在 1977 年的 Somalia。1980 年，World Health Assembly 正式宣布天花被根除。这是现代医学和公共卫生史上的巨大胜利：一种曾经长期杀死、毁容和恐吓人类的传染病，被人类有组织地从自然传播中清除了。
+
+所以 vaccination 这个词背后，不只是一个词源故事。它连接了民间经验、人痘接种、Jenner 的牛痘实验、现代免疫学的开端，以及公共卫生史上最成功的一次全球行动。
+
+References:
+
+- [WHO: Smallpox](https://www.who.int/emergencies/situations/smallpox/)
+- [CDC: History of Smallpox](https://www.cdc.gov/smallpox/about/history.html)
+- [National Library of Medicine: Smallpox Vaccination](https://www.nlm.nih.gov/exhibition/smallpox/sp_vaccination.html)
+- [NCBI Bookshelf: Smallpox and Vaccinia](https://www.ncbi.nlm.nih.gov/books/NBK7294/)

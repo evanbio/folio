@@ -1,0 +1,10 @@
+---
+title: "Story"
+date: 2026-05-15
+categories: [story]
+draft: false
+---
+
+这里记录一些有意思的科学故事：术语的来历、发现的背景、研究方向的转折，以及那些不一定适合写成 paper note 或 concept note、但值得留下来的脉络。
+
+- [001: Vaccination 这个词从 cow 来](001.qmd)
