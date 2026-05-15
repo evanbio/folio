@@ -1,0 +1,81 @@
+---
+title: "Phases of the Immune Response"
+date: 2026-05-15
+categories: [concept, immunology]
+tags: [immune-response, innate-immunity, adaptive-immunity, immunological-memory]
+draft: false
+---
+
+## Perspective
+
+免疫应答不是一个同时发生的事件，而是一串有时间顺序的过程。感染开始后，机体先用固有免疫快速限制病原体；随后 antigen-presenting cells 把抗原信息带入 lymphoid organs，启动 T cells 和 B cells；再经过 clonal expansion、effector differentiation、antibody production 和 effector cell migration，最终清除病原体，并留下 memory cells 和抗体水平。
+
+这页的重点不是把每个反应孤立背下来，而是记住一个时间框架：**innate immunity 在 minutes 内启动；adaptive immunity 需要 hours 到 days 才逐渐展开；immunological memory 在初次应答后长期维持。**
+
+## Overview
+
+| Phase | Response | Typical time after infection to start of response | Duration of response |
+|---|---|---:|---:|
+| Innate immune response | Inflammation, complement activation, phagocytosis, and destruction of pathogen | Minutes | Days |
+| Adaptive immune response | Interaction between antigen-presenting dendritic cells and antigen-specific T cells: recognition of antigen, adhesion, costimulation, T-cell proliferation and differentiation | Hours | Days |
+| Adaptive immune response | Activation of antigen-specific B cells | Hours | Days |
+| Adaptive immune response | Formation of effector and memory T cells | Days | Weeks |
+| Adaptive immune response | Interaction of T cells with B cells, formation of germinal centers. Formation of effector B cells, plasma cells, and memory B cells. Production of antibody | Days | Weeks |
+| Adaptive immune response | Emigration of effector lymphocytes from peripheral lymphoid organs | A few days | Weeks |
+| Adaptive immune response | Elimination of pathogen by effector cells and antibody | A few days | Weeks |
+| Immunological memory | Maintenance of memory B cells and T cells and high serum or mucosal antibody levels. Protection against reinfection | Days to weeks | Can be lifelong |
+
+## Innate Response
+
+固有免疫应答是感染后的第一层反应。它依赖 barrier tissues、resident macrophages、dendritic cells、mast cells、neutrophils、complement 和 pattern-recognition receptors 等机制，快速感知病原体或组织损伤。
+
+这个阶段的优势是速度快。Inflammation、complement activation、phagocytosis 和局部 antimicrobial responses 可以在 minutes 内开始，帮助机体限制病原体扩散，并为后续适应性免疫提供信号。
+
+但固有免疫也有边界：它通常不能像 TCR/BCR 那样精确识别某个 antigen epitope，也不会单独形成高度特异的长期记忆。因此，如果病原体没有被早期反应完全清除，机体需要启动适应性免疫。
+
+## Adaptive Activation
+
+适应性免疫的启动需要时间。Dendritic cells 在组织中摄取 antigen 后，迁移到 draining lymph nodes，在那里向 naive T cells 呈递 antigen。T cell activation 不是单纯的“看见抗原”：它还需要 adhesion、costimulation 和 cytokine context。只有这些条件组合起来，antigen-specific T cells 才会进入 proliferation 和 differentiation。
+
+B cells 也可以通过 BCR 识别 antigen，并在合适条件下被激活。部分 B cell responses 可以相对快速发生，但高质量、持久的 antibody response 通常需要 T cell help、germinal center reaction、class switching 和 affinity maturation。
+
+因此，适应性免疫在 hours 内可以开始被激活，但真正形成大量 effector cells、plasma cells 和 memory cells，通常需要 days。
+
+## Effector Phase
+
+几天后，适应性免疫进入更明显的 effector phase。T cells 分化为 effector T cells 和 memory T cells；B cells 在 T cell help 下形成 germinal centers，并产生 plasma cells、memory B cells 和 antibodies。
+
+Effector lymphocytes 需要从 peripheral lymphoid organs 离开，进入感染组织或相关屏障部位。抗体则可以进入血液、组织液或黏膜分泌物，帮助中和病原体、促进 opsonization、激活 complement，或阻止病原体进入细胞。
+
+这个阶段的核心是把特异性识别转化为实际清除：effector cells 处理 infected cells 或组织中的病原体，antibodies 处理 extracellular pathogens、toxins 或病毒颗粒。这个过程从感染后几天开始，常持续数周。
+
+## Memory
+
+病原体清除后，免疫系统不会简单回到初始状态。大多数 effector cells 会收缩，但 memory T cells、memory B cells 和 long-lived plasma cells 可以留下来。部分抗体水平也会在 serum 或 mucosal sites 中维持较长时间。
+
+Immunological memory 的意义是让再次感染时的反应更快、更强、更精准。下一次遇到同一 antigen 时，机体不需要从少数 naive lymphocytes 重新开始，而是可以直接动员已有 memory cells 和残留抗体。
+
+这个阶段可以在初次感染后的 days to weeks 内建立，并在某些情况下维持多年甚至终身。
+
+## Key Points
+
+- 免疫应答有时间顺序：先 innate，再 adaptive activation，再 effector phase，最后 memory。
+- Innate immune response 通常 minutes 内启动，持续 days。
+- Adaptive immune response 的启动可在 hours 内发生，但 clonal expansion、effector differentiation 和 germinal center reaction 需要 days。
+- T cell activation 需要 antigen recognition、adhesion、costimulation 和 cytokine context。
+- B cell response 的高质量抗体产生通常依赖 T cell help 和 germinal center reaction。
+- Effector lymphocytes 从 lymphoid organs 迁移到感染部位后，才真正执行组织层面的清除。
+- Antibody response 可以中和 pathogen/toxin，也可以促进 complement activation 和 phagocytosis。
+- Immunological memory 依赖 memory B cells、memory T cells、long-lived plasma cells 和较高的 serum 或 mucosal antibody levels。
+- 读感染、疫苗或免疫治疗文献时，要先判断作者讨论的是 activation、effector function，还是 memory。
+
+## Note
+
+“固有免疫快、适应性免疫慢”只是第一层理解。更准确地说，适应性免疫的识别和激活可以在 hours 内开始，但从少数 antigen-specific lymphocytes 扩增到足以清除病原体的 effector pool，需要 days。这个时间差解释了为什么早期感染控制依赖 innate immunity，也解释了为什么疫苗和既往感染形成的 memory 能显著改变再感染时的病程。
+
+对我来说，这张表是 immune response timeline。以后读到某个 cytokine、cell state 或 antibody endpoint 时，先把它放回时间轴：它是在早期感知、淋巴结激活、效应清除，还是长期记忆中发挥作用。
+
+## Sources
+
+- Janeway's Immunobiology
+- [Janeway's Immunobiology, NCBI Bookshelf](https://www.ncbi.nlm.nih.gov/books/NBK10757/)

@@ -43,6 +43,10 @@ website:
         contents:
           - section: "Immunology"
             contents:
+              - concept/immunology/immune-response-phases.qmd
+              - concept/immunology/immune-cells.qmd
+              - concept/immunology/myeloid-cells.qmd
+              - concept/immunology/pathogens.qmd
               - concept/immunology/th2.qmd
               - concept/immunology/easi.qmd
           - section: "Cancer"
