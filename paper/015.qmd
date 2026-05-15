@@ -1,0 +1,58 @@
+---
+title: "015"
+date: 2026-05-15
+categories: [article]
+tags: [type-1-diabetes, genetic-risk-score, machine-learning, gwas, precision-medicine]
+draft: false
+---
+
+## Intro
+
+**Genetic Association and Machine Learning Improve the Prediction of Type 1 Diabetes Risk** 是 McGrail et al. 在 2026 年发表于 *Nature Genetics* 的研究文章。文章围绕 type 1 diabetes (T1D) 的 genetic risk prediction 展开，结合 genome-wide association、fine-mapping 和 machine learning，构建了一个新的遗传风险模型 T1GRS。DOI: [10.1038/s41588-026-02578-y](https://doi.org/10.1038/s41588-026-02578-y)
+
+这篇文章的主线很完整：先扩大 T1D genetic discovery，识别更多 risk signals；再用 MHC 和 non-MHC variants 训练机器学习 genetic risk score；最后用 SHAP 解释模型，分析 nonlinear interactions 和 T1D genetic subclusters。
+
+## Why I Read It
+
+这篇是从 Nature Genetics News 里看到的。主要读它是因为标题里有 machine learning，而且它不是泛泛地说“AI 预测疾病”，而是把 ML 放进 genetic risk score、GWAS fine-mapping 和疾病分层这个具体场景里。
+
+我最近一直在看 PRS、biomarkers、risk stratification 和 precision medicine。这篇正好能补上一个很好的例子：遗传风险模型的价值不只是提高 AUC，还可以帮助解释哪些人群预测更难、哪些 variants 有 nonlinear interaction，以及能否从模型特征中看到疾病异质性。
+
+## What It Says
+
+研究首先做 T1D genetic discovery。作者在 817,718 名 European ancestry individuals 中进行 genome-wide association analysis，其中 T1D 20,355 人，nondiabetic 797,363 人。MHC locus 单独分析，纳入 10,107 名 T1D 和 19,639 名 nondiabetic individuals。最终识别出 160 个 T1D risk signals，包括 97 个 non-MHC risk loci 加 MHC locus。
+
+Genome-wide 分析发现 79 个 known loci 和 8 个 previously unreported loci 达到显著水平。作者随后对 97 个 T1D loci 做 fine-mapping，得到 133 个 independent signals 和 credible sets。新 loci 中，ZMIZ1 和 CLNK 比较有生物学意义：ZMIZ1 与 beta-cell function 和 glucose homeostasis 有关，CLNK 与 immunoreceptor signaling 有关。
+
+MHC 区域因为 association 极强、LD 复杂，所以作者没有直接用普通 fine-mapping，而是做 stepwise conditional analysis。这个分析先识别出 23 个 independent MHC signals；在调整 70 个 known class I/II MHC risk alleles 和 20 个 DR3-DQ2 / DR4-DQ8 interaction 后，又发现 4 个额外 signals，包括 HLA-DRB1 amino acid residue 71 和几个 noncoding signals。
+
+模型部分是文章的核心。作者构建了 T1GRS，一个基于 CatBoost gradient boosting classifier 的 machine learning genetic risk score。模型使用 199 个 variants，包括 102 个 non-MHC lead variants、70 个 known HLA variants 和 27 个 conditional MHC variants。作者训练了 T1GRS-cov（variants 加 sex、PCs、cohort label）和 T1GRS-var（只用 variants）两个版本。
+
+预测表现不错。Discovery cohorts 中，T1GRS-cov all-variant model 的 AUC 为 0.937，average precision 为 0.879；MHC-only model AUC 为 0.920；non-MHC model AUC 为 0.803。T1GRS-var all-variant model AUC 为 0.923，也高于既有 GRS2 的 0.916。Independent validation 中，T1GRS-var 在 AoU 的 AUC 为 0.872，在 nPOD 的 AUC 为 0.887；其中 AoU 里 GRS2 的 AUC 为 0.791，差距很明显。
+
+最有意思的是，T1GRS 的提升主要不是在典型高风险 HLA 人群，而是在没有 HLA-DR3/DR4 haplotypes、遗传风险更复杂的人群。作者用 SHAP-derived complexity score 说明，个体遗传风险越复杂，T1GRS 相比 additive score 或 logistic regression 的优势越明显。
+
+模型解释方面，SHAP analysis 显示重要 features 包括 HLA-DQB1 amino acid 57、INS 和 PTPN22。SHAP interaction analysis 发现 154 对 significant variant interactions。最强 interaction 是 HLA-DQB1 amino acid 57 与 HLA-DRB1 amino acid 13，符合已知 HLA-DR3/DR4 交互；作者还发现 INS locus 与 HLA-DQB1 amino acid 57 的 interaction，以及 MHC-non-MHC、non-MHC-non-MHC 之间的交互。
+
+最后，作者用 T1GRS-var 的 individual-specific SHAP feature contribution vectors 做 clustering，识别出四个 T1D genetic subclusters：MHC-driven、MHC-enriched、T cell-enriched 和 pancreas-enriched。这些亚型和临床表型有关：MHC-related clusters 平均发病更早；pancreas-enriched cluster 虽然发病较晚，但 nephropathy、neuropathy 和 cardiovascular disease 风险更高，并在 AoU validation 中复现。
+
+## What I Take From It
+
+这篇最值得学习的是它没有停在“机器学习让预测更准”。它把 genetic discovery、fine-mapping、risk score、model interpretation 和 clinical heterogeneity 连成了一条完整研究链。
+
+对 PRS/GRS 研究来说，这篇提供了一个很好的范式。一个风险分数如果只报告 AUC，价值其实有限；更重要的是要说明它在哪些人群中更有帮助，能否补上既有模型的短板，是否能解释复杂风险结构，以及能不能进入具体临床应用场景。
+
+这篇也让我更清楚地看到 ML 在生物医学中的一个合理位置：不是用复杂模型包装已有数据，而是在传统 additive model 可能不够时，捕捉 interaction、heterogeneity 和 nonlinear risk architecture。尤其 T1D 这种 MHC 强效应加 polygenic background 的疾病，很适合讨论 additive score 的边界。
+
+## Note
+
+这篇的主要边界是 ancestry。模型训练和 discovery 主要基于 European ancestry individuals。虽然作者在 African American cohorts 中做了 validation，而且表现和 ancestry-specific score 接近，但样本量较小，不能说明跨族群泛化已经完全解决。真正多族群 T1D genetic prediction 仍需要 trans-ethnic fine-mapping 和 multi-ancestry model training。
+
+另一个限制是 phenotype definition。T1D、T2D、LADA 和 adult-onset T1D 在 EHR 和 biobank 数据中不总是容易区分，标签误差会影响模型训练和评估。
+
+最后，遗传风险模型有天然上限。T1D 不只是 genetic susceptibility，还涉及 environmental triggers、autoimmunity biomarkers 和 beta-cell decline。T1GRS 可以提高 genetic risk prediction，但不能替代 islet autoantibodies、metabolic markers、family history 或 longitudinal clinical data。未来更有价值的模型可能是 genetic score + autoantibody + molecular biomarkers + clinical trajectory。
+
+## Source
+
+- DOI: [10.1038/s41588-026-02578-y](https://doi.org/10.1038/s41588-026-02578-y)
+- PDF: [Genetic Association and Machine Learning Improve the Prediction of Type 1 Diabetes Risk](../assets/pdf/015.pdf)

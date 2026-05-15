@@ -37,6 +37,7 @@ website:
           - paper/012.qmd
           - paper/013.qmd
           - paper/014.qmd
+          - paper/015.qmd
       - section: "Concept"
         href: concept/index.qmd
         contents:
