@@ -1,0 +1,58 @@
+---
+title: "013"
+date: 2026-05-15
+categories: [article]
+tags: [colorectal-cancer, polygenic-risk-score, screening, cohort, precision-prevention]
+draft: false
+---
+
+## Intro
+
+**Optimizing Colorectal Cancer Screening through Polygenic Risk Score-Based Risk Stratification: Evidence from a Population-Based Cohort and Screening Trial** 是 Chen et al. 在 2026 年发表于 *Genome Medicine* 的研究文章。文章围绕 colorectal cancer (CRC) 精准筛查展开，评估 polygenic risk score (PRS) 是否能在中国/东亚人群中用于风险分层，并进一步改善 FIT-based screening 对 advanced neoplasia (AN) 的检出。DOI: [10.1186/s13073-026-01623-z](https://doi.org/10.1186/s13073-026-01623-z)
+
+这篇文章的设计很完整：先用 East Asian GWAS 数据构建和优化 PRS，再在 China Kadoorie Biobank (CKB) 中做前瞻性 CRC 风险验证，最后在 TARGET-C 筛查试验中评估 PRS-based risk-adapted screening 的实际应用价值。
+
+## Why I Read It
+
+这篇是从 Genome Medicine News 里看到的。主要读它是因为它和 polygenic risk score (PRS) 相关，正好能补上我最近对 PRS、遗传风险分层和精准筛查应用场景的关注。
+
+前面读的 BJO 眼病炎症文章更偏“系统性指标预测器官衰老风险”；这篇则更进一步，问一个风险工具能否改变筛查流程：谁直接做 colonoscopy，谁先做 FIT，能否找到 FIT 漏掉的 advanced neoplasia。这种从 risk prediction 走向 risk-adapted intervention 的思路很值得学习。
+
+## What It Says
+
+文章分三步做。第一步是 PRS development。作者使用 Nanjing GWAS、Wuhan GWAS 和 BioBank Japan 的 CRC GWAS summary statistics，比较已有 East Asian PRS、基于 GWAS meta-analysis 的 C+T/PRS-CS 方法，以及 combined PRS。最终选出的 PRS121 由 PRS115-EAS 加上 6 个独立新 SNP 组成，共 121 个 SNP。
+
+第二步是在 CKB 中做 prospective assessment。本文纳入 100,219 名无基线癌症且完成基因分型质控的 CKB 参与者，中位随访 14.0 年，记录 810 例 incident CRC。PRS121 在候选模型中表现最好，C-index 为 0.602。PRS top 20% 人群相比 bottom 20% CRC 风险增加约 2.69 倍。
+
+作者还分析了 PRS 与 healthy lifestyle index (HLI) 的联合效应。以 low genetic risk + favorable lifestyle 为参照，high genetic risk + unfavorable lifestyle 组风险最高，HR 为 3.32；high genetic risk + moderate lifestyle 组 HR 为 2.24。虽然没有显著 multiplicative 或 additive interaction，但高遗传风险人群中 favorable lifestyle 对绝对风险的影响更明显。
+
+第三步是在 TARGET-C 筛查试验中评估应用价值。TARGET-C 是中国多中心 CRC 筛查 RCT，比较 colonoscopy、annual FIT 和 risk-adapted screening。本文纳入 baseline screening 阶段接受 colonoscopy 且有合格血浆样本的 2,821 人，其中 AN 415 例，包括 31 CRC 和 384 advanced adenoma；NAA 750 例；healthy controls 1,656 例。
+
+在 TARGET-C 中，PRS 分布沿 adenoma-carcinoma sequence 升高：AN 高于 NAA 和 healthy controls，NAA 也高于 healthy controls。AN vs healthy controls 比较中，PRS top 20% 的 OR 为 3.66。高 PRS + high APCS 组合的 AN 风险最高，OR 为 4.12。
+
+筛查策略比较是文章最关键的部分。PRS-based strategy 把 PRS top 20% 人群直接分配到 colonoscopy，其余人先做 FIT，FIT positive 再转 colonoscopy。相比 FIT-only screening，PRS-based strategy 将 AN detection rate 从 13.1% 提高到 16.7%，sensitivity 从 54.1% 提高到 69.4%。PRS + APCS 的 any high-risk strategy 进一步将 detection rate 提高到 21.0%，sensitivity 达到 87.2%。
+
+代价也很清楚：risk-adapted strategies 会增加 colonoscopy demand，并降低 specificity 和 PPV。FIT-only 需要 330 次 colonoscopies，PRS-based strategy 需要 462 次，any high-risk strategy 需要 687 次。每检出一个 AN 所需 colonoscopy 数分别为 2.52、2.75 和 3.26。
+
+最能说明 PRS 补充价值的是 FIT-negative AN。PRS-based strategy 识别了 35/166，即 21.1% 的 FIT-negative but PRS high-risk AN cases；PRS+APCS any high-risk strategy 识别了 80/211，即 37.9% 的 FIT-negative AN cases。
+
+## What I Take From It
+
+这篇最值得学习的是它没有停留在“PRS 与 CRC 风险相关”，而是把 PRS 放进筛查路径中评估实际收益。PRS121 的 C-index 只有约 0.602，单独看并不惊艳；但它能补充 FIT 的短板，识别一部分 FIT-negative advanced neoplasia，这才是应用价值所在。
+
+对大队列和筛查研究来说，这篇提供了一个很好的范式：先在 prospective cohort 中验证风险工具，再在 screening trial 中看它是否改变 detection rate、sensitivity、specificity、PPV、colonoscopy demand 和 NNS。也就是说，风险预测模型的价值不能只靠 AUC/C-index 判断，还要看它能否改善具体决策。
+
+这篇也提醒我，精准筛查不是简单地“高风险多筛、低风险少筛”。任何提高 sensitivity 的策略都可能带来更多 colonoscopy、更多假阳性、更多成本和依从性问题。因此，一个 screening strategy 的好坏必须同时看收益、资源消耗、可接受性和长期结局。
+
+## Note
+
+这篇的边界也很明确。首先，研究主要基于 East Asian ancestry，PRS 的跨族群泛化不能直接假设。其次，PRS 对传统风险因素的增量收益虽然统计显著，但幅度并不是压倒性的。它更适合作为 FIT 和 APCS 之外的补充风险分层工具，而不是替代现有筛查。
+
+此外，TARGET-C 中的 PRS screening utility 是 cross-sectional evaluation，不能证明长期降低 CRC incidence 或 mortality。真正改变公共卫生筛查政策，还需要更长随访的 RCT、成本效益分析和真实世界实施研究。
+
+对我来说，这篇最适合引用的角度是“遗传风险分层如何补充 FIT，识别 FIT-negative advanced neoplasia”，以及“风险预测模型进入筛查策略时必须评估 detection benefit 和 colonoscopy burden 的 trade-off”。
+
+## Source
+
+- DOI: [10.1186/s13073-026-01623-z](https://doi.org/10.1186/s13073-026-01623-z)
+- PDF: [Optimizing Colorectal Cancer Screening through Polygenic Risk Score-Based Risk Stratification](../assets/pdf/013.pdf)
