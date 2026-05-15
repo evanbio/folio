@@ -1,0 +1,54 @@
+---
+title: "014"
+date: 2026-05-15
+categories: [article]
+tags: [biomarker, dipg, pediatric-cancer, precision-medicine, clinical-trial]
+draft: false
+---
+
+## Intro
+
+**Harnessing the Power of Biomarkers for Diffuse Intrinsic Pontine Gliomas** 是 Jasia Mahdi 在 2026 年发表于 *Nature Medicine* 的 News & Views。文章评论 Debily et al. 报道的 BIOMEDE trial，围绕 H3K27-altered diffuse intrinsic pontine glioma (DIPG) 讨论 biopsy-informed tumor profiling、adaptive clinical trial design 和 biomarker-guided therapy 的意义。DOI: [10.1038/s41591-026-04399-2](https://doi.org/10.1038/s41591-026-04399-2)
+
+DIPG 是高度侵袭性的儿童中枢神经系统肿瘤，中位 overall survival 约 11 个月，除 palliative radiation 外治疗选择很有限。BIOMEDE 虽然没有达到相对于历史对照改善 overall survival 的主要终点，但它展示了活检、分子分型和 biomarker 分层在这类致死性肿瘤中的价值。
+
+## Why I Read It
+
+这篇是从 Nature Medicine News 里看到的。主要读它是因为我最近对 biomarkers 很感兴趣，尤其想看 biomarkers 在临床试验中到底能发挥什么作用：是直接预测某个治疗有效，还是帮助做患者分层、解释预后差异、指导后续组合治疗设计。
+
+这篇正好提供了一个很好的例子。它不是一篇“靶向药成功延长生存”的文章，而是一个阴性 trial 的评论：主要疗效终点没有成功，但 biopsy 和 molecular profiling 仍然沉淀出了有用的预后标志物、治疗反应线索和肿瘤微环境信息。对我理解 biomarker 的真实临床价值很有帮助。
+
+## What It Says
+
+BIOMEDE 是一个国际、多中心、随机 phase 2 clinical trial，纳入 biopsy-proven H3K27-altered DIPG 的 children、adolescents 和 young adults。所有患者接受 biopsy，随后进行 whole-exome sequencing、RNA sequencing 和 centralized immunohistochemical biomarker assessment。
+
+治疗设计是 biomarker-driven 的：如果对应 tumor biomarker 不存在，患者就不会被随机分配到相应治疗臂。试验评估 radiotherapy 联合 EGFR inhibition (erlotinib)、mTOR inhibition (everolimus) 或 multitargeted tyrosine kinase inhibition (dasatinib)。
+
+疗效结果并不理想。各治疗臂相对于 historical control 在 overall survival、clinical response 或 imaging response 上没有显著差异。不过，这些治疗总体耐受性较好，没有 severe adverse events or deaths。更重要的是，试验显示 DIPG 活检在合适训练和条件下可以安全实施：没有 biopsy-related deaths，活检后中位住院时间为 2 天。
+
+biomarker 结果是这篇评论的重点。everolimus 组中，PI3K-AKT-mTOR pathway 相关基因突变与更好的 progression-free survival 相关，overall survival 也有更好趋势。H3.1-K27M 相比 H3.3-K27M 是更有利的 survival biomarker；TP53 mutation 则是 overall survival 的主要 negative prognostic factor。
+
+文章还讨论了 tumor microenvironment。虽然 BIOMEDE 没有纳入 immunotherapy，但 transcriptional profiling 显示 p53-mutant tumors 更偏 immunosuppressive phenotype，可能限制免疫治疗反应。相反，long-term survivors 具有更 pro-inflammatory 的 tumor microenvironment 和 immunoproficient myeloid cell populations。这提示未来可以研究如何把免疫抑制状态推向促炎状态，或将靶向治疗与免疫治疗组合。
+
+作者进一步提到 PNOC022 这样的后续 trial：它采用类似 adaptive platform design，测试 ONC201 联合 radiation、paxalisib、其他基于 BRAFV600E、PDGFRA、FGFR1 和 NF1 status 的靶向治疗，或 DNX-2401 oncolytic adenovirus immunotherapy。这个方向代表了 H3K27-altered DIPG 后续治疗开发中更 molecularly driven 的组合策略。
+
+## What I Take From It
+
+这篇最值得学习的是它把 biomarker 的价值讲得更现实。biomarker 不一定马上带来一个阳性治疗结果；它也可以作为 trial eligibility 和 treatment assignment 的依据，作为 prognostic marker 帮助患者和家庭理解病程，作为 response heterogeneity 的解释变量，或者作为未来 combination therapy 的机制假设来源。
+
+这和我最近读的 PRS-based screening、大队列炎症指标文章有一个共同逻辑：biomarker 的价值不只在于统计显著，而在于它能否进入具体决策路径。对 DIPG 来说，这个路径是 biopsy -> molecular profiling -> treatment stratification -> prognosis -> future trial design；对筛查研究来说，可能是 risk score -> risk group -> screening strategy -> detection benefit and burden。
+
+我也觉得这篇提醒了我一个重要问题：阴性 trial 仍然可能很有价值。只要试验设计足够好，样本和分子数据收集足够系统，它就能帮助研究者理解为什么治疗没有奏效、哪些亚组可能有信号、未来组合治疗应该往哪里走。
+
+## Note
+
+这篇本身是 News & Views，不是原始临床试验论文。如果要引用 BIOMEDE 的具体试验设计、入组标准、随机化流程、统计模型和 subgroup analysis，应该回到 Debily et al. 的原始 *Nature Medicine* 论文。
+
+BIOMEDE 的核心边界也很清楚：主要终点是阴性的。因此当前证据更适合支持“biopsy and profiling are useful for stratification and hypothesis generation”，不能直接说明某个靶向药联合放疗已经成为有效标准方案。
+
+另一个现实问题是检测可及性。comprehensive molecular and genetic testing 目前主要在 clinical trial setting 中进行，成本和资源要求都不低。如果未来要进入常规临床，需要解决不同中心之间的活检能力、测序可及性、费用负担和结果解释能力差异。
+
+## Source
+
+- DOI: [10.1038/s41591-026-04399-2](https://doi.org/10.1038/s41591-026-04399-2)
+- PDF: [Harnessing the Power of Biomarkers for Diffuse Intrinsic Pontine Gliomas](../assets/pdf/014.pdf)
