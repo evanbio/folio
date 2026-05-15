@@ -1,0 +1,56 @@
+---
+title: "012"
+date: 2026-05-15
+categories: [article]
+tags: [ocular-disease, inflammation, cohort, uk-biobank, epidemiology]
+draft: false
+---
+
+## Intro
+
+**Systemic Inflammatory Biomarkers as Risk Factors for Age-Related Ocular Diseases: A Large-Scale Prospective Cohort Study** 是 Huang et al. 在 2026 年发表于 *British Journal of Ophthalmology* 的大型前瞻性队列研究。文章基于 UK Biobank，分析系统性炎症指标与 cataract、primary open-angle glaucoma (POAG)、age-related macular degeneration (AMD) 和 diabetic retinopathy (DR) 四类年龄相关眼病发生风险之间的关系。DOI: [10.1136/bjo-2025-328553](https://doi.org/10.1136/bjo-2025-328553)
+
+文章使用两个炎症指标：SII (systemic immune-inflammation index) 和 INFLA-score (low-grade inflammation score)。它不仅分析 incident ocular disease risk，还进一步连接 OCT-derived retinal layer thickness 和 fundus-derived retinal vascular features，试图把系统性炎症、眼部结构改变和 ocular ageing 放到同一个流行病学框架里。
+
+## Why I Read It
+
+这篇是导师推荐的，而且和我正在使用或学习的大队列研究设计很接近，所以读它主要是为了看研究问题、暴露定义、结局定义、Cox 模型、非线性分析、敏感性分析和影像表型如何组织成一条完整证据链。
+
+它也和我最近关注的系统性炎症、衰老和器官特异性疾病有关。眼睛通常被视为 immune-privileged organ，但年龄相关眼病并不只是局部组织退行性改变，也可能受到全身慢性低度炎症、血管状态和代谢状态影响。这篇正好提供一个大样本、长随访、带结构影像支持的例子。
+
+## What It Says
+
+研究来自 UK Biobank。作者从 502,132 名参与者中排除炎症指标缺失或极端异常者、基线已有目标眼病者、眼外伤或创伤史者，最终纳入 415,599 人。中位随访 13.0 年，共记录到 44,906 例 cataract、5,803 例 POAG、7,388 例 AMD 和 3,319 例 DR。
+
+暴露变量是两个系统性炎症指标。SII 的计算方式是 `(neutrophils x platelets) / lymphocytes`。INFLA-score 则整合 CRP、white blood cell count、platelet count 和 neutrophil-to-lymphocyte ratio，每个指标按分位赋值后求和，数值越高代表低度系统性炎症越强。
+
+主要统计方法是 Cox proportional hazards regression，并用三层模型逐步调整混杂因素。Model 1 调整 age 和 sex；Model 2 进一步调整 ethnicity、Townsend Deprivation Index、alcohol intake、smoking 和 physical activity；Model 3 再加入 BMI、hypertension history 和 diabetes mellitus history。作者还使用 restricted cubic splines (RCS) 分析非线性关系。
+
+完全调整模型中，SII 和 INFLA-score 均与四类眼病风险升高相关。SII 每单位增加与 cataract、POAG、AMD 和 DR 风险升高相关；INFLA-score 也显示类似关联，并且对 DR 的关联最强。分类分析中，高 SII 组和高 INFLA-score 组同样表现出更高疾病风险。
+
+最有意思的是疾病特异性的剂量反应模式。Cataract 和 POAG 的炎症-风险关系更像 J-shaped pattern，SII 大约在 500 附近出现 inflection point，提示可能存在阈值效应。相比之下，AMD 和 DR 与炎症指标更接近单调正相关，炎症越高，风险越高。
+
+作者还做了结构影像分析。OCT 结果显示，较高炎症指标与视网膜层变薄有关，尤其是 OP-ONL、photoreceptor segment 和 overall macular thickness。眼底血管特征方面，SII 与 vascular tortuosity 相关，INFLA-score 与 central retinal arteriolar equivalent 相关，两者都与 central retinal venular equivalent 正相关。这些结果为系统性炎症与 retinal neurodegeneration、structural change 和 vascular dysfunction 的联系提供了结构表型支持。
+
+敏感性分析很完整，包括排除随访少于 2 年者、排除影响炎症指标的疾病、排除协变量缺失者、额外调整 age-squared、加入 primary care records、只保留 hospital-confirmed cases、额外调整抗炎药使用，以及调整饮食模式。整体结果基本稳定。
+
+## What I Take From It
+
+这篇最值得学习的是大队列文章的组织方式。它不是只做一个简单的 exposure-outcome Cox 回归，而是把暴露指标、四个临床结局、非线性剂量反应、亚组、敏感性分析和影像结构表型组合在一起，让“系统性炎症参与 ocular ageing”这个问题更有层次。
+
+对我自己的大队列研究训练来说，这篇可以当作模板看。一个完整的队列分析不只是报 HR，还要说明样本筛选、暴露计算、结局来源、协变量分层、缺失处理、模型递进、非线性关系、敏感性分析和结构/机制支持。尤其是 RCS 的使用很有借鉴意义，因为很多生物医学暴露和疾病风险未必是线性关系。
+
+这篇也提醒我，综合炎症指标适合做风险分层，但机制解释要谨慎。SII 和 INFLA-score 的优势是低成本、容易获得、适合大样本；缺点是粒度较粗，不能告诉我们到底是哪类细胞、细胞因子或通路在驱动 lens、trabecular meshwork、photoreceptors 或 retinal vasculature 的改变。
+
+## Note
+
+这篇不能被读成“抗炎治疗可以预防年龄相关眼病”的证据。它是观察性研究，虽然样本很大、随访很长、敏感性分析充分，但仍然无法完全排除 residual confounding、结局误分类、健康志愿者偏倚和 reverse causality。
+
+炎症指标也只在基线测量一次。作者用 repeat assessment 做了稳定性支持，但单次测量仍然不能代表长期炎症轨迹。未来如果能分析动态炎症变化，或者结合 MR、临床试验和机制实验，证据会更强。
+
+我觉得这篇最适合引用的角度，是“系统性炎症作为 ocular ageing 的风险标志物”和“大队列研究如何把临床结局与影像结构表型连接起来”。如果要谈因果机制或干预策略，需要明显保守。
+
+## Source
+
+- DOI: [10.1136/bjo-2025-328553](https://doi.org/10.1136/bjo-2025-328553)
+- PDF: [Systemic Inflammatory Biomarkers as Risk Factors for Age-Related Ocular Diseases](../assets/pdf/012.pdf)
