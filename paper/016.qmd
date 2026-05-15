@@ -1,0 +1,72 @@
+---
+title: "016"
+date: 2026-05-15
+categories: [review]
+tags: [ferroptosis, cell-death, reproducibility, lipid-peroxidation, experimental-design]
+draft: false
+---
+
+## Intro
+
+**Recommendations for Robust and Reproducible Research on Ferroptosis** 是 Mishima et al. 在 2025 年发表于 *Nature Reviews Molecular Cell Biology* 的 Expert Recommendation。文章围绕 ferroptosis 研究中的可重复性和实验解释问题，系统总结了如何可靠判断 ferroptosis 是否发生，以及常用 markers、regulators、chemical tools 和 animal models 的限制。DOI: [10.1038/s41580-025-00843-2](https://doi.org/10.1038/s41580-025-00843-2)
+
+Ferroptosis 是一种 iron-dependent lipid peroxidation 驱动的 regulated necrotic cell death。这个概念现在已经被大量用于 cancer、organ injury、neurodegeneration、inflammation 和 drug response 研究中，但也正因为太热门，很多文章容易把 ferroptosis-related signal 直接写成 ferroptosis occurrence。这篇文章的价值，就是给这个判断加上实验门槛。
+
+## Why I Read It
+
+这篇也是从 News 里看到的。看到标题里的 ferroptosis，就想到刚看过 *Cell* 的年度综述 **Cell Death in Cancer**，里面也把 ferroptosis 放在 regulated cell death 的重要位置。正好我对 cell death 这块基础还不够扎实，所以顺着 ferroptosis 这个点继续补。
+
+我读这篇不是为了再背一遍 ferroptosis pathway，而是想知道：以后读论文时，怎样判断作者说的 ferroptosis 靠不靠谱？尤其在 single-cell、bulk transcriptomics 或 tumor microenvironment 文章里，经常会看到 ferroptosis score、`GPX4`、`SLC7A11`、`ACSL4`、`PTGS2`、4-HNE staining 这类证据。问题是，这些到底是在证明 ferroptotic cell death，还是只是在提示 oxidative stress、lipid metabolism change 或 ferroptosis susceptibility？
+
+## What It Says
+
+文章先重新框定 ferroptosis 的核心机制：它不是简单的“铁多了”或“抗氧化能力下降”，而是 phospholipid peroxidation 失控，最终导致 plasma membrane rupture。这个过程受到 redox signalling、lipid metabolism 和 iron homeostasis 共同影响。
+
+抗 ferroptosis 的主要防线包括 cysteine-GSH-GPX4 axis、FSP1-CoQ10/vitamin K axis、GCH1-BH4 pathway、vitamin E 和 mevalonate pathway 相关代谢物。GPX4 是最核心的防御节点之一，但不是唯一节点。FSP1、BH4、vitamin E 等都可以通过 radical-trapping antioxidant activity 或相关机制抑制 lipid peroxidation。
+
+脂质组成也决定 ferroptosis sensitivity。PUFA-rich phospholipids 更容易发生 peroxidation，因此会增加敏感性；MUFAs 和部分 membrane lipid remodeling 机制则增加抗性。ACSL4、LPCAT3 等促进 PUFA incorporation，SCD1、ACSL3、MBOAT1/2 等与 MUFA enrichment 或 ferroptosis resistance 相关。
+
+文章最重要的部分是 detection framework。作者强调没有一个单独 marker 可以 conclusively characterize ferroptosis。更可靠的判断需要组合四类证据：
+
+- detection of cell death
+- rescue by ferroptosis-specific inhibitors
+- detection of lipid peroxidation
+- exclusion of other forms of cell death
+
+这点很关键。TUNEL、LDH release、cell viability assay、pyknosis、karyolysis 只能说明 cell death 或 necrotic morphology，不特异于 ferroptosis。C11-BODIPY、STY-BODIPY、4-HNE、MDA、LC-MS/MS epilipidomics 可以提示 lipid peroxidation，但 lipid oxidation 本身也可能来自 generalized oxidative stress 或其他 cell death contexts。Fer-1、Lip-1、UAMC-3203 等 inhibitor rescue 是重要证据，但 RTAs 也可能影响其他 radical-dependent processes 或 inflammation。
+
+对 signature genes 的提醒尤其适合读组学文章。`PTGS2` 可以在 inflammatory conditions 中上调；`CHAC1` 更偏 system x_c^- inhibition 和 ER stress；TFR1 mobilization、PRDX3 hyperoxidation、NRF2-regulated genes 都不是 ferroptosis-specific。也就是说，bulk RNA-seq 或 scRNA-seq 里看到 ferroptosis-related genes，并不能直接推出 ferroptotic cell death。
+
+文章还逐个提醒了常见 regulators 的实验坑。GPX4 是 selenoprotein，所以 mRNA 不一定代表 protein 或 enzymatic activity；研究 GPX4 overexpression 时 construct 需要包含 3'-UTR SECIS element。SLC7A11/system x_c^- 在细胞培养和体内差异很大，因为培养基中 cysteine 多以 cystine 形式存在，而体内有 reduced cysteine 和其他 cysteine sources。FSP1 的 N-terminal myristoylation 对 membrane localization 很关键，所以 tagged construct 不能随便把 tag 放到 N 端。ACSL4 不能只看 expression，最好看 downstream lipid composition，尤其 PUFA/MUFA ratio。
+
+chemical tools 也不能机械使用。Fer-1 主要适合 in vitro，不推荐 in vivo；Lip-1 和 UAMC-3203 更适合动物实验。RSL3 高浓度会有 ferroptosis inhibitor 不能 rescue 的 nonspecific toxicity；erastin 不适合 in vivo，而且 xCT inhibition 会引发 cysteine starvation、ER stress 和 mitochondrial stress 等非 ferroptosis 效应。BSO 能耗竭 GSH，但单独处理常不足以诱导 ferroptosis。FSP1 inhibitors 往往需要和 GPX4 inhibition 联用，并且有 species specificity 和 in vivo stability 问题。
+
+动物模型部分也强调 context。Conditional `Gpx4` knockout mice 是较强的 ferroptosis model，但 diet、vitamin E、selenium、sex 和 mouse genetic background 都会影响 phenotype。IRI、acetaminophen-induced liver injury、folic acid nephropathy、EAE 和 tumor models 中可以研究 ferroptosis contribution，但这些模型里通常也有其他 cell death 和 necroinflammatory processes，不能把 inhibitor rescue 或 lipid peroxidation 简单等同于 ferroptosis causality。
+
+## What I Take From It
+
+这篇对我最大的帮助，是把 ferroptosis 从“通路知识”变成“证据判断”。以前读到 ferroptosis，容易先看 `GPX4`、`SLC7A11`、`ACSL4`、lipid ROS、4-HNE 或 ferroptosis score。现在更应该先问：作者有没有证明细胞真的死了？有没有被合适的 ferroptosis inhibitor rescue？有没有 lipid peroxidation 证据？有没有排除 apoptosis、necroptosis、pyroptosis 等其他死亡方式？
+
+这对 single-cell 特别重要。scRNA-seq 很难直接捕捉正在执行死亡的细胞，更多时候只能看到 ferroptosis-related transcriptional state、oxidative stress response 或 lipid metabolism state。因此写作时最好区分：
+
+- ferroptosis execution
+- ferroptosis susceptibility
+- ferroptosis-related gene program
+- oxidative stress / lipid metabolism state
+
+这几个说法的证据强度完全不同。只用一个 gene signature score，更适合说 ferroptosis-related program，而不是说 ferroptosis occurred。
+
+这篇也让我更理解 *Cell Death in Cancer* 里为什么 regulated cell death 不能只按 pathway 名字背。真正读论文时，关键不是知道 ferroptosis、apoptosis、necroptosis、pyroptosis 各叫什么，而是知道每种死亡方式需要什么证据、哪些 readouts 会交叉、哪些 inhibitor 有 off-target，以及体内外模型为什么不能直接互推。
+
+## Note
+
+这篇是 Expert Recommendation，不是原始实验论文。它的强项是提供实验设计和结果解释的边界；如果要引用某个具体机制或 animal model 的原始证据，还是要回到对应 primary studies。
+
+我觉得这篇最适合以后当作 ferroptosis 论文的审稿清单。特别是看到这些结论时要小心：只用 `PTGS2` 或 `CHAC1` 证明 ferroptosis；只用 4-HNE staining 证明 ferroptosis；只用 ferroptosis score 证明 ferroptotic death；只用 erastin 或 RSL3 一个药物就推出机制；把 in vitro xCT inhibition 的结论直接搬到 in vivo。
+
+对我自己的阅读来说，这篇补上了一个很实用的提醒：ferroptosis 研究真正难的不是把 pathway 画出来，而是证明某个病理表型确实由 ferroptosis 参与，并且不是 generalized oxidative stress、药物 off-target 或其他 cell death modalities 的混合结果。
+
+## Source
+
+- DOI: [10.1038/s41580-025-00843-2](https://doi.org/10.1038/s41580-025-00843-2)
+- PDF: [Recommendations for Robust and Reproducible Research on Ferroptosis](../assets/pdf/016.pdf)
