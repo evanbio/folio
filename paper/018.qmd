@@ -1,0 +1,69 @@
+---
+title: "018"
+date: 2026-05-18
+categories: [review]
+tags: [single-cell, perturbation, causal-inference, machine-learning, gene-regulatory-network]
+draft: false
+---
+
+## Intro
+
+**Interpretation, Extrapolation and Perturbation of Single Cells** 是 Dimitrov et al. 在 2026 年发表于 *Nature Reviews Genetics* 的综述文章，讨论单细胞分析如何从 descriptive atlasing 走向 causal effects、mechanistic relationships 和 perturbation response modelling。DOI: [10.1038/s41576-025-00920-4](https://doi.org/10.1038/s41576-025-00920-4)
+
+这篇不是提出一个新工具，而是给当前单细胞扰动建模和因果推断方法建立一张地图。作者把方法按照 causal signatures、computational tasks 和 shared modelling concepts 组织起来，试图回答一个很实际的问题：面对这么多 single-cell perturbation、GRN、causal representation、optimal transport 和 foundation model 方法，应该怎样根据生物问题选择工具？
+
+## Why I Read It
+
+这篇也是从 *Nature Reviews Genetics* News 里看到的。标题里同时有 interpretation、extrapolation、perturbation 和 single cells，基本正中我最近在补的方向：单细胞不只是做 atlas、找 marker、画 UMAP，而是进一步问扰动会怎样改变细胞状态，模型能不能预测未观测条件，以及这些预测有没有机制意义。
+
+前面读 multi-omics AI 和 trustworthy multi-omics AI 时，一个反复出现的问题是：模型到底学到了什么？是稳定的生物机制，还是数据集里的系统性差异？这篇把类似问题放到单细胞扰动场景里，尤其适合用来建立阅读检查清单。
+
+## What It Says
+
+文章开头指出，单细胞技术已经生成了大量细胞图谱，包括 cell types、cell states、trajectories 和 spatial organization。但随着 atlas 越来越成熟，领域关注点开始从“细胞有什么不同”转向“为什么不同”和“如果扰动会怎样”。这就需要 causal modelling、mechanistic discovery 和 perturbation extrapolation。
+
+作者把可用数据分成几类 causal signatures。Observational atlases 可以利用疾病状态、遗传变异、个体差异等自然扰动，但直接因果推断需要很强假设。Time-series data 提供事件顺序，spatial omics 提供微环境和 cell-cell communication 线索，multi-omics 可以把 expression 连接到 upstream regulation。最直接的是 Perturb-seq、CROP-seq、ECCITE-seq、Mix-seq、CRISPRmap 这类 interventional single-cell assays，把 genetic 或 pharmacological perturbation 和单细胞 readout 结合起来。
+
+文章把 perturbation modelling 的目标分成三类。第一类是理解 perturbation response，比如哪些 genes、gene programmes、cell types 或 niches 对扰动有反应。第二类是 extrapolate to unseen conditions，比如预测未见过的 perturbation、cell type、patient、species、time point 或 drug combination。第三类是指导未来实验，也就是用模型决定下一轮应该做什么扰动。
+
+最重要的部分是统一 ontology。作者把当前方法归纳为五个共享建模概念：representation learning、causal inference、mechanistic discovery、disentanglement 和 population tracing。
+
+Representation learning 是把高维、稀疏、噪声大的单细胞矩阵压缩到 latent space，用于整合、可视化、gene programme discovery 和下游预测。但如果没有额外假设，它主要还是 association，不提供因果方向。
+
+Causal inference 以 intervention 为核心。CRISPR 或 drug treatment 可以看作实验中的 do-operation，但单细胞 readout 仍然可能缺乏 causal sufficiency，因为 cell cycle、microenvironment、post-translational modifications 等重要因素常常没有被观测。
+
+Mechanistic discovery 试图推断 directed molecular interactions，比如 TF 到 enhancer 再到 target gene，或者 signalling network。这里会用到 GRN inference、multi-omics prior、causal graph、temporal/spatial constraints、graph intervention 和 pre-trained foundation model。
+
+Disentanglement 是把扰动效应、cell type identity、batch/sample effects、cell cycle、lineage、microenvironment 等混在一起的变化拆开。它解决的问题很关键：如果不能把 background heterogeneity 和 perturbation-specific signal 分开，后续预测和解释都会很脆弱。
+
+Population tracing 则处理单细胞实验的一个根本问题：scRNA-seq 通常会摧毁细胞，所以没有同一个细胞扰动前后的配对观测。Optimal transport、flow matching、Schrodinger bridge 和 diffusion models 用来连接 control 和 perturbed populations，构造可能的 counterfactual mappings 或 temporal trajectories。
+
+文章还整理了大量代表性方法。差异或响应量化包括 Memento、Mixscape、Mixscale、AUGUR、MELD、CellDrift、Taichi、Vespucci。Gene programme 和 latent structure 包括 MOFA+、MEFISTO、scVI、ContrastiveVI、GSFA、Spectra、NicheCompass、DRVI。Mechanistic discovery 包括 SCENIC+、CellOracle、Dictys、scDoRI、LINGER、BICYCLE 和 NOTEARS 类方法。Perturbation extrapolation 包括 scGen、CPA、ChemCPA、GEARS、CODEX、AttentionPert、PDGrapher，以及 foundation model enhanced methods。Population tracing 包括 CINEMA-OT、CellOT、CondOT、GWOT、moscot、CellFlow 等。
+
+我觉得最值得记的是作者对 benchmark 的态度。现在很多复杂模型在接近训练分布的数据上表现不错，但到了真正未见过的 perturbation、cell type 或组合扰动时，表现就会明显下降。多个 benchmark 显示，简单 linear 或 additive baselines 经常能匹配甚至超过复杂深度模型和 foundation models。这说明模型可能学到的是 confounders、selection bias 或 systematic variation，而不是 perturbation-specific biology。
+
+## What I Take From It
+
+这篇最有价值的地方，是把“单细胞扰动建模”从一堆工具名变成了几个核心问题。以后读这类文章，我不应该先问模型是不是最新，而应该先问：它利用了什么 causal signature？它解决的是 response quantification、mechanism discovery、effect prediction 还是 population tracing？它的因果假设是什么？它是否真的做了 out-of-distribution extrapolation？
+
+这篇也让我更清楚地意识到，“可解释”不等于“机制”。Latent factors、gene programmes、attention weights、pathway-enriched components 或 SHAP values 都可能帮助理解模型，但很多时候它们仍然只是 co-expression 或 association。只有加入 intervention、time、space、multi-omics 或 directed regulatory evidence，机制解释才更强。
+
+对我后续读药物扰动、药物反应预测和组合治疗模型也很有帮助。Drug perturbation、cell line 或 organoid screens、patient context transfer，本质上都涉及一个问题：模型能不能从已观测条件外推到新的药物、剂量、组合、细胞类型或患者背景。只看总体 prediction accuracy 不够，必须看外推设置和 baseline 是否合理。
+
+这篇和 017 那篇 AI multi-omics oncology 可以连起来看。017 更像宏观领域地图，讨论 AI 如何整合组学、影像、EHR 和 digital twin；018 更像方法论底层，说明如果要从 prediction 走向 perturbation simulation 和 causal mechanism，需要什么数据签名、模型假设和评估标准。
+
+## Note
+
+这篇信息量很大，Table 2 和 Table 3 列了非常多方法，不能指望一次读完就掌握所有工具。更好的用法是把它当索引：以后遇到 CPA、GEARS、CellOT、CINEMA-OT、ContrastiveVI、BICYCLE、SCENIC+、NicheCompass、Spectra、scGPT、Geneformer 这些方法时，回到这篇看它们位于哪个任务和概念位置。
+
+文章里最重要的警告是：扰动实验也不是自动因果金标准。CRISPR 和 drug screens 会有 off-target effects、partial knockdown、heterogeneous guide efficiency、escape cells，而且很多实验在 cell line 或 organoid 里完成，不能完全代表体内组织微环境。
+
+另一个警告是 prior knowledge 的双刃剑。Pathway、GO、GRN 和 curated databases 可以增强解释性和泛化能力，但也会偏向 well-studied pathways，缺少 cell-type specificity。更麻烦的是，有些性能提升可能来自 prior 施加的 sparsity，而不一定来自正确的生物知识。
+
+我会把这篇当作以后读 perturbation modelling 的审稿清单。看到一个模型声称能预测 unseen perturbation 或组合疗法时，先看它的 held-out design、baseline、ground truth、biologically relevant metrics、外部数据、扰动效率处理、混杂控制和失败案例。否则很容易被复杂模型和漂亮 latent space 图带偏。
+
+## Source
+
+- DOI: [10.1038/s41576-025-00920-4](https://doi.org/10.1038/s41576-025-00920-4)
+- PDF: [Interpretation, Extrapolation and Perturbation of Single Cells](../assets/pdf/018.pdf)
+

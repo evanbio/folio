@@ -28,6 +28,9 @@ website:
           - paper/007.qmd
           - paper/010.qmd
           - paper/016.qmd
+          - paper/017.qmd
+          - paper/018.qmd
+          - paper/019.qmd
       - section: "Article"
         contents:
           - paper/005.qmd

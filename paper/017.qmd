@@ -1,0 +1,65 @@
+---
+title: "017"
+date: 2026-05-18
+categories: [review]
+tags: [multi-omics, artificial-intelligence, cancer, precision-oncology, digital-twin]
+draft: false
+---
+
+## Intro
+
+**Advancing AI for Multi-Omics and Clinical Data Integration in Basic and Translational Cancer Research** 是 Liu et al. 在 2026 年发表于 *Nature Reviews Cancer* 的综述文章，讨论 AI 如何整合多组学、临床数据、医学影像和数字病理，从而推动基础和转化肿瘤研究。DOI: [10.1038/s41568-026-00922-2](https://doi.org/10.1038/s41568-026-00922-2)
+
+这篇不是原始研究，而是一篇框架型综述。它的核心观点很直接：癌症异质性横跨分子、细胞、组织形态和临床表型，单一组学或单一影像模型都容易只看到局部。AI 的价值不只是提高某个预测任务的 AUC，而是把 genomics、epigenomics、transcriptomics、proteomics、metabolomics、spatial omics、radiomics、pathomics 和 EHR/clinical data 放进同一个系统级模型里。
+
+## Why I Read It
+
+这篇也是从 *Nature Reviews Cancer* News 里看到的。看到标题里有 multi-omics、AI 和 clinical data integration，就顺手读了。最近我一直在补多组学 AI、可信模型、biomarker、精准医学这些主题，这篇正好把它们放进肿瘤学场景里。
+
+我读它主要不是为了学某个具体模型，而是想看一个顶级综述怎么组织这个问题：多组学 AI 到底是在解决什么，哪些场景已经有比较具体的例子，哪些地方还只是愿景。尤其是前面读过 trustworthy multi-omics AI 后，我会更自然地问：这些复杂融合模型是不是真的比单模态模型更好？解释是否有生物学意义？外部验证和临床转化到底走到哪一步？
+
+## What It Says
+
+文章首先把 multi-omics 定义得很宽。这里不只是传统的 molecular omics，也包括从医学影像和病理图像中得到的 digital phenomics，以及 EHR、实验室检查、临床记录等 clinical data。这个定义很重要，因为作者真正关心的是 patient-specific systems model，而不是单纯把几个组学矩阵拼在一起。
+
+方法部分可以拆成三层。第一层是 learning paradigm，包括 supervised learning、unsupervised/self-supervised learning 和 foundation models。作者强调，医疗 AI 最大的瓶颈之一是高质量标签少，因此先用大规模未标注数据预训练，再用较小的临床标签数据 fine-tune，是多组学 AI 的重要路线。
+
+第二层是 architecture。CNN 和 vision transformer 主要处理影像和病理；transformer 可以处理基因组、转录组这类序列和长程依赖；GNN 适合 PPI 网络、细胞空间关系和通路结构；generative models 可以用于 synthetic data、data augmentation 和 missing modality imputation。这里的重点不是哪种架构最先进，而是不同数据结构需要不同 inductive bias。
+
+第三层是 fusion strategy。Early integration 是把特征直接拼接，简单但容易被高维模态淹没。Late integration 是各模态分别建模后再合并预测，稳健但可能错过跨模态协同。Intermediate integration 是每个模态先通过自己的 encoder 学到 embedding，再在共享表示空间里融合，最适合发现复杂的 genotype-phenotype 或 tumour microenvironment 关系。
+
+文章很值得记的一点是：多模态整合不天然优于单模态。作者明确提醒，如果不同模态高度冗余、噪声大、样本量小或异质性强，融合可能降低模型表现，或者只是增加复杂度而没有临床收益。有些 survival prediction 任务里，clinical variables 甚至可以优于 genomic 或 proteomic features。这个提醒比“多组学一定更好”更有价值。
+
+应用部分覆盖了癌症研究和临床转化的多个环节。AI 可以用于识别 driver events，把突变、转录组、蛋白网络和病理形态连接起来；也可以用于诊断，比如整合 CT radiomics、cfDNA fragmentomics 和临床变量来判断肺结节良恶性；还可以用于风险分层，把 TNM staging 之外的分子和形态异质性纳入预后判断。
+
+治疗相关部分对我更有吸引力。文章讨论了 immunotherapy response prediction、chemotherapy sensitivity、drug resistance mechanism 和 prognostic modelling。比如 NSCLC 中整合 CT、PD-L1 IHC 和 genomics 的模型，比单独用 TMB 或 PD-L1 更能预测免疫治疗反应；PDAC 中基于 transcriptomic signature 的模型被用于预测 gemcitabine 和 modified FOLFIRINOX 反应，并在 phase III trial 数据中验证。这里多组学 AI 的意义不是泛泛地“预测”，而是帮助治疗选择和解释耐药。
+
+文章后半部分提出 oncology digital twin。作者把它理解为一个动态的、患者特异的计算副本：先从大规模多模态患者队列中学习疾病 latent space，再把单个患者的 clinical、genomic、imaging 和 histopathology 数据投射进去形成 deep phenotype，最后用于疾病轨迹预测、治疗反应模拟和 longitudinal updating。这个概念很吸引人，但目前仍更像未来框架，而不是常规临床工具。
+
+XAI 是另一个重点。作者认为解释性不只是为了让医生“看懂模型”，还要确认模型是否依赖生物学相关信号，而不是 scanner、staining protocol、institution 或 population structure 这样的 shortcut。好的解释还应该能生成可检验的 biological hypothesis，并支持 bias auditing、uncertainty quantification 和 human-in-the-loop。
+
+## What I Take From It
+
+这篇最有用的地方，是把“多组学 AI”从一个很热但有点泛的词，放回到具体临床和生物学问题里。不是因为数据层越多越高级，而是因为癌症本身跨越多个尺度：基因突变、表观调控、转录状态、蛋白功能、组织空间结构、影像表型和临床结局之间经常不是一一对应的。
+
+我也更清楚地看到，multi-omics AI 的关键不在于把所有数据都塞进模型，而在于证明不同模态提供了互补信息。以后读这类文章，可以先问三个问题：新加入的模态有没有独立信息？融合方式有没有捕捉跨模态协同？模型解释能不能回到可验证的机制或临床动作？
+
+这篇和前面读的 trustworthy multi-omics AI 可以连起来看。那篇更像评价清单，强调 reproducibility、stability 和 interpretability；这篇更像领域地图，展示这些问题在肿瘤学中会出现在哪些具体场景。两篇合起来给我的提醒是：多组学 AI 不能只看性能，也要看稳定性、可解释性、外部验证和临床可行动性。
+
+对药学或治疗决策来说，这篇最相关的不是诊断影像部分，而是 treatment response、drug resistance、proactive surveillance 和 digital twin。它提示我，未来如果看 AI 辅助用药、肿瘤精准治疗或个体化给药，不能只盯着药物本身，还要看患者的分子状态、影像状态、病理空间结构和纵向临床轨迹。
+
+## Note
+
+这篇是综述，不是系统综述，也不是一篇证明某个模型可以临床部署的原始研究。它列了很多代表性案例，但证据强度不同：有些是 preclinical，有些是 retrospective clinical study，有些有 prospective validation，还有一些更接近概念性 digital twin 框架。阅读时不能把它们混成同一级证据。
+
+我觉得这篇最需要保持警惕的是 digital twin 部分。这个概念很有想象力，也确实能把多组学、EHR、影像、纵向监测和治疗模拟统一起来。但真实落地需要解决的问题非常硬：多中心高质量数据、缺失模态、成本、互操作性、前瞻性验证、监管路径、责任边界和模型更新后的安全监测。
+
+另一个边界是 XAI。文章对 XAI 的期待很高，但解释方法本身并不自动等于机制证据。SHAP、attention、saliency 或 pathway-level explanation 都可能不稳定，甚至会解释模型学到的 shortcut。真正有价值的解释应该能在独立数据、实验验证或临床知识中站得住。
+
+不过作为入口文献，这篇很适合。它帮我把 AI multi-omics oncology 的几个关键词串起来：foundation models、intermediate fusion、GNN、generative models、missing modality、clinical data integration、digital twin、XAI、domain shift、FHIR、prospective validation。以后继续读这个方向，可以把它当作地图，而不是当作结论终点。
+
+## Source
+
+- DOI: [10.1038/s41568-026-00922-2](https://doi.org/10.1038/s41568-026-00922-2)
+- PDF: [Advancing AI for Multi-Omics and Clinical Data Integration in Basic and Translational Cancer Research](../assets/pdf/017.pdf)
+

@@ -1,0 +1,69 @@
+---
+title: "019"
+date: 2026-05-18
+categories: [review]
+tags: [single-cell, spatial-genomics, multi-omics, cell-atlas, clinical-translation]
+draft: false
+---
+
+## Intro
+
+**Advances and Applications in Single-Cell and Spatial Genomics** 是 Wang et al. 在 2024 年发表于 *Science China Life Sciences* 的长篇综述，系统梳理单细胞和空间组学技术的发展、计算挑战、cell atlas 建设和临床应用。DOI: [10.1007/s11427-024-2770-x](https://doi.org/10.1007/s11427-024-2770-x)
+
+这篇更像一本压缩版 handbook，而不是围绕一个单点问题展开的综述。它从 scRNA-seq、scDNA-seq、single-cell epigenomics 一直写到 single-cell multi-omics、spatial transcriptomics、spatial multi-omics、计算整合、cell atlas 和 clinical translation。信息量很大，适合当作单细胞/空间组学技术谱系的总览。
+
+## Why I Read It
+
+前面连续读了 AI multi-omics oncology 和 single-cell perturbation modelling，里面反复出现 multi-omics、spatial omics、foundation models、cell atlas、perturbation prediction 这些关键词。我发现如果只读 AI 和方法建模，很容易忽略一个更基础的问题：这些数据到底是怎么来的？每种技术的前端限制是什么？为什么有些模态容易整合，有些模态很难？
+
+所以这篇读它主要是为了补底层技术地图。它能帮我把单细胞和空间组学的主线重新理清楚：不是谁的模型更新，也不是某个技术名字更酷，而是 coverage、throughput、modality、spatial context、data integration 和 clinical translation 之间一直在权衡。
+
+## What It Says
+
+文章首先从 bulk sequencing 的局限讲起。Bulk sequencing 给出的是混合细胞群体的平均信号，无法解析同一组织内不同细胞类型、状态和病理功能的差异。单细胞技术的价值，就是把分析单位推进到 individual cells；空间组学则进一步把这些细胞状态放回 tissue architecture 和 microenvironment 里。
+
+单细胞技术的演进方向可以概括为四条线。第一，从 transcriptome 扩展到 genome、epigenome、proteome 和 metabolome。第二，从 single-omics 走向 single-cell multi-omics。第三，从单细胞走向 subcellular resolution。第四，从几十个细胞扩展到数百万细胞。
+
+scRNA-seq 是文章中的主轴，因为它最成熟、最常用，也最适合定义 cell identity、cell state 和 cell type。技术上从 plate-based methods、microwell、droplet microfluidics 到 combinatorial indexing 一路发展。不同策略在 throughput、sensitivity、full-length coverage、3'/5' bias、sample multiplexing 和成本上各有取舍。
+
+scDNA-seq 主要用于 SNV、CNV、clonal structure 和 lineage reconstruction，但因为单个细胞只有两份 DNA 拷贝，所以扩增偏差和覆盖不均是核心问题。Single-cell epigenomics 则包括 DNA methylation、chromatin accessibility、histone modifications 和 3D genome organization，帮助研究 cell type-specific regulatory elements 和 chromatin state。
+
+我觉得 single-cell multi-omics 部分最值得记。文章强调，多组学不是把几个 single-omics protocol 简单拼在一起。真正的关键是 **modality separation**：如何在同一个细胞里把不同分子层区分、保留和读取出来，同时减少信号损失、交叉污染和实验复杂度。作者把 modality separation 分成 physical separation、enzyme conversion 和 post-sequencing / in silico separation 三类。
+
+Physical separation 概念最直接，比如把细胞裂解物、细胞核、胞质成分或不同分子池分开，缺点是信号损失和通量受限。Enzyme conversion 通过酶或化学转换标记不同分子状态，例如同时区分 DNA methylation 和 chromatin accessibility。Post-sequencing 或 in silico separation 则通过 barcode、adapter 或序列特征在测序后区分模态，适合高通量，但需要更精密的设计和计算分离。
+
+空间组学部分给了一个实用分类。作者把空间技术分成 imaging-based 和 sequencing-based，并进一步分成 SISH、SISS、SISM 和 SISB。SISH 包括 smFISH、seqFISH、MERFISH 这类原位杂交成像，空间分辨率高，但受 optical crowding、多轮杂交和目标数限制。SISS 通过原位扩增和测序读取空间序列。SISM 通过显微切割区域后测序，空间分辨率受切割精度限制。SISB 通过空间 barcode 捕获转录本，代表包括 ST、Visium、Slide-seq、DBiT-seq、Stereo-seq、Seq-Scope 等，适合大面积和无偏转录组捕获。
+
+空间技术的核心 trade-off 是 spatial resolution、detection efficiency、signal diffusion 和 tissue area。成像型方法通常分辨率高，甚至能到单分子或亚细胞层面，但检测基因数和组织范围有限；测序型方法更适合大面积和全转录组捕获，但分辨率和捕获效率依赖 probe density、组织处理和扩散控制。
+
+计算挑战部分也很实用。文章把问题分成 bulk to single-cell deconvolution、single cell to millions of cells、single-omics to multi-omics/spatial omics、cross-species integration 和 AI for single-cell genomics。这里不只是列工具名，而是在提醒：随着数据规模和模态复杂度上升，真正困难的事情变成 batch correction、cell type harmonization、cell annotation、multi-omics integration、spatial deconvolution 和 reference atlas construction。
+
+AI 部分覆盖了很多用途，包括 deconvolution、denoising、batch correction、cell type annotation、multi-omics integration、cross-species mapping、cell-cell communication、RNA velocity、spatial domain detection 和 perturbation prediction。文章也提到 Geneformer、scGPT、GeneCompass、scBERT 等 single-cell transformer 或 foundation models。但这里我会保持谨慎：这些模型很有潜力，但能否稳定解决真实生物问题，还要看具体 benchmark 和外部验证。
+
+Cell atlas 部分从 Mouse Cell Atlas、Tabula Muris、Human Cell Atlas、HuBMAP、Tabula Sapiens、Human Developmental Cell Atlas 写到非人灵长类和其他物种。对我来说，这部分的意义是提醒：atlas 不只是“大数据展示”，而是后续疾病比较、细胞注释、发育轨迹、跨物种分析和临床转化的 reference infrastructure。
+
+临床应用部分集中在癌症、非癌疾病、drug discovery 和 precision medicine。癌症里，单细胞技术不仅看 malignant cells，也看 tumor microenvironment、immune subsets、CAF、macrophage、T cell exhaustion、therapy response 和 adverse events。药物方向里，它涉及 target discovery、single-cell CRISPR screens、drug screening、patient stratification、immunotherapy biomarkers 和 irAE mechanisms。
+
+## What I Take From It
+
+这篇最大的帮助，是把单细胞/空间组学从一堆技术名重新整理成几个核心维度：测什么、测多少、测多深、保不保留空间、能不能同时测多模态、能不能和已有 atlas 整合，以及最终能不能支撑临床或药物问题。
+
+读完后我更能理解，为什么 multi-omics AI 不能只从矩阵和模型角度理解。前端实验中的 modality separation、coverage、contamination、chemistry compatibility 和 sample handling，会直接决定后端模型能学到什么。如果一个模态本身 coverage 很低、噪声很高或污染严重，再复杂的整合模型也只是把不确定性包装得更好看。
+
+空间组学部分也给了我一个清晰检查框架。以后读 spatial paper，不应该只看“用了空间技术”，而要先看它属于 imaging-based 还是 sequencing-based，分辨率是多少，检测多少基因或蛋白，组织面积多大，spot 是否包含多个细胞，是否需要 deconvolution，signal diffusion 控制得怎样。
+
+这篇和 017/018 可以连起来看：017 是 AI 多组学肿瘤应用的宏观图，018 是单细胞扰动和因果建模的方法地图，019 则补上单细胞/空间组学技术本身的底层背景。三篇放在一起，基本构成了我最近对 single-cell + spatial + multi-omics + AI 的阅读框架。
+
+## Note
+
+这篇的局限也很明显：太宽，所以不可能很深。它适合做索引和总览，不适合替代具体 protocol、benchmark 或 best-practice 文章。比如要真正做 scRNA-seq 分析，还是要看 Seurat/Scanpy 和 best practices；要做 spatial analysis，需要看具体平台和对应 benchmark；要做 multi-omics integration，要读 GLUE、MultiVI、WNN 等原始方法和比较文章。
+
+另一个需要注意的是，文章列了非常多方法名，但方法选择不能按“最新”或“最复杂”。真正要看样本类型、细胞数、组织保存方式、目标模态、分辨率、成本、通量、实验平台和下游分析能力。对临床样本，FFPE 兼容性、周转时间、成本和结果解释能力可能比技术炫酷更重要。
+
+我也会把它作为 clinical translation 的提醒。单细胞和空间组学很适合发现 TME subtypes、therapy response biomarkers、drug targets 和 irAE mechanisms，但从发现到临床使用还需要标准化流程、验证队列、可解释指标、伦理隐私和可负担的检测方案。Atlas 很重要，但 atlas 本身不是临床证据。
+
+## Source
+
+- DOI: [10.1007/s11427-024-2770-x](https://doi.org/10.1007/s11427-024-2770-x)
+- PDF: [Advances and Applications in Single-Cell and Spatial Genomics](../assets/pdf/019.pdf)
+
