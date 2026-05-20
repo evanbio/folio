@@ -1,0 +1,33 @@
+---
+title: "Spatial Domain Discovery"
+date: 2026-05-18
+categories: [method, spatial-omics]
+tags: [spatial-domain, niche-discovery, spatial-clustering, spatial-transcriptomics]
+draft: false
+---
+
+## Definition
+
+Spatial domain discovery refers to computational methods that identify tissue regions, niches, neighbourhoods, or domains from spatial omics data.
+
+## What It Gives
+
+- Tissue domains with distinct molecular profiles
+- Spatial neighbourhoods of cells or spots
+- Candidate niches linked to tissue function or disease
+- Local organization beyond cell-type abundance
+
+## Typical Examples
+
+- CellCharter
+- BANKSY
+- Graph-based spatial clustering
+- Neighbourhood enrichment analysis
+
+## Main Limitation
+
+Many methods work well within a sample, platform, or tissue context, but cross-sample, cross-cancer, and cross-platform integration remains challenging.
+
+## In Papers
+
+- Zhang et al. 2026 contrasts this method class with Spatial EcoTyper, which is designed for conserved spatial ecotype discovery across diverse samples and platforms.

@@ -1,0 +1,24 @@
+---
+title: "Method"
+date: 2026-05-18
+categories: [method]
+draft: false
+---
+
+## Method
+
+This page collects methods and analytical frameworks that appear repeatedly while reading papers. Each method page starts as a short note and can later be expanded into a deeper walkthrough.
+
+## Index
+
+| Index | Method | Type | Why It Matters | Status |
+|---|---|---|---|---|
+| 001 | [Multiplexed Protein Imaging](multiplexed-protein-imaging.qmd) | Spatial profiling | Measures predefined protein markers in tissue while preserving location | Stub |
+| 002 | [EcoTyper](ecotyper.qmd) | Cell-state/ecotype discovery | Defines cell states and tumour ecotypes from single-cell and bulk transcriptomics | Stub |
+| 003 | [Spatial Domain Discovery](spatial-domain-discovery.qmd) | Spatial analysis | Finds tissue niches, domains, or neighbourhoods from spatial omics data | Stub |
+| 004 | [Spatial Transcriptomics](spatial-transcriptomics.qmd) | Spatial omics | Measures gene expression with tissue location information | Stub |
+| 005 | [Spatial EcoTyper](spatial-ecotyper.qmd) | Spatial ecotype framework | Integrates spatial cell-state information across samples to define SEs | Stub |
+
+## Use
+
+Create or expand a method page when a paper depends on a tool, assay, model, or analytical framework enough that understanding the method changes how the biological claim should be read.

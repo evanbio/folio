@@ -1,0 +1,30 @@
+---
+title: "Spatial EcoTyper"
+date: 2026-05-18
+categories: [method, spatial-omics]
+tags: [spatial-ecotyper, spatial-ecotype, tumour-microenvironment, machine-learning]
+draft: false
+---
+
+## Definition
+
+Spatial EcoTyper is a machine-learning framework for identifying and profiling spatial ecotypes from spatially resolved cell states in tumour tissues.
+
+## What It Gives
+
+- Spatially informed cell-state embeddings
+- Conserved spatial ecotypes across samples
+- SE-specific cell states and marker programs
+- Recovery of SEs from spatial, single-cell, or bulk expression data
+
+## Core Idea
+
+The method fuses cell-type-specific gene-expression variation across spatial neighbourhoods, then identifies multicellular ecotypes that recur across tumour samples.
+
+## Why It Was Needed
+
+Earlier methods either used limited predefined protein markers, ignored spatial information, or struggled to integrate diverse samples, cancer types, and platforms. Spatial EcoTyper is designed to combine spatial information, cell-state resolution, and cross-sample integration.
+
+## In Papers
+
+- Zhang et al. 2026 introduces Spatial EcoTyper to define nine spatial ecotypes in human carcinomas and melanomas.

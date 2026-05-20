@@ -1,0 +1,31 @@
+---
+title: "EcoTyper"
+date: 2026-05-18
+categories: [method, transcriptomics]
+tags: [ecotyper, tumour-ecotype, cell-state, bulk-rna-seq, single-cell]
+draft: false
+---
+
+## Definition
+
+EcoTyper is a computational framework for identifying cell states and multicellular ecotypes from single-cell and bulk transcriptomic data.
+
+## What It Gives
+
+- Cell states within major cell types
+- Co-occurring cell-state communities
+- Tumour or carcinoma ecotypes
+- Links between ecotypes and clinical outcomes
+
+## Main Strength
+
+EcoTyper connects single-cell-defined cell states to large bulk RNA-seq cohorts, making clinical association analysis more scalable.
+
+## Main Limitation
+
+The original EcoTyper framework does not directly use tissue spatial coordinates. It can infer co-occurring cell states, but not whether those states are spatially colocalized in tumour core, tumour margin, or stroma.
+
+## In Papers
+
+- Luca et al. 2021 Cell is the key source for tumour ecotypes.
+- Zhang et al. 2026 extends the ecotype idea into spatial ecotypes.

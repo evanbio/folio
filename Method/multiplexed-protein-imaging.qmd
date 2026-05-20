@@ -1,0 +1,33 @@
+---
+title: "Multiplexed Protein Imaging"
+date: 2026-05-18
+categories: [method, spatial-profiling]
+tags: [multiplexed-imaging, protein-marker, spatial-biology, tissue-imaging]
+draft: false
+---
+
+## Definition
+
+Multiplexed protein imaging measures many protein markers directly in tissue sections while preserving spatial location.
+
+## What It Gives
+
+- Protein-level marker expression
+- Cell positions in tissue
+- Local neighbourhoods and cell-cell proximity
+- Tissue architecture at single-cell or near-single-cell resolution
+
+## Typical Examples
+
+- Multiplexed immunofluorescence
+- CODEX
+- Imaging mass cytometry
+- MIBI
+
+## Main Limitation
+
+The marker panel is predefined and usually modest in size compared with transcriptome-wide assays. This makes it powerful for validating known biology, but less ideal for unbiased discovery of complex or unknown cell states.
+
+## In Papers
+
+- Zhang et al. 2026 mentions this class as spatially informative but limited in molecular breadth.

@@ -1,0 +1,34 @@
+---
+title: "Spatial Transcriptomics"
+date: 2026-05-18
+categories: [method, spatial-omics]
+tags: [spatial-transcriptomics, gene-expression, tissue-organization, spatial-biology]
+draft: false
+---
+
+## Definition
+
+Spatial transcriptomics measures gene expression while preserving information about where transcripts, cells, or spots are located in tissue.
+
+## What It Gives
+
+- Gene expression with spatial coordinates
+- Tissue-region-specific expression programs
+- Spatial gradients from tumour core to stroma
+- Input data for spatial domain and spatial ecotype analysis
+
+## Common Platforms
+
+- 10x Genomics Visium
+- Visium HD
+- MERSCOPE
+- Xenium
+- Legacy ST platforms
+
+## Main Limitation
+
+Platforms trade off spatial resolution, gene coverage, throughput, cost, and sensitivity. Some assays capture transcriptome-wide data at spot-level resolution; others provide single-cell resolution with targeted gene panels.
+
+## In Papers
+
+- Zhang et al. 2026 integrates multiple spatial transcriptomics platforms to identify and validate spatial ecotypes.
