@@ -1,0 +1,94 @@
+---
+title: "Cancer-Associated Fibroblast"
+date: 2026-05-20
+categories: [concept, cancer]
+tags: [cancer-associated-fibroblast, caf, tumor-microenvironment, single-cell]
+draft: false
+---
+
+## Definition
+
+Cancer-associated fibroblasts (CAFs) 是肿瘤微环境中的 activated fibroblast-like stromal cells。它们通常位于 malignant cells 周围或肿瘤间质区域，参与 extracellular matrix remodelling、growth factor signalling、inflammation、angiogenesis、immune regulation 和 therapy response。
+
+中文里可以理解为：CAF 是肿瘤组织中被肿瘤环境重塑后的成纤维细胞状态。它不是单一细胞类型，而是一组 fibroblast-like cell states 的统称。
+
+## Origin
+
+CAF 可以来自多种细胞来源。常见来源包括 resident tissue fibroblasts、stellate cells、pericyte-like cells、mesenchymal stromal cells，以及在特定条件下发生状态转换的 epithelial、endothelial 或 adipocyte-related cells。
+
+不同肿瘤类型中，CAF 的来源和状态组成并不完全相同。例如 pancreatic cancer、breast cancer、colorectal cancer、lung cancer 和 glioma 中的 stromal environment 差异很大，所以 CAF 不能简单理解为一个跨癌种完全一致的细胞群。
+
+## Core Idea
+
+CAF 的核心概念是：肿瘤中的 fibroblast-like stromal cells 会被 malignant cells、immune cells、hypoxia、mechanical stress 和 inflammatory signals 重塑，并反过来改变肿瘤组织环境。
+
+CAF 不是只负责“支撑结构”的细胞。它们可以分泌 ECM 成分，改变 tissue stiffness；可以产生 cytokines 和 chemokines，影响 immune cell recruitment；可以释放 growth factors，影响 malignant cell survival 和 invasion；也可以参与 antigen presentation-like programs 或 immune suppression。
+
+因此，CAF 是 TME 中连接 tissue structure、inflammation、immune regulation 和 malignant cell behaviour 的重要 stromal compartment。
+
+## Main Functions
+
+**ECM remodelling:** CAF 可以产生 collagen、fibronectin、laminin、proteoglycans 和 matrix-modifying enzymes，改变 extracellular matrix 的密度、排列和硬度。
+
+**Mechanical signalling:** ECM 增多和组织变硬可以激活 integrin、FAK、YAP/TAZ 等 mechanotransduction programs，影响 malignant cells 和 stromal cells 的状态。
+
+**Growth and survival signalling:** CAF 可以分泌 TGF-beta、HGF、FGFs、EGF-family ligands、CXCLs、IL6-family cytokines 等信号分子，支持肿瘤细胞存活、增殖、迁移或耐受压力。
+
+**Immune regulation:** CAF 可以通过 chemokines、cytokines、ECM barrier、checkpoint-related molecules 和 antigen presentation-related programs 改变 immune cell infiltration、positioning 和 activation state。
+
+**Angiogenesis and hypoxia response:** CAF 可以产生 VEGF、CXCL12 和 ECM-related signals，影响 vascular remodelling、oxygen availability 和 hypoxic niches。
+
+## CAF Heterogeneity
+
+单细胞研究显示，CAF 不是一个均一群体。不同 CAF states 可以在同一个肿瘤内共存，也可以沿空间位置、炎症信号、TGF-beta signalling、ECM remodelling 和 antigen presentation programs 形成连续谱。
+
+常见的 CAF 分类包括 inflammatory CAF (iCAF)、myofibroblastic CAF (myCAF) 和 antigen-presenting CAF (apCAF)。这些名称不是绝对边界，而是对几类反复出现的 transcriptional states 的概括。
+
+## Inflammatory CAF
+
+Inflammatory CAF (iCAF) 通常以 cytokine、chemokine 和 inflammatory signalling 为主要特征。常见相关分子包括 `IL6`、`CXCL12`、`CXCL1`、`CXCL2`、`LIF`、`CCL2` 等，具体 marker 会随癌种和数据集变化。
+
+iCAF 更强调分泌性和炎症调节功能。它们可以影响 myeloid cells、T cells、malignant cells 和 endothelial cells，也常与 JAK/STAT、NF-kB、IL1 和 inflammatory cytokine signalling 相关。
+
+在组织层面，iCAF 可以被理解为 TME 中的 inflammatory stromal state：它不只是结构性 fibroblast，而是通过 soluble factors 参与局部炎症、免疫细胞募集和肿瘤细胞状态调节。
+
+## Myofibroblastic CAF
+
+Myofibroblastic CAF (myCAF) 通常以 contractile、ECM-producing 和 wound-healing-like programs 为主要特征。常见相关分子包括 `ACTA2`、`TAGLN`、`MYL9`、`COL1A1`、`COL1A2`、`COL3A1`、`FN1` 等。
+
+myCAF 更接近 activated myofibroblast state，常与 TGF-beta signalling、matrix deposition、tissue stiffness 和 stromal barrier 相关。它们可以改变肿瘤组织的物理结构，影响 malignant cell invasion、drug penetration 和 immune cell localization。
+
+在组织层面，myCAF 可以被理解为 TME 中的 structural and contractile stromal state：它们塑造 ECM 和 tissue architecture，是 fibrotic 或 desmoplastic tumor microenvironment 的重要组成。
+
+## Antigen-Presenting CAF
+
+Antigen-presenting CAF (apCAF) 是单细胞研究中提出的一类 CAF state，特征是表达 MHC class II 相关分子，例如 `HLA-DRA`、`HLA-DRB1`、`HLA-DPA1`、`HLA-DPB1`、`CD74` 等。
+
+apCAF 的特殊之处在于，它们带有 antigen presentation-like program，但通常不等同于 professional antigen-presenting cells。很多研究中，apCAF 缺少典型 co-stimulatory molecules，因此它们可能更偏向调节 T cell state，而不是产生完整的免疫激活。
+
+在概念上，apCAF 说明 CAF 不只是 ECM-producing 或 cytokine-secreting cells。某些 CAF states 可以进入 immune-interface position，参与 antigen presentation-related biology，并影响 T cell activation、tolerance 或 dysfunction。
+
+## Spatial Context
+
+CAF states 往往与空间位置相关。myCAF 常见于靠近 malignant cell nests 或 fibrotic stromal regions 的区域，iCAF 可能更偏向 inflammatory niches 或离 malignant cells 稍远的 stromal areas，apCAF 则可能出现在与 immune cells 接触更密切的区域。
+
+这些空间关系不是固定规则，但它们说明 CAF state 不是孤立的细胞身份。CAF 的状态受到邻近 malignant cells、immune cells、vascular structures、ECM density、oxygen level 和 cytokine gradients 共同影响。
+
+## Related Concepts
+
+- tumor microenvironment
+- fibroblast
+- extracellular matrix
+- desmoplasia
+- inflammation
+- immune exclusion
+- antigen presentation
+- TGF-beta signalling
+- IL6/JAK/STAT signalling
+- single-cell RNA-seq
+
+## Note
+
+最简洁的理解：CAF 是 TME 中被肿瘤环境重塑的 fibroblast-like stromal states。它们既能塑造组织结构，也能调节炎症、免疫和 malignant cell behaviour。
+
+单细胞研究把 CAF 从一个笼统标签拆成了多个状态。iCAF 偏 inflammatory and secretory，myCAF 偏 ECM and contractile，apCAF 偏 antigen presentation-like。三者不是绝对分类，而是理解 CAF heterogeneity 的基本框架。

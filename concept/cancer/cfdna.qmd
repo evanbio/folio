@@ -1,0 +1,85 @@
+---
+title: "cfDNA"
+date: 2026-05-18
+categories: [concept, cancer]
+tags: [cfdna, ctdna, liquid-biopsy, methylation, biomarker]
+draft: false
+---
+
+## Perspective
+
+cfDNA 是读 liquid biopsy 文献时必须分清的基础概念。它常被包装成“非侵入式检测”，但不同文章检测的内容可能完全不同：有的看突变，有的看 fragmentomics，有的看 methylation，有的看 tumour burden。
+
+在 Zhang et al. 2026 这篇文章里，重点不是传统 mutation-based ctDNA，而是 **plasma cfDNA methylation**。作者试图用 cfDNA methylation 推断 tissue-defined spatial ecotypes 的相关信号。这个逻辑可以作为 proxy inference 理解，但不能理解为血液直接恢复组织空间结构。
+
+## Definition
+
+Cell-free DNA (cfDNA) is extracellular DNA circulating in blood or other body fluids, released from normal cells, tumour cells, immune cells, and other tissues through cell death, active secretion, or tissue turnover.
+
+中文理解：cfDNA 是血浆等体液里的游离 DNA。癌症患者的 cfDNA 里可能有一部分来自肿瘤，这部分常被称为 circulating tumour DNA (ctDNA)。
+
+## cfDNA vs ctDNA
+
+**cfDNA** 是总概念，包含所有来源的游离 DNA。
+
+**ctDNA** 是 cfDNA 中来自肿瘤的部分。ctDNA 常用于检测 tumour-specific mutations、copy-number alterations、fragmentation patterns 或 methylation signals。
+
+所以不要把 cfDNA 和 ctDNA 直接等同。一个 plasma sample 里可能有很多 cfDNA，但 ctDNA fraction 很低。
+
+## Why It Matters
+
+cfDNA 的主要临床吸引力是：
+
+- 抽血即可获得，侵入性低。
+- 可以重复采样，适合 longitudinal monitoring。
+- 可能综合多个病灶释放到血液中的信号，减少单点组织活检的 sampling bias。
+- 可用于 mutation detection、minimal residual disease、tumour burden estimation、tissue-of-origin inference 和 methylation-based classification。
+
+但 cfDNA 的解释也有明显限制：
+
+- 它没有组织空间坐标。
+- 它不能直接重建 tumour core、tumour margin 或 stroma 的空间结构。
+- 它容易受 tumour fraction、DNA shedding、组织来源、炎症、治疗损伤和样本处理影响。
+- cfDNA signal 可能反映 tumour burden，而不一定反映特定 biological state。
+
+## cfDNA Methylation
+
+cfDNA methylation 分析的是 CpG 位点的甲基化模式。因为不同组织、细胞类型和细胞状态具有不同 methylation profiles，cfDNA methylation 可以用于推断 DNA 来源或疾病状态。
+
+在癌症中，cfDNA methylation 可用于：
+
+- cancer detection
+- tissue-of-origin classification
+- tumour burden estimation
+- treatment response monitoring
+- cell-state or tissue-state proxy inference
+
+在 Zhang et al. 2026 中，Liquid EcoTyper 使用 whole-genome cfDNA methylation profiles 来推断 spatial ecotype-associated levels。这里的关键是：SE 是先由组织空间转录组定义出来的，cfDNA methylation 端只是尝试恢复这些 SE 的分子代理信号。
+
+## Key Points
+
+- cfDNA 是总游离 DNA，ctDNA 是其中肿瘤来源部分。
+- liquid biopsy 不等于只测 mutation；也可以测 methylation、fragmentation 或 copy-number changes。
+- cfDNA 的优势是非侵入和可重复，不是空间分辨率。
+- cfDNA methylation 可以推断组织来源或状态，但不能直接读出组织空间结构。
+- 对 spatial ecotypes 来说，cfDNA 合理的定位是 reference-based liquid proxy，而不是 non-invasive spatial measurement。
+- 读相关论文时要检查 cfDNA signal 是否独立于 tumour burden、ctDNA fraction、炎症和治疗损伤。
+
+## Related Concepts
+
+- liquid biopsy
+- ctDNA
+- DNA methylation
+- tumour burden
+- tissue of origin
+- minimal residual disease
+- spatial ecotype
+- biomarker
+
+## In Papers
+
+- [zhangNoninvasiveProfilingTumour2026](../../literature/papers/zhangNoninvasiveProfilingTumour2026/index.qmd)
+
+## Note
+
+最实用的理解：cfDNA 可以帮助解决临床采样和重复监测问题，但不能解决空间信息缺失问题。用于 spatial ecotypes 时，它最多是“组织空间组学先定义 SE，然后血液甲基化数据推断 SE 相关信号”。

@@ -1,0 +1,84 @@
+---
+title: "Tumor Microenvironment"
+date: 2026-05-20
+categories: [concept, cancer]
+tags: [tumor-microenvironment, tme, cancer-biology, tumour-heterogeneity]
+draft: false
+---
+
+## Definition
+
+Tumor microenvironment (TME) 指肿瘤细胞周围并与肿瘤共同存在的局部组织环境。它包括 non-malignant cells、extracellular matrix、blood and lymphatic vessels、soluble factors、metabolic conditions 和 tissue structure。
+
+中文里可以理解为：TME 不是肿瘤之外的背景，而是肿瘤组织的一部分。一个实体瘤通常不是单纯由 malignant cells 堆成的细胞团，而是 malignant cells 和周围免疫、基质、血管、神经、细胞外基质等成分共同组成的组织系统。
+
+## Main Components
+
+TME 的主要组成可以分成几类。
+
+**Malignant cells** 是肿瘤中的癌细胞部分。它们携带驱动突变、拷贝数改变或其他肿瘤相关遗传/表观遗传异常，是肿瘤扩增、侵袭和转移的核心细胞群。但 malignant cells 本身也常常高度异质，可以处在不同 cell states 中。
+
+**Immune cells** 包括 T cells、B cells、NK cells、macrophages、monocytes、dendritic cells、neutrophils、mast cells 和 myeloid-derived suppressor cells 等。它们既可能参与 anti-tumor immunity，也可能在某些状态下支持 immune suppression、chronic inflammation、angiogenesis 或 tissue remodelling。
+
+**Stromal cells** 包括 fibroblasts、cancer-associated fibroblasts (CAFs)、pericytes、adipocytes 和其他支持性细胞。它们参与 extracellular matrix deposition、tissue stiffness、growth factor secretion、wound-healing-like programs 和 immune cell positioning。
+
+**Vascular and lymphatic cells** 包括 endothelial cells、lymphatic endothelial cells 和 perivascular cells。它们决定肿瘤的血供、氧气和营养供应、药物进入、免疫细胞迁入，以及转移相关的通路。
+
+**Extracellular matrix (ECM)** 是细胞外的结构性和信号性支架，包括 collagen、fibronectin、laminin、proteoglycans 等。ECM 不只是物理支撑，也影响细胞迁移、mechanotransduction、growth factor availability 和 immune infiltration。
+
+**Soluble factors and metabolites** 包括 cytokines、chemokines、growth factors、lipids、lactate、oxygen、nutrients 和 waste products。它们构成 TME 中的局部信号和代谢条件，例如 hypoxia、acidity、nutrient limitation 和 inflammatory signalling。
+
+## Core Idea
+
+TME 的核心概念是：肿瘤行为由 malignant cells 和周围组织环境共同决定。
+
+癌细胞可以通过 cytokines、chemokines、growth factors、metabolites 和 extracellular vesicles 改变周围细胞；周围的 immune、stromal 和 vascular cells 也会反过来影响癌细胞的增殖、存活、迁移、分化状态和治疗反应。
+
+因此，TME 不是一个静态容器，而是一个动态互作系统。肿瘤生长过程中，malignant cells 会重塑局部组织；被重塑后的局部组织又会形成新的 selective pressure 和 support signals，继续影响肿瘤演化。
+
+## Biological Roles
+
+TME 可以参与多个肿瘤相关过程。
+
+**Tumor growth:** stromal cells、vascular cells 和 soluble factors 可以提供 survival signals、growth factors、营养供应和结构支持。
+
+**Immune surveillance and immune escape:** immune cells 可以识别和杀伤肿瘤细胞，但 TME 也可以形成 T cell exhaustion、Treg enrichment、myeloid suppression、antigen presentation defects 和 checkpoint signalling 等免疫抑制状态。
+
+**Invasion and metastasis:** ECM remodelling、CAF activation、macrophage programs、angiogenesis 和 lymphangiogenesis 可以改变组织屏障，使肿瘤细胞更容易侵袭、进入循环或在远处定植。
+
+**Therapy response:** 药物能否到达肿瘤、肿瘤细胞是否处在敏感状态、免疫系统能否参与清除、残留细胞是否获得保护，都可能受到 TME 影响。
+
+**Tumor heterogeneity:** TME 可以在同一个肿瘤内形成不同 niches，例如 hypoxic region、perivascular niche、invasive margin、immune-rich area 或 fibrotic stroma。这些局部环境会支持不同 malignant cell states。
+
+## Common States
+
+TME 常被描述为不同状态，而不是单一类型。
+
+**Inflamed or immune-hot TME** 通常指有较多 immune cell infiltration，尤其是 T cells 和 antigen-presenting cells，并伴随 interferon signalling、chemokines 和 immune activation signals。
+
+**Immune-cold TME** 指免疫细胞较少进入肿瘤区域，或缺少有效抗肿瘤免疫反应。它可能与 antigenicity low、chemokine deficiency、stromal barrier 或 poor priming 有关。
+
+**Immune-excluded TME** 指免疫细胞存在于肿瘤周围或 stromal region，但不能有效进入 malignant cell-rich region。
+
+**Fibrotic or stromal-rich TME** 指 CAFs 和 ECM 成分丰富，组织更硬，基质屏障更明显，常与 TGF-beta signalling、ECM remodelling 和 immune exclusion 相关。
+
+**Hypoxic TME** 指局部氧气不足，常见于血供不均、快速增殖或坏死区域附近。Hypoxia 可以影响 angiogenesis、metabolism、immune suppression、invasion 和 therapy resistance。
+
+## Related Concepts
+
+- malignant cell
+- cancer-associated fibroblast
+- tumor-associated macrophage
+- extracellular matrix
+- angiogenesis
+- immune evasion
+- tumor heterogeneity
+- multicellular ecosystem
+- tissue organization
+- spatial niche
+
+## Note
+
+最简洁的理解：TME 是肿瘤所在的局部组织生态。它包括癌细胞之外的细胞、结构、信号和代谢条件，也包括这些因素与 malignant cells 的相互作用。
+
+它的重要性在于，肿瘤不是只由癌细胞内在程序决定。癌细胞的增殖、侵袭、免疫逃逸、状态转换和治疗反应，都发生在 TME 这个具体组织环境中。
