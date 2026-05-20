@@ -1,0 +1,132 @@
+---
+title: "CpG Island"
+date: 2026-05-18
+categories: [concept, genetic]
+tags: [cpg-island, cpg-site, dna-methylation, epigenetics, promoter]
+draft: false
+---
+
+## Perspective
+
+CpG island 是理解 DNA methylation 和 cfDNA methylation 时绕不开的基础概念。读文章时最容易混淆的是三个层级：单个 CpG site、一个细胞里的两个拷贝、很多细胞合在一起后的 methylation level。
+
+先记住一句：**一个 CpG site 是基因组上的一个明确位置；CpG island 是很多 CpG sites 密集分布的一段区域。**
+
+## Definition
+
+A CpG island is a genomic region with a high frequency of CpG dinucleotides, often located near gene promoters and frequently involved in gene regulation through DNA methylation.
+
+中文理解：CpG island 是基因组中 CpG 位点特别密集的一段 DNA 区域，常见于基因 promoter 附近。它本身是一个基因组区域，不是甲基化状态。
+
+## CpG Site First
+
+CpG site 指同一条 DNA 链上相邻的 cytosine 和 guanine：
+
+```text
+5'-C-G-3'
+```
+
+这里的 `p` 指中间的 phosphate backbone。
+
+一个 CpG site 在基因组上有明确坐标，类似：
+
+```text
+chr1:1234567
+```
+
+这个位置上的 cytosine 可以是 methylated，也可以是 unmethylated。
+
+## In One Cell
+
+对一个正常二倍体细胞来说，如果某个 CpG site 位于常染色体上，这个细胞通常有两个拷贝：
+
+```text
+父源染色体上的一份
+母源染色体上的一份
+```
+
+每一份 CpG site 的甲基化状态是二元的：
+
+```text
+methylated / unmethylated
+```
+
+所以单个细胞在某个常染色体 CpG site 上可以是：
+
+```text
+0/2 methylated
+1/2 methylated
+2/2 methylated
+```
+
+这就是最底层逻辑。一个 CpG site 不是“可以被甲基化很多次”，而是每个 DNA 拷贝上有或无甲基化。
+
+## Across Many Cells
+
+当很多细胞合在一起时，同一个 CpG site 就有很多拷贝。
+
+例如 100 个正常二倍体细胞：
+
+```text
+100 cells x 2 copies = 200 copies of this CpG site
+```
+
+如果其中 160 个拷贝甲基化：
+
+```text
+methylation level = 160 / 200 = 0.8
+```
+
+所以 methylation level 不是说一个 CpG site 被甲基化了 80%，而是说：
+
+> 在很多细胞贡献的同一个 CpG site 拷贝中，80% 是甲基化的。
+
+## CpG Island Level
+
+CpG island 比 CpG site 高一层：
+
+```text
+one CpG island = many CpG sites in one genomic region
+```
+
+当文章说某个 CpG island methylation 高，通常是把这个区域内多个 CpG sites 的 methylation levels 汇总起来看。
+
+常见解释：
+
+- promoter CpG island unmethylated：该 promoter 通常更可能允许基因表达。
+- promoter CpG island hypermethylated：该 promoter 可能被沉默。
+- cancer 中 CpG island methylation 改变：可能反映 tumour suppressor silencing、cell state change 或 tissue-of-origin signal。
+
+## Why It Matters
+
+CpG island 重要，是因为 DNA methylation 常被用来推断细胞身份、组织来源和疾病状态。不同细胞类型或组织状态在 CpG sites/CpG islands 上会有不同 methylation patterns。
+
+在 cfDNA methylation 中，血浆 cfDNA 来自很多细胞。研究者测的是许多 CpG sites 的 methylation levels，然后用这些 patterns 推断 DNA 来源或生物状态。
+
+## Key Points
+
+- CpG site 是一个明确的基因组位置。
+- CpG island 是 CpG sites 密集的一段区域。
+- 单个二倍体细胞中，常染色体 CpG site 通常有两个拷贝。
+- 每个拷贝上的甲基化状态是有或无。
+- 多个细胞合在一起后，同一个 CpG site 才会出现 0 到 1 的 methylation level。
+- CpG island methylation 通常是多个 CpG sites 的区域性汇总。
+- CpG island 常见于 promoter，但不是所有 CpG sites 都在 CpG islands 里。
+
+## Related Concepts
+
+- DNA methylation
+- CpG site
+- promoter
+- epigenetics
+- cfDNA
+- ctDNA
+- tissue of origin
+
+## In Papers
+
+- [zhangNoninvasiveProfilingTumour2026](../../literature/papers/zhangNoninvasiveProfilingTumour2026/index.qmd)
+
+## Note
+
+最实用的理解：先从单个细胞里的一个 CpG site 看起。一个常染色体 CpG site 在一个二倍体细胞里通常只有两个拷贝；每个拷贝甲基化或未甲基化。很多细胞合在一起后，才有 methylation level。CpG island 只是许多 CpG sites 聚在一起的一段区域。

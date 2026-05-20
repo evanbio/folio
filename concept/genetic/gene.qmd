@@ -1,0 +1,159 @@
+---
+title: "Genes"
+date: 2026-05-19
+categories: [concept, genetic]
+tags: [gene, marker-gene, tumour-microenvironment, immunology]
+draft: false
+---
+
+## Gene Notes
+
+This page records genes that repeatedly appear while reading papers. The goal is not to build a complete gene encyclopedia, but to keep practical reading notes: what the gene generally marks, and what it means in the paper where it appears.
+
+## Index
+
+| Gene | Full name | Common reading context | First note |
+|---|---|---|---|
+| PTPRC / CD45 | Protein tyrosine phosphatase receptor type C | Pan-leukocyte marker; immune-cell enrichment or depletion | Patel et al. 2014: CD45+ depletion before GBM single-cell profiling |
+| IDH1 | Isocitrate dehydrogenase 1 | Glioma molecular classification; IDH-mutant vs IDH-wildtype | Patel et al. 2014: all sampled primary GBMs were IDH1/2-wildtype |
+| IDH2 | Isocitrate dehydrogenase 2 | Glioma molecular classification; IDH-mutant vs IDH-wildtype | Patel et al. 2014: all sampled primary GBMs were IDH1/2-wildtype |
+| GZMB | Granzyme B | Cytotoxic lymphocyte effector activity | Zhang et al. 2026: CD8+ T cells in tumour core |
+| GZMK | Granzyme K | CD8+ T cell state, often less terminally cytotoxic or peripheral/memory-like context | Zhang et al. 2026: CD8+ T cells in tumour periphery |
+| BRAF | B-Raf proto-oncogene, serine/threonine kinase | MAPK pathway oncogene; melanoma targeted therapy | Tirosh et al. 2016: 4/17 genotyped melanomas had activating BRAF mutations |
+| NRAS | NRAS proto-oncogene, GTPase | MAPK pathway oncogene; melanoma molecular subtype | Tirosh et al. 2016: 5/17 genotyped melanomas had activating NRAS mutations |
+| NF1 | Neurofibromin 1 | RAS pathway negative regulator; melanoma without BRAF/NRAS mutation | Tirosh et al. 2016: NF1-inactivated melanomas are mentioned among BRAF-wildtype therapeutic contexts |
+| RAF1 / RAF | Raf-1 proto-oncogene, serine/threonine kinase | MAPK pathway signaling; RAF/MEK inhibition context | Tirosh et al. 2016: RAF and MEK inhibition selects or enriches AXL-high drug-resistant melanoma states |
+| MITF | Melanocyte inducing transcription factor | Melanoma lineage program; melanocytic differentiation and proliferative state | Tirosh et al. 2016: MITF-high malignant cells mark one melanoma transcriptional state |
+| AXL | AXL receptor tyrosine kinase | Invasive, drug-resistant melanoma state; RTK signaling | Tirosh et al. 2016: AXL-high malignant cells pre-exist treatment and are enriched by RAF/MEK inhibition |
+
+## PTPRC / CD45
+
+**Full name:** Protein tyrosine phosphatase receptor type C
+
+**Basic meaning:** PTPRC encodes CD45, a receptor-type protein tyrosine phosphatase broadly expressed by leukocytes. In practical single-cell reading, CD45 is usually treated as a pan-leukocyte marker rather than a marker for one specific immune subtype.
+
+**How to read it:** CD45 positivity usually means the cell belongs to the immune compartment, including T cells, B cells, NK cells, monocytes, macrophages and related leukocyte populations. CD45 negativity is often used experimentally to enrich non-immune compartments, but it does not by itself prove that remaining cells are malignant.
+
+**In Patel et al. 2014:** The authors depleted CD45+ cells before sorting GBM single cells. The point was to focus the experiment on glioblastoma tumour cells and avoid confusing malignant-cell transcriptional heterogeneity with differences between tumour cells and infiltrating immune cells. Their bulk control was also generated from the CD45-depleted tumour cell population.
+
+**Reading caution:** CD45 is a broad compartment marker. It is useful for separating immune from non-immune cells, but it does not distinguish T cells from myeloid cells, nor does CD45 depletion remove all possible non-malignant cells. Malignancy still needs additional evidence such as inferred CNV, tumour marker programs or genotype.
+
+## IDH1
+
+**Full name:** Isocitrate dehydrogenase 1
+
+**Basic meaning:** IDH1 encodes a metabolic enzyme, but in glioma reading its main practical meaning is as a molecular classification marker. IDH1 mutation status helps separate IDH-mutant gliomas from IDH-wildtype glioblastoma.
+
+**How to read it:** In glioma papers, `IDH-mutant` usually means a tumor carries a pathogenic IDH1 or IDH2 mutation, most commonly IDH1 R132H. `IDH-wildtype` means no such IDH mutation is detected. This distinction is not cosmetic: it marks biologically and clinically different glioma entities.
+
+**In Patel et al. 2014:** The authors state that all five primary glioblastomas were IDH1/2-wildtype. This matters because they are studying intratumoral heterogeneity within classic primary GBM rather than mixing IDH-mutant and IDH-wildtype gliomas.
+
+**Reading caution:** IDH1 is not a general tumor marker. Its interpretation is highly disease-specific. In glioma, IDH mutation status affects classification, prognosis and epigenetic state, so it should be checked before comparing tumors.
+
+## IDH2
+
+**Full name:** Isocitrate dehydrogenase 2
+
+**Basic meaning:** IDH2 is the mitochondrial paralog of IDH1. In glioma papers it is usually read together with IDH1 as part of `IDH1/2` mutation status.
+
+**How to read it:** IDH2 mutations are less common than IDH1 mutations in glioma, but they serve the same broad classification purpose: distinguishing IDH-mutant gliomas from IDH-wildtype glioblastoma.
+
+**In Patel et al. 2014:** `IDH1/2-wildtype` means neither IDH1 nor IDH2 mutation was detected in the sampled primary GBMs. The authors use this to keep the cohort within the IDH-wildtype primary glioblastoma context.
+
+**Reading caution:** When a paper says `IDH-wildtype`, it usually implies both IDH1 and IDH2 were considered. Do not interpret IDH2 alone without checking the paired IDH1 status and the glioma classification context.
+
+## GZMB
+
+**Full name:** Granzyme B
+
+**Basic meaning:** GZMB encodes granzyme B, a cytotoxic serine protease used by cytotoxic lymphocytes, especially CD8+ T cells and NK cells, to kill target cells.
+
+**How to read it:** In tumour immunology papers, high GZMB often points to cytotoxic effector activity. It is commonly read together with genes such as PRF1, NKG7 and GNLY.
+
+**In Zhang et al. 2026:** The paper uses GZMB as an example of a spatially polarized CD8+ T cell program. CD8+ T cells preferentially express GZMB when localized to the tumour core, suggesting that spatial context is associated with a more cytotoxic effector-like state.
+
+**Reading caution:** GZMB is a useful cytotoxic marker, but one gene alone does not prove effective tumour killing. It should be interpreted with broader T cell state markers, exhaustion markers, antigen presentation context and spatial location.
+
+## GZMK
+
+**Full name:** Granzyme K
+
+**Basic meaning:** GZMK encodes granzyme K, another granzyme expressed by subsets of T cells, especially certain CD8+ T cell states.
+
+**How to read it:** In single-cell and tumour immunology papers, GZMK often appears in CD8+ T cell states that are not the same as strongly GZMB-high terminal cytotoxic states. Depending on context, it may mark memory-like, transitional, inflammatory or peripheral CD8+ T cell programs.
+
+**In Zhang et al. 2026:** The paper contrasts GZMK with GZMB. CD8+ T cells preferentially express GZMK when localized to the tumour periphery, supporting the idea that CD8+ T cell state varies with spatial location.
+
+**Reading caution:** GZMK should not be simplified as merely "weaker GZMB." Its meaning depends on tissue, disease, activation state and the surrounding gene program.
+
+## BRAF
+
+**Full name:** B-Raf proto-oncogene, serine/threonine kinase
+
+**Basic meaning:** BRAF encodes a RAF-family kinase in the MAPK signaling pathway. In melanoma reading, BRAF is most often encountered through activating mutations such as BRAF V600E, which can drive MAPK pathway activity and create a targeted-therapy context.
+
+**How to read it:** `BRAF-mutant melanoma` usually means the tumor carries an activating BRAF alteration and may be treated with RAF and MEK inhibitors. `BRAF-wildtype` does not mean MAPK signaling is irrelevant; signaling may instead be driven by NRAS mutation, NF1 loss, RAF fusions or other alterations.
+
+**In Tirosh et al. 2016:** Genotypic information was available for 17 of 19 melanomas, and 4 had activating BRAF mutations. The paper discusses BRAF V600E melanomas because RAF/MEK inhibitor therapy can produce responses but resistance commonly emerges. Their single-cell analysis highlights AXL-high malignant-cell states that may pre-exist treatment and become enriched after MAPK-targeted therapy.
+
+**Reading caution:** BRAF status is not the same as cell state. A BRAF-mutant tumor can contain MITF-high and AXL-high malignant cells, and a bulk genotype does not reveal which single-cell subpopulations are poised for drug resistance.
+
+## NRAS
+
+**Full name:** NRAS proto-oncogene, GTPase
+
+**Basic meaning:** NRAS encodes a small GTPase upstream of RAF/MEK/ERK signaling. Activating NRAS mutations are common melanoma drivers and are usually read as part of MAPK pathway activation.
+
+**How to read it:** In melanoma, NRAS mutation often marks tumors that are not BRAF-mutant but still use MAPK signaling. Unlike BRAF V600E melanoma, NRAS-mutant melanoma has historically been harder to target directly, so papers often discuss it as part of the broader need for better therapeutic strategies.
+
+**In Tirosh et al. 2016:** Of the 17 genotyped melanomas, 5 had activating NRAS mutations. The cohort therefore includes BRAF-mutant, NRAS-mutant and BRAF/NRAS-wildtype tumors, allowing the authors to frame single-cell state heterogeneity across multiple melanoma genetic backgrounds.
+
+**Reading caution:** NRAS mutation status is a driver-genotype label, not a complete description of transcriptional phenotype. Single-cell MITF/AXL state, cell cycle status and microenvironment composition can vary within and across NRAS-mutant tumors.
+
+## NF1
+
+**Full name:** Neurofibromin 1
+
+**Basic meaning:** NF1 encodes neurofibromin, a negative regulator of RAS signaling. Loss or inactivation of NF1 can increase RAS/MAPK pathway activity.
+
+**How to read it:** In melanoma papers, NF1 often appears in the context of BRAF/NRAS-wildtype tumors or as another route into MAPK pathway activation. It helps explain why tumors without BRAF or NRAS activating mutations may still have MAPK signaling dependence or altered therapeutic vulnerabilities.
+
+**In Tirosh et al. 2016:** NF1 is mentioned when the authors describe melanoma patients without BRAF mutations, including tumors with NRAS mutations, NF1 inactivation or rarer events such as RAF fusions. The point is therapeutic: patients outside the BRAF-mutant category lack the same established targeted-therapy options.
+
+**Reading caution:** NF1 is a tumor suppressor context, not a marker of one specific cell type. Interpret NF1 together with broader genotype, MAPK pathway activity and the malignant-cell transcriptional state.
+
+## RAF1 / RAF
+
+**Full name:** Raf-1 proto-oncogene, serine/threonine kinase
+
+**Basic meaning:** RAF1, also called CRAF, is a RAF-family kinase in the MAPK pathway. In cancer papers, `RAF` may refer generically to the RAF kinase family or to RAF inhibitor treatment rather than to the RAF1 gene specifically.
+
+**How to read it:** When a paper says `RAF and MEK inhibition`, it usually means pharmacologic blockade of the MAPK pathway, commonly in BRAF-mutant melanoma. When it says `RAF fusion`, it refers to structural alterations involving RAF-family kinases that can activate signaling.
+
+**In Tirosh et al. 2016:** The authors discuss RAF and MEK inhibitors as standard targeted therapy for BRAF V600E melanoma. They show that melanoma tumors and cell lines can contain AXL-high drug-resistant subpopulations before treatment and that these populations become enriched after RAF/MEK inhibition.
+
+**Reading caution:** `RAF` is sometimes a pathway/drug-class shorthand rather than a precise gene symbol. If the paper needs gene-level interpretation, check whether it means BRAF, RAF1/CRAF, ARAF, a RAF fusion or a RAF inhibitor.
+
+## MITF
+
+**Full name:** Melanocyte inducing transcription factor
+
+**Basic meaning:** MITF is a lineage-associated transcription factor in melanocytes and melanoma. In melanoma papers, it often marks a melanocytic differentiation program and is linked to a more proliferative, lineage-identity-high malignant-cell state.
+
+**How to read it:** MITF-high melanoma cells are usually interpreted as retaining melanocytic lineage identity. They often express melanocyte differentiation genes and can contrast with AXL-high, invasive or therapy-resistant states.
+
+**In Tirosh et al. 2016:** MITF is used as one pole of melanoma malignant-cell heterogeneity. The paper highlights that individual tumors can contain both MITF-high and AXL-high malignant cells, showing that melanoma transcriptional states vary within the same tumor rather than only across patients.
+
+**Reading caution:** MITF is not just a marker gene; it is a transcription factor tied to melanoma lineage state. A MITF-high signal should be interpreted with the broader melanoma program, proliferation state and treatment context.
+
+## AXL
+
+**Full name:** AXL receptor tyrosine kinase
+
+**Basic meaning:** AXL encodes a receptor tyrosine kinase. In melanoma reading, AXL often marks an invasive, mesenchymal-like or drug-resistant malignant-cell state, especially in contrast to MITF-high melanoma states.
+
+**How to read it:** AXL-high melanoma cells are commonly associated with reduced melanocytic differentiation, increased invasion-related programs and resistance to MAPK pathway inhibition. In single-cell data, AXL is important because it can identify a minority malignant-cell state that may be missed or averaged out in bulk data.
+
+**In Tirosh et al. 2016:** The authors show that AXL-high malignant cells can pre-exist RAF/MEK inhibitor treatment and become enriched after treatment. This connects intratumoral transcriptional heterogeneity to therapy resistance: resistant states do not necessarily have to be newly created by therapy; they may already exist as rare subpopulations.
+
+**Reading caution:** AXL-high should not be reduced to one marker alone. It is most meaningful when supported by a broader transcriptional program and by its contrast with MITF-high melanoma lineage states.

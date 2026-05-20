@@ -1,0 +1,126 @@
+---
+title: "Copy Number Variation"
+date: 2026-05-19
+categories: [concept, genetic]
+tags: [cnv, copy-number-variation, cancer, single-cell]
+draft: false
+---
+
+## Perspective
+
+CNV 是读肿瘤 single-cell RNA-seq 时必须尽早理解的概念。它经常不是研究结论本身，而是一个判断细胞是不是 malignant 的证据层。
+
+先记住一句：**CNV 是 DNA 拷贝数层面的异常；在 scRNA-seq 里看到的 CNV 通常是从表达模式间接推断出来的，不是直接测出来的。**
+
+## Definition
+
+Copy number variation, CNV, refers to gain or loss of genomic DNA segments compared with the expected copy number.
+
+中文理解：CNV 指一段基因组区域的拷贝数发生变化。正常二倍体细胞里，常染色体区域通常有两份；肿瘤细胞中，某些染色体臂或基因组片段可能多了一份、少了一份，甚至发生强扩增或缺失。
+
+常见说法：
+
+- copy gain：某段区域拷贝数增加。
+- copy loss：某段区域拷贝数减少。
+- amplification：较强的扩增，常用于 oncogene 区域。
+- deletion：缺失，常用于 tumor suppressor 区域。
+
+## Why It Matters
+
+CNV 在癌症中重要，有两个层面。
+
+第一，它可能影响基因剂量。比如包含 oncogene 的区域扩增，可能让相关基因表达更高；包含 tumor suppressor 的区域缺失，可能削弱细胞调控。
+
+第二，它可以作为 malignant cell 的遗传指纹。许多肿瘤细胞有大尺度染色体 gain/loss，而同一样本中的正常免疫细胞、基质细胞或正常组织细胞通常没有这些肿瘤特异 CNV。
+
+所以在肿瘤 single-cell 文献里，CNV 常被用来回答一个基础问题：
+
+> 这些细胞到底是 malignant tumor cells，还是混入的 normal/non-malignant cells？
+
+## CNV From scRNA-seq
+
+scRNA-seq 测的是 RNA expression，不是 DNA copy number。  
+但如果一段染色体区域发生 copy gain，这个区域里的许多基因可能整体表达偏高；如果发生 copy loss，这些基因可能整体表达偏低。
+
+因此可以把基因按基因组位置排序，然后在较大的 genomic region 上平均表达：
+
+```text
+genes ordered by chromosome position
+  -> average expression across broad regions
+  -> regional expression high: possible copy gain
+  -> regional expression low: possible copy loss
+```
+
+关键是“大片区域平均”。单个基因的表达受 cell state、pathway、dropout 和技术噪声影响很大；但如果一整段染色体上的许多基因共同偏高或偏低，就更像 copy-number signal。
+
+这也是为什么 scRNA-seq 推断 CNV 更适合看大尺度染色体改变，而不适合精确判断点突变、小片段变异或很局部的事件。
+
+## In Tumour Single-Cell Analysis
+
+肿瘤单细胞分析中，CNV inference 常用于区分 malignant cells 和 non-malignant cells。
+
+一个常见判断逻辑是：
+
+```text
+cell has tumour-like broad CNV
+  + expresses tumour/lineage programs
+  -> more likely malignant
+
+cell has normal-like CNV
+  + expresses immune/stromal/normal tissue markers
+  -> more likely non-malignant
+```
+
+这个判断最好不要只靠一层证据。更稳的做法是同时看：
+
+- inferred CNV pattern
+- known tumour marker programs
+- normal cell type marker programs
+- patient-specific mutation or fusion evidence
+- sample sorting/gating context
+- spatial or histology context if available
+
+## Reading Patel et al. 2014
+
+Patel et al. 2014 是一个很好的例子。
+
+作者想研究 GBM malignant cells 内部的 transcriptional heterogeneity。为了避免把正常细胞污染误读成肿瘤细胞异质性，他们用 scRNA-seq 表达数据推断 large-scale CNV。
+
+他们的逻辑是：
+
+1. GBM malignant cells 应该携带 GBM 相关的大尺度 CNV。
+2. 正常脑细胞或免疫细胞不应该携带这些肿瘤 CNV。
+3. 如果某些单细胞 CNV 像 normal brain，同时表达也像正常细胞，就应该从 malignant-cell analysis 中排除。
+
+结果中，normal brain bulk RNA-seq 和 10 个单细胞聚在一起，提示这些细胞 copy number normal-like。表达分析进一步显示，其中 9 个像 mature oligodendrocytes，1 个像 monocytic cell。剩下 420 个细胞没有正常脑或免疫细胞表达程序，因此被作为 malignant GBM cells 继续分析。
+
+在 GBM 中，chromosome 7 gain 和 chromosome 10 loss 是经典大尺度改变。Patel et al. 在 malignant cells 中观察到这些模式，用来支持这些细胞的肿瘤身份。
+
+## Key Points
+
+- CNV 是 DNA 拷贝数异常，不是 RNA 表达本身。
+- scRNA-seq 中的 CNV 通常是从大片染色体区域的表达偏高/偏低间接推断。
+- 推断 CNV 最适合识别 broad chromosomal gains/losses。
+- 在肿瘤 single-cell 中，CNV 是 malignant cell identification 的重要证据层。
+- normal-like CNV 不自动等于正常细胞；tumour-like CNV 也要结合表达和样本背景解释。
+- 判断 malignant vs non-malignant 时，最好结合 CNV、marker、mutation、sorting 和 tissue context。
+
+## Related Concepts
+
+- malignant cell
+- copy gain
+- copy loss
+- amplification
+- deletion
+- scRNA-seq
+- cell annotation
+- tumour heterogeneity
+- glioblastoma
+
+## In Papers
+
+- [patelSinglecellRNAseqHighlights2014a](../../literature/papers/patelSinglecellRNAseqHighlights2014a/index.qmd)
+
+## Note
+
+最实用的理解：CNV 在肿瘤单细胞里常常不是为了精确画出基因组变异图，而是为了判断“这个细胞像不像恶性肿瘤细胞”。它是证据，不是最终答案；最可靠的判断来自 CNV 和表达程序互相印证。
