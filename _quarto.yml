@@ -64,17 +64,21 @@ website:
               - concept/cancer/necroptosis.qmd
               - concept/cancer/pyroptosis.qmd
               - concept/cancer/ferroptosis.qmd
+              - concept/cancer/tme.qmd
+              - concept/cancer/caf.qmd
               - concept/cancer/multicellular-ecosystem.qmd
               - concept/cancer/tissue-organization.qmd
               - concept/cancer/phenotypic-variation.qmd
               - concept/cancer/dynamic-signalling-hub.qmd
+              - concept/cancer/cfdna.qmd
           - section: "Single-cell"
             contents:
               - concept/single-cell/cell-annotation.qmd
           - section: "Genetic"
             contents:
-              - concept/genetic/cpg-island.qmd
               - concept/genetic/gene.qmd
+              - concept/genetic/cpg-island.qmd
+              - concept/genetic/cnv.qmd
       - section: "Practice"
         href: practice/index.qmd
         contents:
@@ -87,6 +91,7 @@ website:
               - practice/single-cell/seurat-object.qmd
               - practice/single-cell/reference.qmd
               - practice/single-cell/gene-sets.qmd
+              - practice/single-cell/technical-factors.qmd
               - practice/single-cell/qc.qmd
               - practice/single-cell/doublets.qmd
               - practice/single-cell/normalization.qmd
@@ -104,6 +109,14 @@ website:
               - practice/single-cell/cell-annotation.qmd
               - practice/single-cell/cell-composition.qmd
               - practice/single-cell/module-score.qmd
+      - section: "Method"
+        href: Method/index.qmd
+        contents:
+          - Method/multiplexed-protein-imaging.qmd
+          - Method/ecotyper.qmd
+          - Method/spatial-domain-discovery.qmd
+          - Method/spatial-transcriptomics.qmd
+          - Method/spatial-ecotyper.qmd
 
   page-footer:
     left: "© 2026 Yibin Zhou"
