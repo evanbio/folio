@@ -1,0 +1,29 @@
+---
+title: "Technical Factors"
+date: 2026-05-19
+categories: [practice, single-cell]
+tags: [single-cell, technical-factors]
+draft: false
+---
+
+## Tissue Processing Factors
+
+Single-cell transcriptomes are sensitive to what happens between tissue removal and cell capture. Some expression differences reflect real biology, but some can be introduced by sample handling.
+
+### Disaggregation
+
+Solid tissues must usually be dissociated into single-cell suspensions before sequencing. Mechanical disruption and enzymatic digestion can change cell state, damage fragile cells, or preferentially lose certain cell types.
+
+The main concern is that dissociation may induce stress-response, inflammatory, heat-shock, apoptosis-related, or immediate-early gene programs. These programs can look biological if they are not recognized as handling effects.
+
+### Temperature
+
+Temperature during transport, dissociation, washing, and sorting can affect cell viability and transcription. Warm handling may allow cells to keep responding to their environment after removal from the body, whereas cold handling may slow transcriptional changes but can stress some cell types.
+
+The important point is consistency. If samples are processed at different temperatures, technical differences may appear as sample-specific biological differences.
+
+### Time
+
+Processing time is the interval from tissue collection to single-cell capture or stabilization. Longer delays give cells more time to change transcriptionally outside their original tissue context.
+
+Time effects can be especially important when comparing samples collected in different batches, hospitals, surgeries, or experimental conditions. Short and consistent processing times reduce this source of variation.

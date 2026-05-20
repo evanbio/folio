@@ -14,6 +14,7 @@ Reusable notes for practical single-cell analysis decisions.
 
 | Page | Purpose | Added |
 |---|---|---|
+| [Technical Factors](technical-factors.qmd) | Technical factors affecting single-cell transcriptomes | 2026-05-19 |
 | [Packages](packages.qmd) | Packages and software ecosystem notes | 2026-05-07 |
 | [Data Formats](data-formats.qmd) | Common single-cell file formats and loading notes | 2026-05-07 |
 | [Sample Organization](sample-organization.qmd) | Relationship between files, samples, and metadata | 2026-05-07 |
