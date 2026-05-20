@@ -12,6 +12,19 @@ This page collects common gene sets used in single-cell practice notes.
 
 Gene sets here are not always cell-type markers. Some are QC-related sets, some are cell-cycle signatures, some are pattern-based feature groups, and some are cell type marker sets.
 
+## Index
+
+| Name | Category | Source | Added | Note |
+|---|---|---|---|---|
+| S Phase | cell-cycle | Seurat cell-cycle gene sets | 2026-05-07 | S phase scoring genes |
+| G2M Phase | cell-cycle | Seurat cell-cycle gene sets | 2026-05-07 | G2/M phase scoring genes |
+| Mitochondrial Genes | QC | pattern-based | 2026-05-07 | Human `^MT-`; mouse `^mt-` |
+| Hemoglobin Genes | QC | marker genes | 2026-05-07 | Blood or red blood cell contamination check |
+| Ribosomal Genes | QC | pattern-based | 2026-05-07 | `RPL*` and `RPS*` genes |
+| Tirosh 2016 Melanoma Non-Malignant Markers | cell-type markers | Tirosh et al. 2016 | 2026-05-20 | Broad non-malignant melanoma compartments |
+| Human Liver snRNA-seq Markers | cell-type markers | Gribben et al. 2024 | 2026-05-07 | Human liver snRNA-seq cell type markers |
+| Human PBMC 22 Marker Set | cell-type markers | Diaz-Mejia 2019 | 2026-05-07 | PBMC immune cell marker panel |
+
 ## Cell Cycle
 
 ### S Phase
@@ -97,6 +110,22 @@ This matches `RPL*` and `RPS*` genes found in the object.
 Cell type marker sets are named lists. Each element is one cell type or cell state, and each value is a character vector of marker genes.
 
 These marker sets are reusable gene sets. They can be used for manual annotation, marker checking, module scoring, or marker-signature-based annotation.
+
+### Tirosh 2016 Melanoma Non-Malignant Markers
+
+Markers used by Tirosh et al. 2016 to annotate broad non-malignant cell compartments in metastatic melanoma scRNA-seq. This is a historical paper-specific marker set, recorded for reading and reproduction context rather than as a current best-practice annotation panel.
+
+```r
+melanoma_tirosh2016_nonmalignant_markers <- list(
+  "T cells" = c("CD2", "CD3D", "CD3E", "CD3G"),
+  "B cells" = c("CD19", "CD20", "CD79A", "CD79B", "BLNK"),
+  "Macrophages" = c("CD14", "CD68", "CD163", "CSF1R"),
+  "Endothelial cells" = c("PECAM1", "VWF", "CDH5", "SELE"),
+  "CAFs" = c("FAP", "CD90", "COL1A1", "COL3A1"),
+  "pDCs" = c("CD123", "CD303", "CD304"),
+  "NK cells" = c("CD16", "CD56", "KLRB1", "KLRC1", "KLRD1", "KLRF1", "KLRK1")
+)
+```
 
 ### Human Liver snRNA-seq Markers
 
