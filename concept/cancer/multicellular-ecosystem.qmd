@@ -1,0 +1,58 @@
+---
+title: "Multicellular Ecosystem"
+date: 2026-05-18
+categories: [concept, cancer]
+tags: [tumour-microenvironment, spatial-biology, cell-state, multicellular-ecosystem]
+draft: false
+---
+
+## Perspective
+
+Multicellular ecosystem 是读 tumour microenvironment 和 spatial omics 文献时很重要的概念。它提醒我：肿瘤组织不是单个细胞类型的简单相加，而是由多种细胞类型和细胞状态在局部空间里组成的功能单元。
+
+在 Zhang et al. 这篇 Nature 文章里，multicellular ecosystem 是 spatial ecotype 的上位概念。作者要找的不是“某一种细胞多不多”，而是“哪些细胞状态在空间上共同出现，并形成稳定的组织生态”。
+
+## Definition
+
+A multicellular ecosystem is a local tissue unit composed of interacting cell types and cell states that together shape tissue function, disease behaviour, and response to perturbation.
+
+中文理解：多细胞生态系统是组织中的局部细胞组合。它强调细胞之间的共定位、互作和共同功能，而不是孤立看某一种细胞。
+
+## Why It Matters
+
+在癌症中，multicellular ecosystems 可以影响：
+
+- tumour growth 和 invasion
+- immune evasion
+- stromal remodelling
+- angiogenesis
+- treatment response
+- therapy resistance
+
+如果只看单个 cell type，例如 CD8 T cells 或 macrophages，可能会漏掉它们所处的空间环境。一个 CD8 T cell 在 tumour core、tumour margin 或 fibrotic stroma 中，可能对应完全不同的功能状态和治疗含义。
+
+## Key Points
+
+- 它是一个组织层级的概念，不是单细胞层级的概念。
+- 它通常由 immune cells、stromal cells、malignant cells 和 endothelial cells 等共同构成。
+- 它强调空间邻近和功能互作，而不仅是细胞比例。
+- 在 spatial omics 中，它常被用来解释 local niches、cellular neighbourhoods、spatial domains 或 spatial ecotypes。
+- 在肿瘤研究中，它有助于把 TME 从“细胞清单”推进到“空间生态结构”。
+
+## Related Concepts
+
+- tumour microenvironment
+- spatial ecotype
+- cell state
+- tissue organization
+- dynamic signalling hub
+- cellular neighbourhood
+- spatial transcriptomics
+
+## In Papers
+
+- [zhangNoninvasiveProfilingTumour2026](../../literature/papers/zhangNoninvasiveProfilingTumour2026/index.qmd)
+
+## Note
+
+最实用的理解：multicellular ecosystem 是“多个细胞状态在组织空间中形成的功能性组合”。读文章时要问：作者是在描述单个细胞类型，还是在描述多个细胞状态共同构成的局部生态？

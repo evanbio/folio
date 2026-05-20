@@ -1,0 +1,57 @@
+---
+title: "Phenotypic Variation"
+date: 2026-05-18
+categories: [concept, cancer]
+tags: [phenotype, heterogeneity, tumour-microenvironment, cancer-biology]
+draft: false
+---
+
+## Perspective
+
+Phenotypic variation 是文献中常见但容易被略过的词。它指观察到的生物学表现差异，不一定直接等于基因突变差异。
+
+在肿瘤研究中，phenotypic variation 可以来自 cancer cells，也可以来自 immune、stromal、endothelial 等 TME 成分。Zhang et al. 这篇文章强调 multicellular ecosystems 是 phenotypic variation 的关键元素，意思是：不同肿瘤之间的表现差异，部分来自它们具有不同的空间多细胞生态。
+
+## Definition
+
+Phenotypic variation refers to differences in observable biological states or behaviours across cells, tissues, tumours, patients, or conditions.
+
+中文理解：phenotypic variation 是“表现出来的生物学差异”。它可以是形态、表达状态、空间结构、免疫活性、侵袭性、治疗反应等差异。
+
+## Why It Matters
+
+癌症中的 phenotype 不只由 genotype 决定。相同 driver mutation 的肿瘤，也可能因为 TME、空间结构、细胞状态、治疗压力和宿主免疫不同而表现出不同临床行为。
+
+常见 phenotypic variation 包括：
+
+- immune-hot vs immune-cold
+- epithelial vs mesenchymal
+- inflamed vs immunosuppressed
+- stromal-rich vs tumour-cell-rich
+- therapy-sensitive vs therapy-resistant
+- invasive vs localized
+
+## Key Points
+
+- Phenotypic variation 是表型层面的差异，不等于 mutation 或 genotype。
+- 它可以发生在 single-cell level、tissue level、patient level 或 cohort level。
+- 在 single-cell/spatial omics 中，cell state、spatial domain 和 multicellular ecosystem 都可以被看作 phenotypic variation 的来源。
+- 临床 biomarker 常常试图把复杂 phenotypic variation 压缩成可测量指标。
+- 读文献时要问：作者说的 phenotype 是 molecular、cellular、spatial、histological 还是 clinical phenotype？
+
+## Related Concepts
+
+- heterogeneity
+- cell state
+- tumour microenvironment
+- multicellular ecosystem
+- spatial ecotype
+- therapy response
+
+## In Papers
+
+- [zhangNoninvasiveProfilingTumour2026](../../literature/papers/zhangNoninvasiveProfilingTumour2026/index.qmd)
+
+## Note
+
+最实用的理解：phenotypic variation 是“肿瘤表现为什么不一样”。这篇文章给出的答案之一是：因为肿瘤微环境中的多细胞空间生态不同。

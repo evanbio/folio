@@ -1,0 +1,57 @@
+---
+title: "Tissue Organization"
+date: 2026-05-18
+categories: [concept, cancer]
+tags: [tissue-organization, spatial-biology, tumour-microenvironment, spatial-omics]
+draft: false
+---
+
+## Perspective
+
+Tissue organization 指组织中的细胞、结构和功能区域如何在空间上排列。读 spatial omics 文献时，这个概念很关键，因为空间位置本身就是生物学信息。
+
+在肿瘤里，同样的细胞类型如果位于 tumour core、invasive margin、adjacent stroma 或 perivascular region，可能具有完全不同的功能意义。Zhang et al. 这篇文章正是从 tumour core 到 adjacent stroma 的空间梯度出发，定义 spatial ecotypes。
+
+## Definition
+
+Tissue organization is the spatial arrangement of cells, cell states, extracellular structures, and functional regions within a tissue.
+
+中文理解：tissue organization 是组织怎样被“排布”和“分区”。它关注细胞在哪里、和谁相邻、处在什么组织区域，以及这些空间关系如何影响功能。
+
+## Why It Matters
+
+传统 bulk omics 会把组织打碎后测平均信号，容易丢失空间信息。Single-cell RNA-seq 能看到细胞状态，但通常也丢失原位位置。Spatial omics 的价值就在于把表达状态放回组织结构里。
+
+对肿瘤来说，tissue organization 会影响：
+
+- immune cell infiltration 或 exclusion
+- tumour-stroma interaction
+- hypoxia 和 angiogenesis
+- antigen presentation
+- drug penetration
+- immune checkpoint therapy response
+
+## Key Points
+
+- Tissue organization 不是背景结构，而是疾病表型的一部分。
+- 空间邻近可以提示潜在 cell-cell interaction，但不能直接证明因果互作。
+- Tumour core、tumour margin 和 adjacent stroma 常常对应不同的 TME states。
+- Spatial transcriptomics、multiplex imaging 和 spatial proteomics 都是在恢复 tissue organization。
+- 读 spatial paper 时，要区分作者是在分析 cell abundance、cell state，还是 spatial arrangement。
+
+## Related Concepts
+
+- spatial transcriptomics
+- tumour microenvironment
+- tumour margin
+- multicellular ecosystem
+- spatial ecotype
+- cellular neighbourhood
+
+## In Papers
+
+- [zhangNoninvasiveProfilingTumour2026](../../literature/papers/zhangNoninvasiveProfilingTumour2026/index.qmd)
+
+## Note
+
+最实用的理解：tissue organization 是“细胞状态加上空间位置”。如果一个结论只说某细胞多了，还不算完整；如果能说明它在哪、和谁在一起、处于什么组织区域，才进入 spatial biology 的层面。

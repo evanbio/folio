@@ -1,0 +1,56 @@
+---
+title: "Dynamic Signalling Hub"
+date: 2026-05-18
+categories: [concept, cancer]
+tags: [cell-cell-communication, tumour-microenvironment, signalling, spatial-biology]
+draft: false
+---
+
+## Perspective
+
+Dynamic signalling hub 是理解 multicellular ecosystem 的功能面。它强调多个细胞靠近后，不只是空间上共存，还会通过信号互作形成局部调控中心。
+
+在肿瘤微环境中，一个 signalling hub 可能包括 T cells、macrophages、fibroblasts、endothelial cells 和 malignant cells。它们通过 cytokines、chemokines、ligand-receptor pairs、antigen presentation、metabolic cues 等互相影响，从而改变 tumour progression、immune evasion 和 therapy response。
+
+## Definition
+
+A dynamic signalling hub is a local multicellular interaction zone where neighbouring cells exchange signals that shape tissue state and disease behaviour.
+
+中文理解：dynamic signalling hub 是“局部细胞互相发信号的功能枢纽”。dynamic 强调它不是固定结构，而会随疾病阶段、治疗压力和细胞状态改变。
+
+## Why It Matters
+
+肿瘤治疗反应常常不是由一个细胞类型决定，而是由局部信号网络决定。例如：
+
+- cancer-associated fibroblasts 可能通过 TGF-beta 或 extracellular matrix remodelling 排斥 T cells。
+- macrophages 可能提供 immunosuppressive signals，降低抗肿瘤免疫。
+- endothelial cells 和 hypoxia 相关信号可能改变 immune infiltration 和 drug delivery。
+- activated T cells、dendritic cells 和 inflammatory stromal states 可能形成有利于 ICI response 的局部环境。
+
+因此，读到 signalling hub 时，不要只理解为“细胞聚在一起”，而要理解为“局部互作网络正在塑造功能状态”。
+
+## Key Points
+
+- Hub 指局部高互作区域，不一定是解剖学上清晰可见的结构。
+- Dynamic 指它会随时间、疾病阶段和治疗改变。
+- Signalling 可以包括 cytokine、chemokine、ligand-receptor interaction、antigen presentation、metabolic signalling 和 matrix-mediated signalling。
+- Spatial proximity 可以支持 signalling hub 的推断，但通常还需要功能实验或扰动实验确认。
+- 在 spatial omics 文章中，dynamic signalling hub 常是从空间共定位走向机制解释的桥梁。
+
+## Related Concepts
+
+- cell-cell communication
+- ligand-receptor interaction
+- tumour microenvironment
+- multicellular ecosystem
+- tissue organization
+- spatial ecotype
+- immune evasion
+
+## In Papers
+
+- [zhangNoninvasiveProfilingTumour2026](../../literature/papers/zhangNoninvasiveProfilingTumour2026/index.qmd)
+
+## Note
+
+最实用的理解：dynamic signalling hub 是“空间邻近 + 信号互作 + 功能后果”。读文献时要区分作者是否真的证明了 signalling，还是仅根据共定位和 marker 做了合理推断。
