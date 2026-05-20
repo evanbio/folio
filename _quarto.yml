@@ -43,6 +43,7 @@ website:
           - paper/014.qmd
           - paper/015.qmd
           - paper/020.qmd
+          - paper/021.qmd
       - section: "Story"
         href: story/index.qmd
         contents:

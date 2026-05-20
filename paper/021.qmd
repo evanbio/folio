@@ -1,0 +1,91 @@
+---
+title: "021"
+date: 2026-05-20
+categories: [research-article]
+tags: [single-cell, melanoma, tumor-microenvironment, tumour-heterogeneity, drug-resistance, t-cell-exhaustion]
+draft: false
+---
+
+## Intro
+
+**Dissecting the Multicellular Ecosystem of Metastatic Melanoma by Single-Cell RNA-seq** 是 Tirosh et al. 在 2016 年发表于 *Science* 的经典肿瘤单细胞论文。DOI: [10.1126/science.aad0501](https://doi.org/10.1126/science.aad0501)
+
+这篇文章的重要性在于，它把 single-cell RNA-seq 从“只看 malignant cells 内部异质性”推进到“解析整个 tumor ecosystem”。作者分析 19 个新鲜获取的人 melanoma tumors 中的 4645 个单细胞，同时覆盖 malignant cells、T cells、B cells、macrophages、endothelial cells、CAFs 和 NK cells。
+
+如果 Patel 2014 的核心是把 GBM bulk label 拆成多个 malignant cell states，那么 Tirosh 2016 的核心就是把 melanoma 拆成 malignant cell states、TME compartments 和 TIL functional states 的共同组织。它让 melanoma 不再只是一个 bulk tumor transcriptome，而是一个由癌细胞、免疫细胞、基质细胞和细胞间互作组成的 multicellular ecosystem。
+
+## Why I Read It
+
+我读这篇，是为了接在 Patel 2014 之后继续理解早期肿瘤单细胞论文如何建立基本范式。Patel 2014 已经说明，同一个肿瘤里的 malignant cells 可以共享遗传背景，却处于不同 transcriptional states。Tirosh 2016 则进一步说明，肿瘤异质性不只在 malignant compartment 内部，也存在于 TME 组成、CAF programs、T cell exhaustion 和 clonal expansion 中。
+
+这篇也很适合作为 melanoma、TME、CAF、MITF/AXL cell states 和 T cell exhaustion 的连接点。它同时牵涉 targeted therapy resistance 和 immune checkpoint therapy 两条临床主线：一边是 AXL-high / MITF-low malignant-cell state 与 RAF/MEK inhibitor resistance；另一边是 TIL activation、cytotoxicity、exhaustion 和 TCR clonal expansion。
+
+## What It Says
+
+文章首先给出队列和实验背景。作者测量了 19 个 melanoma tumors 中的 4645 个单细胞，包括 10 个 lymphoid tissue metastases、8 个 distant metastases 和 1 个 primary acral melanoma。17/19 个肿瘤有 genotype 信息，其中 4 个有 activating BRAF mutations，5 个有 activating NRAS mutations，8 个是 BRAF/NRAS wild-type。
+
+细胞识别的第一步是区分 malignant 和 non-malignant cells。作者用 scRNA-seq 表达谱推断大尺度 CNV：按染色体位置对基因表达做窗口平均，如果某些染色体区域整体偏高或偏低，就对应 copy-number gain 或 loss。带有共同 aneuploidy pattern 的细胞被判为 malignant cells；缺少这些异常的细胞被判为 non-malignant cells。两个肿瘤中，作者又用 bulk WES 验证 inferred CNV 与 DNA 层面的 copy-number pattern 一致。这条论证沿用了 Patel 2014 的思路：用表达推断 CNV 作为 malignancy evidence。
+
+随后作者用 t-SNE 和 marker genes 注释细胞类型。Malignant cells 明显按 tumor of origin 聚类，显示强 intertumor heterogeneity；non-malignant cells 则主要按 cell type 聚类，包括 T cells、B cells、macrophages、endothelial cells、CAFs 和 NK cells。这一对图很有说服力，因为如果 malignant cells 的患者分群完全是 batch effect，non-malignant cells 也应更强地按患者分开；但它们反而按细胞类型聚集。不过这里也要注意，主图展示使用了细胞数阈值，例如 malignant cells 图只展示每个肿瘤有足够 malignant cells 的子集，所以不能把视觉效果无条件推广到全部 19 个样本。
+
+在 malignant cells 内部，作者先控制 intertumor differences，再做 PCA，寻找跨肿瘤共享的 within-tumor cell states。PC1 与每个细胞检测到的基因数高度相关，因此被认为主要反映技术因素。PC2 与 cell cycle genes 相关，作者进一步用 G1/S 和 G2/M signatures 区分 cycling 和 noncycling malignant cells。不同肿瘤 cycling fraction 差异很大，平均约 13.5%，Mel79 约 1% 到 3%，Mel78 约 20% 到 30%，并由 Ki67 staining 支持。
+
+Noncycling cells 中最突出的基因是 KDM5B/JARID1B。KDM5B 与 noncycling malignant cells 相关，并且在 IF 中与 Ki67 互斥。作者把它和 melanoma 模型中 slow-cycling、drug-resistant stem-like cells 的文献连接起来。这是一个重要但需要谨慎的推断：这篇证明了 KDM5B-high 与 noncycling state 相关，也显示其组织中呈小簇分布；但是否等同于功能上的 stem-like drug-resistant cells，还需要额外功能证据。
+
+Malignant cells 的第二类异质性来自空间区域。作者在 treatment-naive Mel79 中从 4 个区域采样 468 个 malignant cells，发现 region 1 的 malignant cells 有 229 个高表达基因。类似表达程序也出现在 region 1 的 T cells 中，提示同一局部空间环境可能同时影响 malignant cells 和 immune cells。这套 program 包括 ATF3、FOS、FOSB、JUN、JUNB、EGR1/2/3、MCL1、NFKBIZ 等 immediate early、stress、survival 和 NF-kB/cAMP-related genes。IHC 验证了 region 1 中 NF-kB 和 JunB 更高。作者还用 TCGA bulk 共表达作为旁证，但这只能说明这些基因在 melanoma bulk 队列中有共同表达趋势，不能证明 TCGA 中存在同样的空间 niche。
+
+这篇最核心的 malignant-cell state 是 MITF-high 与 AXL-high。作者发现 PC4/PC5 与 MITF 表达高度相关，于是以 MITF 为锚点，在单细胞层面寻找与 MITF 正相关的 genes，定义 MITF-high program，包括 MITF、TYR、PMEL、MLANA 等 melanocytic lineage genes。与 MITF program 负相关的 program 包括 AXL 和 NGFR/p75NTR，对应 MITF-low / AXL-high state，并与既有 targeted therapy resistance 文献一致。
+
+关键不是 bulk 层面把肿瘤分成 MITF-high 或 AXL-high，而是 single-cell 层面显示每个 tumor 都同时含有两种状态的 malignant cells。Bulk MITF-high tumor 并不意味着所有细胞都是 MITF-high；其中可能隐藏少量 AXL-high cells。反过来，bulk AXL-high tumor 也可能含有 MITF-high cells。IF staining 进一步验证同一 tumor 中 MITF 和 AXL 在单细胞层面互斥。这个结果直接说明 bulk label 是细胞状态组成的平均结果，而不是每个 malignant cell 的身份。
+
+为了连接治疗耐药，作者分析外部队列中 6 对 BRAF V600E melanoma 治疗前和耐药后的 bulk RNA-seq。所有 6 对 resistant samples 都向 AXL-high program 偏移，支持 RAF/MEK inhibitor resistance 后整体 transcriptome 更偏 AXL-high / MITF-low。另一个 independent cohort 也显示部分 resistant samples 的 AXL program 上升。作者还提到 PDGFRB 与 AXL program 在类似 resistant subset 中上调，而 MET 在互斥 subset 中上调，提示 melanoma targeted therapy resistance 可能包含不同 resistant states。
+
+接着作者用 18 个 CCLE melanoma cell lines 检查 single-cell AXL protein expression。不同 cell lines 中 AXL-positive fraction 从小于 1% 到 99% 不等，并与 bulk AXL mRNA 相关，同时与 RAF inhibitor sensitivity 负相关。进一步用 dabrafenib 和 trametinib 处理 10 个 melanoma cell lines 后，初始 AXL-positive cells 很少的 6 个 cell lines 出现 AXL-positive fraction 增加；初始 AXL-high 的 cell lines 则变化较小。p-ERK 下降说明 MAPK pathway 确实被抑制。这些结果支持 AXL-positive resistant-like states 在治疗前可预先存在，并在 RAF/MEK inhibition 后富集；但仍不能完全区分预存亚群选择和治疗诱导状态转换。
+
+文章随后转到 non-malignant microenvironment。作者从 single-cell 数据中定义 T cells、B cells、macrophages、endothelial cells 和 CAFs 的 cell-type signatures，再用这些 signatures 去 deconvolve 471 个 TCGA melanoma bulk samples。估计的 tumor purity 与 DNA-based ABSOLUTE purity 相关约 R = 0.8，说明至少在 tumor vs non-tumor 总比例上，这套 deconvolution 有一定可信度。根据 inferred cell type composition，作者把 TCGA melanoma 分成 10 个 microenvironment clusters。
+
+TME composition 与 malignant-cell state 有关系。CAF-rich tumors 更偏 AXL-high signature，而 MITF-high program 与 CAF abundance 负相关。作者也意识到 AXL-high program 可能同时来自 melanoma cells 和 CAFs，于是利用 single-cell expression 区分 melanoma-derived AXL program 和 CAF-derived AXL program。两者都与 TCGA 中 inferred CAF abundance 相关。这里最稳妥的结论是：CAF-rich microenvironment 与 AXL-high / MITF-low malignant-cell program 相关；至于 CAF 是否主动诱导 AXL-high state，还是二者都由共同环境压力塑造，这篇还不能证明。
+
+CAF 与 T cells 的候选互作是另一条 TME 线索。作者寻找 single-cell 中主要由 CAF 表达、同时在 TCGA bulk 中与 T cell abundance 相关的 genes。筛到的基因包括 CXCL12、CCL19、PD-L2，以及更 CAF-specific 的 complement factors：C1S、C1R、C3、C4A、CFB、SERPING1。这些 complement genes 在 freshly isolated CAFs 中表达，但不在 cultured CAFs 或 macrophages 中表达。作者进一步用 308 个 tissue microarray cores 的 dual IF 验证 C3 level 与 CD8+ T cell infiltration 高度相关，并在 pan-cancer TCGA bulk 中看到 CAF-derived complement factors 与 inferred T cell abundance 的广泛相关。这是很有意思的体内相关性证据，但不能证明 CAF-derived C3 因果性招募 CD8 T cells。
+
+最后一部分分析 TIL functional states。作者从 15 个 melanomas 中取出 2068 个 T cells，按 marker 区分 CD4+ T cells、Tregs 和 CD8+ T cells，并在 CD4/CD8 内部用 naive 和 cytotoxic gene sets 描述 activation-state heterogeneity。关键观点是：checkpoint receptors 不能直接等同于 exhaustion。PD1、TIGIT、TIM3、LAG3、CTLA4 等 coinhibitory receptors 可在单细胞中共表达，PD1/TIM3 共表达也由 IF 验证；但这些 exhaustion markers 与 cytotoxicity/activation 高度相关。
+
+因此作者尝试定义 activation-independent exhaustion program。在 Mel75 的 314 个 CD8+ T cells 中，PCA 找到一个包含多个 coinhibitory receptors 和 exhaustion-related genes、但不包含 cytotoxicity genes 的 module。随后作者结合 Mel75-derived 和已有 published exhaustion programs，用 exhaustion score relative to cytotoxicity score 的方式定义 high- and low-exhaustion cells，并在另外 4 个 CD8+ T cell 数量较多的 tumors 中提炼 core exhaustion signature。最终得到 28 个在大多数 tumors 的 high-exhaustion cells 中一致上调的 genes，包括 TIGIT、TNFRSF9/4-1BB 和 CD27；同时也发现大量 exhaustion-associated genes 呈 tumor-specific variation，例如 CTLA4 在 Mel75 强相关、在 Mel58 中与 exhaustion 脱钩，NFATC1 则提示某些患者中的 exhaustion program 可能有不同调控轴。
+
+作者还尝试从 scRNA-seq reads 中推断 TCR clonal expansion。虽然这不是现代 paired scTCR-seq，V/J segment combination 也不等于完整 clonotype，但在 Mel75 中约一半 CD8+ T cells 属于 7 个 enriched TCR combinations，可能代表 expanded clones。这些 putative expanded T cells 更偏 high-exhaustion；low-exhaustion cells 在 expanded clusters 中减少，而 nonexhausted cytotoxic cells 几乎都属于 nonexpanded cells。这提示抗原驱动扩增和 exhaustion 可能相关。
+
+## What I Take From It
+
+这篇最重要的收获，是它把 melanoma 作为一个 multicellular tumor ecosystem 来拆解，而不是只把 single-cell 当作更细的 marker discovery 工具。它的结构可以概括为：
+
+```text
+infer malignant cells by CNV
+  -> annotate non-malignant TME compartments
+  -> analyze malignant-cell states
+  -> connect AXL/MITF axis to targeted therapy resistance
+  -> use single-cell signatures to deconvolve TCGA bulk tumors
+  -> link CAF-rich microenvironment to AXL-high malignant state
+  -> identify CAF-complement genes associated with T cell infiltration
+  -> deconvolve TIL cytotoxicity, exhaustion and clonal expansion
+```
+
+这篇和 Patel 2014 连起来看非常清楚。Patel 2014 的核心是 malignant cells 内部的 intratumoral heterogeneity；Tirosh 2016 则把这个逻辑扩展到 malignant cells、stromal cells 和 immune cells 共同组成的生态系统。它不仅问“同一个肿瘤里癌细胞状态是否不同”，还问“这些状态和 CAF、T cells、bulk signatures、治疗耐药和免疫功能有什么关系”。
+
+我最想记住的是 MITF/AXL 这一段。它不是简单说 melanoma 有两个 subtype，而是说明 bulk subtype 是细胞状态组成的压缩结果。一个 MITF-high bulk tumor 可以含有少量 AXL-high resistant-like cells；一个 AXL-high tumor 也可能保留 MITF-high cells。治疗后的 AXL-high shift、cell line 中 AXL-positive fraction 与 RAF inhibitor sensitivity 的负相关、RAF/MEK inhibition 后 AXL-positive cells 富集，共同把“治疗前已存在的 minority resistant-like state”这个问题变得非常具体。
+
+TME 部分同样重要，但证据层级要分清。CAF abundance 与 AXL/MITF distinction 的关系、CAF-expressed complement factors 与 T cell abundance 的关系，都很有启发；但它们主要是 single-cell specificity 加 bulk correlation，再加 IF 相关性验证。它们提出了 tumor-CAF、CAF-T cell interaction 的候选机制，但不是因果证明。
+
+T cell exhaustion 部分给我的提醒是：功能状态不能只看一个 marker。PD1、TIM3、LAG3、CTLA4、TIGIT 这些 checkpoint receptors 和 activation/cytotoxicity 常常混在一起。作者用 exhaustion relative to cytotoxicity 的方式定义 high-exhaustion cells，这比直接把 checkpoint-high 叫 exhausted 更谨慎。即使如此，这仍然是 transcriptional inference，不是功能实验证明。
+
+## Note
+
+这篇的论证方式很典型，也很值得警惕。作者经常用外部 bulk cohort、TCGA coexpression、既有文献、cell line、IF staining 来把单细胞观察织成一条更厚的证据链。这种写法有优势：样本数有限时，可以用多种旁证减少“只是噪声”的可能。但旁证不能被误读为强证明。例如 TCGA bulk 共表达不能证明 Mel79 region 1 的 spatial program 普遍存在；CAF genes 与 T cell abundance 相关不能证明 CAF 招募 T cells；AXL-high program 治疗后上升也不能单独区分 selection 与 state transition。
+
+这篇仍然是 2016 年的 SMART-seq 时代文章。细胞数和样本数相对今天很小，主图展示还使用了细胞数阈值，TCR clonal expansion 也是从 RNA-seq reads 中粗略推断，不是专门的 scTCR-seq。很多结论现在需要更高通量、多区域、空间组学、paired TCR、扰动实验和治疗纵向采样来进一步验证。
+
+但这些限制不影响它的历史位置。它真正建立的是一种研究框架：肿瘤不是 malignant cells 的平均表达，也不是 TME cell type list，而是多个 malignant states、stromal states、immune states 和治疗压力共同形成的生态系统。后面读 tumor atlas、therapy resistance、CAF biology、T cell exhaustion 和 spatial oncology，都可以回到这篇提供的轮廓。
+
+## Source
+
+- DOI: [10.1126/science.aad0501](https://doi.org/10.1126/science.aad0501)
+- PDF: [Dissecting the Multicellular Ecosystem of Metastatic Melanoma by Single-Cell RNA-seq](../assets/pdf/021.pdf)
