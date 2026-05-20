@@ -75,11 +75,15 @@ website:
           - section: "Single-cell"
             contents:
               - concept/single-cell/cell-annotation.qmd
+              - concept/single-cell/cycling-noncycling-cells.qmd
           - section: "Genetic"
             contents:
               - concept/genetic/gene.qmd
               - concept/genetic/cpg-island.qmd
               - concept/genetic/cnv.qmd
+          - section: "Disease"
+            contents:
+              - concept/disease/melanoma.qmd
       - section: "Practice"
         href: practice/index.qmd
         contents:

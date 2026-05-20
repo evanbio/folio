@@ -1,0 +1,102 @@
+---
+title: "Melanoma"
+date: 2026-05-20
+categories: [concept, disease, cancer]
+tags: [melanoma, skin-cancer, tumor-microenvironment, single-cell, immunotherapy]
+draft: false
+---
+
+## Definition
+
+Melanoma 是来源于 melanocytes 的恶性肿瘤。Melanocytes 是产生 melanin 的色素细胞，主要位于皮肤，也可见于眼、黏膜等部位。
+
+中文里通常称为黑色素瘤。它是皮肤癌中更具侵袭性和转移风险的一类，常见研究语境包括 MAPK pathway driver mutations、targeted therapy resistance、immune checkpoint blockade、tumor-infiltrating lymphocytes 和 tumor microenvironment。
+
+## Disease Background
+
+Melanoma 的核心特点是高度异质。它既有明显的遗传驱动背景，也有强烈的 transcriptional state variation 和 immune microenvironment variation。
+
+在临床和研究中，melanoma 经常和两个治疗方向连接在一起：
+
+- targeted therapy：尤其是 BRAF-mutant melanoma 中的 RAF/MEK inhibition。
+- immunotherapy：尤其是 CTLA-4、PD-1、PD-L1 等 immune checkpoint blockade。
+
+这两个方向使 melanoma 成为研究 tumor evolution、drug resistance、T cell exhaustion 和 TME regulation 的重要癌种。
+
+## Molecular Context
+
+Melanoma 中常见的分子背景包括 MAPK pathway activation。常被讨论的基因包括 `BRAF`、`NRAS`、`NF1`、`MITF` 和 `AXL`。
+
+`BRAF` activating mutations，尤其是 BRAF V600E，是 melanoma targeted therapy 的经典背景。BRAF-mutant melanoma 可以使用 RAF inhibitors 和 MEK inhibitors，但治疗后常出现 acquired resistance。
+
+`NRAS` mutations 也可以激活 MAPK signaling。NRAS-mutant melanoma 通常不属于 BRAF inhibitor 的标准靶向治疗语境，因此常被放在 BRAF-wildtype 或 non-BRAF-mutant melanoma 的治疗难题中讨论。
+
+`NF1` loss or inactivation 可以解除 RAS pathway 的负调控，也是 BRAF/NRAS-wildtype melanoma 中需要注意的 MAPK-related 背景之一。
+
+`MITF` 和 `AXL` 更偏 transcriptional cell state 语境。MITF-high melanoma cells 通常更接近 melanocytic lineage and differentiation program；AXL-high melanoma cells 常与 invasive、MITF-low、drug-resistant state 相关。
+
+## Cell States
+
+Melanoma 的 malignant cell states 不是只由 driver mutation 决定。同一个肿瘤中可以同时存在不同转录状态的 malignant cells。
+
+一个经典轴是 MITF-high 与 AXL-high state。MITF-high cells 保留更强 melanocytic lineage identity，常伴随 melanocyte differentiation genes。AXL-high cells 则常与 MITF-low、NGFR/p75NTR、invasion、stress response 和 MAPK inhibitor resistance 相关。
+
+这个轴的重要性在于：bulk 层面看起来是 MITF-high 的 melanoma，也可能含有少量 AXL-high resistant-like cells。治疗压力下，这些细胞可能被选择出来，或者发生状态转换后变得更丰富。
+
+## Tumor Microenvironment
+
+Melanoma 也是研究 TME 和免疫治疗的核心癌种。它的微环境中常见细胞包括 T cells、B cells、macrophages、endothelial cells、CAFs 和 NK cells。
+
+T cell infiltration 与 melanoma immunotherapy 密切相关，但 T cells 的状态不能只用是否存在来概括。CD8+ T cells 可以处于 cytotoxic、activated、exhausted、clonally expanded 等状态。Checkpoint receptors 如 PD-1、TIM-3、LAG-3、TIGIT、CTLA-4 常出现在 exhaustion 语境中，但它们也可能和 activation/cytotoxicity 同时出现。
+
+CAF 在 melanoma TME 中也有重要位置。CAF-rich microenvironment 可以与 AXL-high malignant cell program 相关；CAF-derived chemokines、complement factors 和 extracellular matrix programs 可能影响 T cell infiltration、stromal organization 和 malignant cell states。
+
+## Single-Cell View
+
+单细胞研究中的 melanoma 特别适合展示“multicellular ecosystem”这个概念。一个 melanoma 样本中既有 malignant cells，也有 immune、stromal 和 vascular compartments；疾病表型来自这些细胞状态的组合。
+
+在 Tirosh et al. 2016 中，single-cell RNA-seq 显示 melanoma 的 heterogeneity 至少包括几层：
+
+- malignant cells 的 patient-specific transcriptional background
+- cycling 与 noncycling malignant cells
+- MITF-high 与 AXL-high malignant cell states
+- T cells、B cells、macrophages、endothelial cells、CAFs 和 NK cells 等 TME compartments
+- CAF abundance 与 AXL/MITF malignant-cell state 的关联
+- T cell activation、cytotoxicity、exhaustion 和 clonal expansion 的差异
+
+这个视角下，melanoma 不是单一 malignant cell population，而是由 malignant states、immune states 和 stromal states 共同构成的 tumor ecosystem。
+
+## Research Context
+
+Melanoma 常出现在以下研究主题中：
+
+- MAPK pathway driver mutations
+- RAF/MEK inhibitor response and resistance
+- MITF-high vs AXL-high malignant cell states
+- immune checkpoint blockade
+- tumor-infiltrating lymphocytes
+- T cell exhaustion
+- tumor microenvironment
+- CAF-malignant cell interaction
+- single-cell tumor ecosystem
+
+## Related Concepts
+
+- [Tumor Microenvironment](../cancer/tme.qmd)
+- [Cancer-Associated Fibroblast](../cancer/caf.qmd)
+- [Copy Number Variation](../genetic/cnv.qmd)
+- [Genes](../genetic/gene.qmd)
+- malignant cell
+- tumor heterogeneity
+- immune checkpoint blockade
+- MAPK pathway
+
+## In Papers
+
+- [tiroshDissectingMulticellularEcosystem2016](../../literature/papers/tiroshDissectingMulticellularEcosystem2016/index.qmd)
+
+## Note
+
+最简洁的理解：melanoma 是一个非常适合学习肿瘤异质性和 TME 的癌种。它同时牵涉 driver genotype、malignant cell state、targeted therapy resistance、immune checkpoint therapy 和 multicellular ecosystem。
+
+对当前阅读线来说，最重要的是 MITF-high/AXL-high malignant-cell state，以及这些状态如何嵌入 CAF、T cells、macrophages 等 TME compartments 中。

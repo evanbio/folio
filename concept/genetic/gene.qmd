@@ -25,6 +25,8 @@ This page records genes that repeatedly appear while reading papers. The goal is
 | RAF1 / RAF | Raf-1 proto-oncogene, serine/threonine kinase | MAPK pathway signaling; RAF/MEK inhibition context | Tirosh et al. 2016: RAF and MEK inhibition selects or enriches AXL-high drug-resistant melanoma states |
 | MITF | Melanocyte inducing transcription factor | Melanoma lineage program; melanocytic differentiation and proliferative state | Tirosh et al. 2016: MITF-high malignant cells mark one melanoma transcriptional state |
 | AXL | AXL receptor tyrosine kinase | Invasive, drug-resistant melanoma state; RTK signaling | Tirosh et al. 2016: AXL-high malignant cells pre-exist treatment and are enriched by RAF/MEK inhibition |
+| MKI67 / Ki-67 | Marker of proliferation Ki-67 | Proliferating cells; cell-cycle activity by staining or expression | Tirosh et al. 2016: Ki67 staining validates low- and high-cycling melanoma tumors |
+| KDM5B / JARID1B | Lysine demethylase 5B | Slow-cycling or noncycling melanoma cells; drug-tolerant state context | Tirosh et al. 2016: KDM5B correlates with noncycling malignant cells and is mutually exclusive with Ki67 |
 
 ## PTPRC / CD45
 
@@ -157,3 +159,27 @@ This page records genes that repeatedly appear while reading papers. The goal is
 **In Tirosh et al. 2016:** The authors show that AXL-high malignant cells can pre-exist RAF/MEK inhibitor treatment and become enriched after treatment. This connects intratumoral transcriptional heterogeneity to therapy resistance: resistant states do not necessarily have to be newly created by therapy; they may already exist as rare subpopulations.
 
 **Reading caution:** AXL-high should not be reduced to one marker alone. It is most meaningful when supported by a broader transcriptional program and by its contrast with MITF-high melanoma lineage states.
+
+## MKI67 / Ki-67
+
+**Full name:** Marker of proliferation Ki-67
+
+**Basic meaning:** MKI67 encodes Ki-67, a nuclear protein widely used as a marker of cell proliferation. In pathology and single-cell reading, Ki-67 positivity usually indicates cells in active cell cycle rather than quiescent or noncycling cells.
+
+**How to read it:** Ki-67 is often used by immunostaining to estimate the proliferative fraction of a tumor. In single-cell RNA-seq, `MKI67` may appear with broader G1/S and G2/M gene signatures, but it is usually safer to interpret proliferation from a full cell-cycle program rather than from one gene alone.
+
+**In Tirosh et al. 2016:** The authors used cell-cycle signatures to infer cycling malignant melanoma cells and then compared low-cycling and high-cycling tumors with Ki67+ staining. Ki67 staining supported the single-cell estimate that tumors such as Mel79 had low cycling fractions, whereas tumors such as Mel78 had higher cycling fractions.
+
+**Reading caution:** Ki-67 marks proliferation, not malignancy. Immune and stromal cells can also proliferate, so in tumor single-cell data it should be interpreted after cell type or malignant-cell classification.
+
+## KDM5B / JARID1B
+
+**Full name:** Lysine demethylase 5B
+
+**Basic meaning:** KDM5B, also known as JARID1B, encodes a histone demethylase. In melanoma literature, it is often associated with slow-cycling, noncycling or drug-tolerant malignant-cell states.
+
+**How to read it:** KDM5B-high melanoma cells are commonly interpreted in the context of phenotypic heterogeneity and therapy tolerance. It does not simply mark absence of proliferation; it points to a chromatin-associated state that may help cells persist under stress or treatment.
+
+**In Tirosh et al. 2016:** KDM5B was correlated with noncycling malignant cells. The authors also note that KDM5B/JARID1B and Ki67 were mutually exclusive by immunofluorescence, supporting the idea that some melanoma cells occupy a slow-cycling or noncycling state.
+
+**Reading caution:** KDM5B should be read as part of a broader cell-state program. A single KDM5B-high signal is not enough to prove a stable cancer stem cell or resistant clone without supporting transcriptional, functional or treatment-response evidence.

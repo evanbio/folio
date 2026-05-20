@@ -1,0 +1,82 @@
+---
+title: "Cycling and Noncycling Cells"
+date: 2026-05-20
+categories: [concept, single-cell]
+tags: [single-cell, cell-cycle, cell-state, proliferation]
+draft: false
+---
+
+## Definition
+
+Cycling cells 指当前处于 active cell cycle 的细胞。它们正在准备 DNA replication、进行 DNA synthesis、准备 mitosis，或处在细胞分裂相关阶段。
+
+Noncycling cells 指当前没有明显 cell-cycle transcriptional program 的细胞。它们不是正在活跃增殖的细胞，可能处于 quiescent-like、slow-cycling、differentiated、stressed 或其他低增殖状态。
+
+这两个词描述的是 **cell state**，不是固定 cell type。T cells、epithelial cells、malignant cells、fibroblasts 等都可以有 cycling 和 noncycling 状态。
+
+## Cell-Cycle Phases
+
+Cell cycle 通常包括 G1、S、G2 和 M phases。
+
+**G1 phase** 是细胞生长和准备复制 DNA 的阶段。
+
+**S phase** 是 DNA synthesis 阶段，细胞复制基因组。
+
+**G2 phase** 是 DNA 复制完成后、进入分裂前的准备阶段。
+
+**M phase** 是 mitosis，细胞进行染色体分离和分裂。
+
+在 scRNA-seq 中，常见做法是用 G1/S 和 G2/M gene signatures 给细胞打分。S phase genes 和 G2/M phase genes 高表达的细胞通常被认为处在 cycling state。
+
+## In Single-Cell Data
+
+Cell cycle 是 scRNA-seq 中很强的表达变化来源。很多数据集中，cycling cells 会因为高表达 DNA replication、mitosis、chromosome segregation 和 proliferation-related genes，在 PCA、UMAP 或 clustering 中形成明显变化轴。
+
+常见 proliferation or cell-cycle markers 包括 `MKI67`、`TOP2A`、`PCNA`、`MCM2`、`MCM5`、`STMN1`、`UBE2C`、`BIRC5`、`CDK1` 等。实际分析时通常不依赖单个 marker，而是使用完整 gene signature。
+
+如果一个 principal component 或 cluster 主要由 cell-cycle genes 驱动，它通常反映 cycling vs noncycling state，而不一定代表新的 cell type。
+
+## Biological Meaning
+
+Cycling cells 可以理解为当前处在活跃增殖状态。它们有更强的 DNA replication 和 mitosis 程序，常见于组织更新、免疫扩增、发育、肿瘤生长或损伤修复过程中。
+
+Noncycling cells 可以理解为当前不处在活跃增殖状态。但 noncycling 不等于死亡，也不等于永久静息。一个 noncycling cell 之后可以重新进入 cell cycle；一个 cycling cell 分裂后也可以退出 cell cycle。
+
+在肿瘤中，noncycling 或 slow-cycling malignant cells 常被放在 therapy tolerance、minimal residual disease、stem-like state 或 drug resistance 的语境中讨论。但这需要额外证据，不能只凭 low cell-cycle score 下结论。
+
+## Tirosh 2016 Context
+
+Tirosh et al. 2016 在 melanoma malignant cells 中发现 PC2 与 cell cycle genes 相关。作者使用 G1/S 和 G2/M signatures 区分 cycling 和 noncycling malignant cells，并发现不同肿瘤的 cycling fraction 差异很大。
+
+Mel79 是 low-cycling tumor，cycling cells 约 1% 到 3%。Mel78 是 high-cycling tumor，cycling cells 约 20% 到 30%。作者用 Ki67 staining 验证了 scRNA-seq 推断的 cycling fraction。
+
+这篇还发现 `KDM5B/JARID1B` 与 noncycling malignant cells 关联最强，并且 KDM5B 与 Ki67 在免疫荧光中互斥。这支持 melanoma 中存在 KDM5B-high、slow-cycling 或 noncycling malignant-cell state。
+
+## Relation to Patel 2014
+
+Patel et al. 2014 在 glioblastoma single-cell RNA-seq 中也观察到 malignant cells 的 cell-cycle heterogeneity，并把 noncycling programs 与 `KDM5B` 联系起来。
+
+因此，Tirosh 2016 中 KDM5B-associated noncycling melanoma cells 不是孤立观察，而是延续了早期肿瘤单细胞研究中反复出现的主题：同一个肿瘤内的 malignant cells 可以同时包含 proliferative 和 low-proliferative states。
+
+## Related Concepts
+
+- cell state
+- cell cycle
+- proliferation
+- quiescence
+- slow-cycling cells
+- malignant cell heterogeneity
+- therapy tolerance
+- [Genes](../genetic/gene.qmd)
+- [Melanoma](../disease/melanoma.qmd)
+
+## In Papers
+
+- [020](../../paper/020.qmd)
+- [tiroshDissectingMulticellularEcosystem2016](../../literature/papers/tiroshDissectingMulticellularEcosystem2016/index.qmd)
+
+## Note
+
+最简洁的理解：cycling/noncycling 是单细胞数据里的增殖状态轴。Cycling cells 正在活跃进行 cell cycle；noncycling cells 当前没有明显 cell-cycle program。
+
+读肿瘤单细胞时要把它当作状态，而不是细胞类型。特别是 noncycling malignant cells，可以和 slow-cycling、drug-tolerant 或 stem-like state 相关，但这些解释需要 KDM5B、治疗反应、功能实验或空间证据支持。
