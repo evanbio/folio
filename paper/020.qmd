@@ -1,0 +1,79 @@
+---
+title: "020"
+date: 2026-05-19
+categories: [research-article]
+tags: [single-cell, glioblastoma, tumour-heterogeneity, malignant-cells, cell-state]
+draft: false
+---
+
+## Intro
+
+**Single-Cell RNA-seq Highlights Intratumoral Heterogeneity in Primary Glioblastoma** 是 Patel et al. 在 2014 年发表于 *Science* 的经典论文。DOI: [10.1126/science.1254257](https://doi.org/10.1126/science.1254257)
+
+这篇文章的意义不只是“早期把 single-cell RNA-seq 用到肿瘤里”。更准确地说，它把 glioblastoma 从 bulk transcriptome 里的一个平均表达谱，拆成了同一个肿瘤内部多个 malignant cell states 的组合。它让 tumor heterogeneity 变得可见、可量化，也给后来肿瘤单细胞研究画出了基本轮廓：先区分 malignant 与 non-malignant cells，再看同一遗传背景下的 transcriptional programs、RTK 表达、stemness gradient、cell cycle/hypoxia 状态和 subtype-like composition。
+
+以今天的标准看，5 个原发 IDH1/2-wildtype GBM、430 个单细胞当然很小。但在 2014 年，这篇的关键不是规模，而是问题意识：如果 bulk GBM subtype 只是一个肿瘤里许多细胞状态的平均结果，那么我们对 subtype、靶点、预后和治疗反应的理解都需要重写。
+
+## Why I Read It
+
+我读这篇，是因为它几乎是肿瘤单细胞论文的原型。很多后来变成常规的问题，在这里已经出现了：哪些细胞是真正的 malignant cells？同一肿瘤里的 cancer cells 是不是共享 CNV 背景？转录异质性是随机噪声，还是有功能结构？一个 bulk subtype 到底代表整个肿瘤，还是只代表某些细胞状态占优势？
+
+这篇真正重要的地方，是它没有把 heterogeneity 当作一句泛泛的背景话，而是把它拆成几个可以分析的层次。遗传层面有 CNV，表达层面有 tumor-to-tumor 和 within-tumor variation，功能层面有 cell cycle、hypoxia、immune/complement-like、oligodendrocyte-like programs，治疗层面有 EGFR/EGFRvIII 和其他 RTK 的 mosaic expression，分化层面有 stemness-differentiation continuum，分类层面有 TCGA subtypes 在单细胞中的混合和共存。
+
+所以这篇不是在给 GBM 再贴一个标签，而是在说明：一个肿瘤本身就是一个由不同 malignant states 组成的生态系统。后来的 tumor atlas、clonal evolution、therapy resistance、cell state plasticity、spatial niche 和 precision oncology，都可以在这里看到雏形。
+
+## What It Says
+
+文章首先处理一个肿瘤单细胞分析的基础问题：测到的细胞到底是不是肿瘤细胞。作者用 CD45+ depletion 和 flow cytometry 富集肿瘤细胞，再用表达谱和 inferred CNV 进行计算判定。最后识别出少量 normal-like cells，包括 mature oligodendrocyte-like cells 和 monocytic cell-like signal；其余大部分细胞显示 GBM 典型的 chromosome 7 gain 和 chromosome 10 loss，因此被作为 malignant GBM cells 分析。
+
+这个步骤很关键。它说明肿瘤单细胞不是简单聚类后给 cluster 起名字，而是要先证明分析对象属于 malignant compartment。Patel 这篇很早就把 CNV、normal brain expression 和 immune/normal signatures 结合起来，用多条证据划定 malignant cells。这个框架后来几乎成了肿瘤 scRNA-seq 的基本动作。
+
+在 malignant cells 内部，作者看到一个非常重要的分离：大尺度 CNV 在同一肿瘤内相对一致，但 transcriptional state 高度异质。MDS 分析中，细胞总体仍然按 tumor of origin 聚集，说明每个患者肿瘤有自己的主导表达背景；但每个肿瘤内部又有大量细胞偏离主群，进入不同 transcriptional space。也就是说，同一个肿瘤的 cancer cells 可以共享遗传背景，却处在不同功能状态。
+
+治疗靶点层面，RTK expression 的 mosaic pattern 是这篇最直观的结果之一。MGH30 中不同细胞分别表达 wild-type EGFR、EGFRvIII 或 EGFR exon 4 deletion，而且这些 EGFR 变体在单细胞中基本互斥。另一些细胞则不依赖 EGFR，而表达其他 receptor tyrosine kinases 或 ligand programs。bulk 可以告诉我们“这个肿瘤有 EGFR alteration”，但 single-cell 告诉我们“不是每个肿瘤细胞都带着同一个可打击靶点”。这直接解释了为什么针对单一靶点的治疗很容易遇到先天不均一和残留细胞。
+
+随后作者用相关结构和 meta-signatures 描述 malignant cells 的功能异质性。Cell cycle program 只在每个肿瘤的一部分细胞中活跃，比例在不同样本间差异很大。Hypoxia program 与 cell cycle 在很多情况下呈相反趋势，提示同一肿瘤内部可能同时存在更增殖的区域和更缺氧、压力相关的状态。Complement/immune response-like program 和 oligodendrocyte function-like program 也提示 malignant cells 可以表达一些看似属于 microenvironment 或 lineage context 的转录模块。
+
+这部分的价值在于，作者不是只说“有很多 cluster”，而是把异质性整理成可以解释的 functional programs。GBM 内部的差异不是一团散点，而是由若干生物过程交织出来的状态空间：有些细胞在 cycling，有些细胞更 hypoxic，有些细胞带有 RTK-driven programs，有些细胞更接近 stem-like 或 differentiated-like 状态。
+
+Stemness 分析是这篇的另一个核心。作者用 glioblastoma stem-like cells (GSCs) 和 differentiated glioblastoma cells (DGCs) 的体外模型构建 signature，再投射回原发 GBM 单细胞。结果显示，原发肿瘤细胞不是分成简单的 stem cell 群和 differentiated cell 群，而是沿着 stemness-differentiation axis 连续分布。每个肿瘤中都有不同程度的 stem-like cells，并且这些状态与 POU3F2、NFIA、NFIB 等 transcription factor programs 相关。
+
+这个结论非常有影响力，因为它把 cancer stemness 从“是否存在某个离散群体”推进到“肿瘤细胞沿状态轴分布”。GBM 的 stemness 不是一个单一 marker 可以定义的身份，而是一组连续变化的 transcriptional programs。后面很多关于 plasticity、therapy resistance 和 state transition 的讨论，都可以从这个角度理解。
+
+最后，文章把 TCGA GBM bulk subtypes 投射到单细胞层面。每个肿瘤通常有一个 dominant subtype-like identity，但同一个肿瘤内部也存在 alternate subtype-like cells。更重要的是，单细胞可以同时呈现 hybrid subtype states，例如 classical-proneural 或 mesenchymal-neural-like programs。作者进一步在 TCGA bulk 队列中分析 subtype heterogeneity，发现 proneural tumors 中如果带有更强的 mesenchymal signal，患者生存更差。
+
+这一段把论文从描述性单细胞观察推到了临床解释：bulk subtype 不是假的，但它是细胞组成的压缩结果。一个 tumor 被叫作 proneural，不代表里面所有 malignant cells 都是 proneural-like；它可能同时含有 mesenchymal-like 或 classical-like cells，而这些 minority states 可能正是侵袭、耐药或不良预后的来源。
+
+## What I Take From It
+
+这篇给我的最大启发，是它把 tumor heterogeneity 从概念变成了结构。过去说 GBM heterogeneity，可能只是说肿瘤很复杂、不同区域不同、不同患者不同。Patel 2014 则具体展示了 heterogeneity 至少有几层：
+
+```text
+malignant vs normal-like cells
+  -> shared tumor-level CNV background
+  -> within-tumor transcriptional variation
+  -> RTK and therapeutic target mosaicism
+  -> functional programs such as cell cycle and hypoxia
+  -> stemness-differentiation continuum
+  -> mixture of TCGA subtype-like states
+  -> association with prognosis in bulk cohorts
+```
+
+这也是为什么它是经典文章。它不是因为细胞数多，也不是因为方法复杂，而是因为它第一次很清楚地展示：一个肿瘤不能再被理解成一个平均表达谱或一个 subtype label。肿瘤内部不同 malignant cells 共同组成了疾病表型，治疗靶点、增殖能力、缺氧压力、stemness 和 subtype identity 都可能只属于其中一部分细胞。
+
+这篇还让我重新理解 bulk 数据的地位。Bulk 不是没用，而是把 cell-state composition 压缩成了总体信号。TCGA subtype、EGFR status、mesenchymal signature、proneural signature 都仍然有意义，但 single-cell 让我们知道这些信号来自哪些细胞、占多大比例、是否共存、是否互斥，以及是否可能对应不同治疗敏感性。
+
+如果以后读肿瘤单细胞论文，我会用这篇作为基准问题：作者有没有区分 malignant cells 和 TME cells？有没有证明所谓 cell states 不是单纯 patient effect？有没有把 heterogeneity 连接到功能程序、治疗靶点、分化状态或临床结果？有没有解释 bulk signature 在单细胞层面的来源？这些问题在 Patel 2014 中已经被非常清楚地提出。
+
+## Note
+
+这篇的局限也很明确。样本数少，细胞数少，SMART-seq 通量有限，没有空间信息，也没有后来的 multi-omics、TCR/BCR、ATAC、methylation 或 lineage tracing。它不能当作完整 GBM atlas，也不能回答 tumor microenvironment 的复杂互作问题。
+
+但这些限制并不削弱它的历史位置。它最重要的贡献，是提出了一种看肿瘤的方式：不要把 tumor 当成一个整体平均值，而要把它拆成多个 malignant cell states 的组合；不要只问这个肿瘤属于哪个 subtype，而要问这个 subtype signal 在哪些细胞中出现、是否与其他 subtype-like programs 共存、是否对应治疗相关靶点或预后风险。
+
+我会把这篇放在肿瘤单细胞阅读的起点。它真正建立的是一个轮廓：GBM 的 intratumoral heterogeneity 不是附属现象，而是疾病本身的组织方式。后续关于 therapy resistance、minimal residual disease、cell state plasticity、spatial niches 和 personalized therapy 的很多问题，都是在这个轮廓上继续展开。
+
+## Source
+
+- DOI: [10.1126/science.1254257](https://doi.org/10.1126/science.1254257)
+- PDF: [Single-Cell RNA-seq Highlights Intratumoral Heterogeneity in Primary Glioblastoma](../assets/pdf/020.pdf)
